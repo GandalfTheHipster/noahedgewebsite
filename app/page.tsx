@@ -24,7 +24,7 @@ const projects = [
     href: "/bape/olympics",
   },
   {
-    imageSrc: "https://i.postimg.cc/cL9WcSc3/bpl-logo.png",
+    imageSrc: "https://i.postimg.cc/ZR6kb86T/beerponglogo.png",
     title: "Bape Beer Pong League",
     description:
       "League hub for standings, results, team profiles, and the playoff bracket.",
