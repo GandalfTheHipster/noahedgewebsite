@@ -147,10 +147,10 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
     >
       <section className="flex flex-col gap-5">
         <BapeSectionHeader
-          title="Events"
+          title={hasResults ? "Event results" : "Events"}
           description={
             data.events.length > 0 && hasResults
-              ? "Completed events and podiums."
+              ? `${completedEvents.length} completed events. Every podium, every medalist.`
               : undefined
           }
         />
@@ -237,10 +237,16 @@ function EventCategoryList({
     <div className="grid gap-6">
       {categories.map((category) => (
         <section key={category.name} className="grid gap-3">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-            {category.name}
-          </p>
-          <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+          <div className="flex items-center gap-3">
+            <h2 className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+              {category.name}
+            </h2>
+            <span className="rounded-full bg-muted px-2 py-0.5 text-xs tabular-nums text-muted-foreground">
+              {category.events.length}
+            </span>
+            <div className="h-px flex-1 bg-border" />
+          </div>
+          <div className="grid gap-4">
             {category.events.map((event) => (
               <OlympicsEventCard key={event.id} event={event} year={year} />
             ))}
