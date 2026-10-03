@@ -247,7 +247,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "",
+    avatarUrl: "https://i.postimg.cc/VNpLbyL0/hs-kohl.png",
     country: ["🇸🇲"],
   },
   {
@@ -258,7 +258,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "",
+    avatarUrl: "https://i.postimg.cc/8CKTQ2rs/hs-jayden.png",
     country: ["🇸🇲"],
   },
   {
@@ -269,7 +269,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "",
+    avatarUrl: "https://i.postimg.cc/vmBcVLrS/hs-raven.png",
     country: ["🇸🇲"],
   },
   {
