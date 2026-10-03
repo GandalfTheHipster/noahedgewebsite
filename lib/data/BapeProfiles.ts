@@ -27,11 +27,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     bronze: 4,
     pointsAllTime: 41,
     avatarUrl: "https://i.postimg.cc/RFT8LHmj/hs-aleksa.png",
-    country: [
-      "🇷🇸",
-      "🇰🇿",
-      "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
-    ],
+    country: ["🇷🇸", "🇰🇿", "🇲🇳"],
   },
   {
     bapeID: 1,
@@ -42,7 +38,11 @@ export const BAPE_PROFILES: BapeProfile[] = [
     bronze: 7,
     pointsAllTime: 38,
     avatarUrl: "https://i.postimg.cc/8C6Mj2Rn/hs-jack.png",
-    country: ["🇨🇮", "🇳🇴", "🇲🇳"],
+    country: [
+      "🇨🇮",
+      "🇳🇴",
+      "\u{1F3F4}\u{E0067}\u{E0062}\u{E0073}\u{E0063}\u{E0074}\u{E007F}",
+    ],
   },
   {
     bapeID: 3,
@@ -241,8 +241,8 @@ export const BAPE_PROFILES: BapeProfile[] = [
   },
   {
     bapeID: 20,
-    firstName: "Dylan",
-    lastName: "Newman",
+    firstName: "Kohl",
+    lastName: "",
     gold: 0,
     silver: 0,
     bronze: 0,

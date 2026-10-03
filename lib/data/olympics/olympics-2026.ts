@@ -26,7 +26,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   host: "Mundaring",
   captains: {
     "South Africa": "Noah Edge",
-    Mongolia: "Joseph Hart",
+    Mongolia: "Lucas Cinquina",
     "San Marino": "Jayden Chang",
     Scotland: "Elvin Lamprecht",
   },
