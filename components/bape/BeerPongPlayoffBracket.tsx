@@ -35,7 +35,7 @@ function PlayoffTeamRow({
         champion
           ? "border-[#9b7a35]/60 bg-[#9b7a35]/25 text-foreground"
           : winner
-          ? "border-foreground/20 bg-foreground text-background"
+          ? "border-foreground/30 bg-muted text-foreground"
           : "bg-background text-foreground",
       )}
     >
@@ -50,7 +50,7 @@ function PlayoffTeamRow({
               "w-full text-sm",
               champion
                 ? "text-foreground [&_span]:text-foreground"
-                : winner && "text-background [&_span]:text-background",
+                : winner && "text-foreground [&_span]:text-foreground",
             )}
           />
         </div>

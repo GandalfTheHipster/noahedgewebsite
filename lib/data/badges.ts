@@ -15,6 +15,12 @@ export type PersonBadgeAssignment = {
 
 export const BAPE_BADGES: BapeBadge[] = [
   {
+    id: "beerpong_league_champion_2026",
+    name: "2026 Beer Pong League Champion",
+    description: "Awarded for winning the 2026 Bape Beer Pong League.",
+    imageUrl: "https://i.postimg.cc/0jS7qSxq/taplin-bpc.png",
+  },
+  {
     id: "pistolshrimp",
     name: "Pistolshrimp",
     description:
@@ -83,6 +89,16 @@ export const BAPE_BADGES: BapeBadge[] = [
 // 15 Brady Swift
 
 export const PERSON_BADGE_ASSIGNMENTS: PersonBadgeAssignment[] = [
+  {
+    personName: "Jack Coleman",
+    badgeId: "dinoco",
+    dateReceived: "2026-03-19",
+  },
+  {
+    personName: "Kyle Taplin",
+    badgeId: "beerpong_league_champion_2026",
+    dateReceived: "2026-10-04",
+  },
   {
     personName: "Noah Edge",
     badgeId: "pistolshrimp",

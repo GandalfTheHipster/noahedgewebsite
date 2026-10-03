@@ -12,6 +12,7 @@ import {
 } from "@/lib/data/BapeProfiles"
 import { getBadgesForPerson } from "@/lib/data/badges"
 import { BEERPONG_TEAMS } from "@/lib/data/beerpong/beerpong"
+import { BEERPONG_2025_26_ARCHIVE, getBeerPongPlayoffFinish } from "@/lib/data/beerpong/playoffs"
 import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
 import { OLYMPICS_2023_DATA } from "@/lib/data/olympics/olympics-2023"
 import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
@@ -427,7 +428,7 @@ function BeerPongClubSection({
           <TeamProfileButton
             key={team.code}
             code={team.code}
-            meta={`${team.pts} pts · ${getBeerPongPlace(team.code)} place · ${team.w}-${team.l}`}
+            meta={`${BEERPONG_2025_26_ARCHIVE.season} · ${getBeerPongPlayoffFinish(team.code)}`}
           />
         ))}
       </div>
@@ -440,35 +441,6 @@ function getMedalSortValue(medal: string) {
   if (medal === "Silver") return 1
   if (medal === "Bronze") return 2
   return 3
-}
-
-function getBeerPongPlace(teamCode: string) {
-  const standings = [...BEERPONG_TEAMS].sort((a, b) => {
-    if (b.pts !== a.pts) return b.pts - a.pts
-    if (b.w !== a.w) return b.w - a.w
-    return b.netCups - a.netCups
-  })
-  const place =
-    standings.findIndex((standing) => standing.code === teamCode) + 1
-
-  if (place <= 0) return "N/A"
-
-  return getOrdinal(place)
-}
-
-function getOrdinal(value: number) {
-  if (value % 100 >= 11 && value % 100 <= 13) return `${value}th`
-
-  switch (value % 10) {
-    case 1:
-      return `${value}st`
-    case 2:
-      return `${value}nd`
-    case 3:
-      return `${value}rd`
-    default:
-      return `${value}th`
-  }
 }
 
 function formatBadgeDate(dateReceived: string) {

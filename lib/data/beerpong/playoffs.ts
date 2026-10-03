@@ -64,6 +64,24 @@ export const BEERPONG_2025_26_PLAYOFFS: BeerPongPlayoffMatch[] = [
   },
 ]
 
+export function getBeerPongPlayoffFinish(teamCode: string) {
+  const final = BEERPONG_2025_26_PLAYOFFS.find(
+    (match) => match.round === "grand-final",
+  )
+  if (final?.winner === teamCode) return "Champion"
+
+  const elimination = BEERPONG_2025_26_PLAYOFFS.find(
+    (match) =>
+      (match.teamA === teamCode || match.teamB === teamCode) &&
+      match.winner !== teamCode,
+  )
+
+  if (elimination?.round === "grand-final") return "Runner-up"
+  if (elimination?.round === "semi-final") return "Semi-final exit"
+  if (elimination?.round === "quarter-final") return "Quarter-final exit"
+  return "No playoff result"
+}
+
 const champion = BEERPONG_TEAMS.find((team) => team.code === "TAP")
 const minorPremiers = BEERPONG_TEAMS.find((team) => team.code === "DEM")
 

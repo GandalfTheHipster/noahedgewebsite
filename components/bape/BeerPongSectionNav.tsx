@@ -6,9 +6,9 @@ import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 const items = [
-  { href: "/bape/beerpong", label: "2025–26 Playoffs" },
-  { href: "/bape/beerpong/table", label: "2025–26 Table" },
-  { href: "/bape/beerpong/schedule", label: "2025–26 Results" },
+  { href: "/bape/beerpong/2026-2027", label: "Home" },
+  { href: "/bape/beerpong/champions", label: "Champions" },
+  { href: "/bape/beerpong/2025-2026", label: "2025–2026" },
 ]
 
 export function BeerPongSectionNav() {
@@ -26,7 +26,7 @@ export function BeerPongSectionNav() {
             scroll={false}
             className={cn(
               "rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground",
-              isActive && "bg-foreground text-background hover:bg-foreground hover:text-background",
+              isActive && "bg-muted text-foreground hover:bg-muted hover:text-foreground",
             )}
           >
             {item.label}
