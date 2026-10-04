@@ -1,14 +1,13 @@
 import Image from "next/image"
 import Link from "next/link"
+import { ArrowUpRight } from "lucide-react"
 
 import {
   BapeHero,
   BapePageShell,
-  BapePanel,
   BapeSectionHeader,
 } from "@/components/bape/BapePageChrome"
 import { OlympicsEditionCard } from "@/components/bape/OlympicsEditionCard"
-import { Button } from "@/components/ui/button"
 import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
 import { OLYMPICS_2023_DATA } from "@/lib/data/olympics/olympics-2023"
 import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
@@ -55,18 +54,12 @@ export default function OlympicsHubPage() {
   return (
     <BapePageShell>
       <div className="flex flex-col gap-8">
-        <BapeHero
-          title="Bape Olympics"
-          variant="wordmark"
-        />
+        <BapeHero title="Bape Olympics" variant="wordmark" />
 
-        <BapePanel className="p-5 sm:p-6">
+        <section className="py-2 sm:py-4">
           <div className="max-w-3xl">
-            <p className="text-xs font-semibold uppercase tracking-[0.24em] text-muted-foreground">
-              What it is
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              A yearly multi-event tournament for bragging rights.
+            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              What&apos;s the Bape Olympics?
             </h2>
             <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base">
               The Bape Olympics turns a weekend of games, sports, table events,
@@ -75,13 +68,10 @@ export default function OlympicsHubPage() {
               event podiums, and chase the title of Olympic champion.
             </p>
           </div>
-        </BapePanel>
+        </section>
 
         <section className="flex flex-col gap-5">
-          <BapeSectionHeader
-            title="Editions"
-            description="Browse each Olympics by year, including squads, medal tables, events, winners, and MVPs."
-          />
+          <BapeSectionHeader title="Editions" />
 
           <div className="grid gap-5 md:grid-cols-3">
             {editions.map((edition) => (
@@ -90,42 +80,25 @@ export default function OlympicsHubPage() {
           </div>
         </section>
 
-        <section className="grid gap-5">
-          <BapeSectionHeader
-            title="All-Time Stats"
-            description="A running leaderboard that combines every completed edition."
-          />
-
-          <BapePanel className="overflow-hidden">
-            <div className="grid gap-0 md:grid-cols-[1fr_1.1fr]">
-              <div className="relative min-h-72">
-                <Image
-                  src="https://i.postimg.cc/NFDtzH92/hardpic.png"
-                  alt="Bape Olympics"
-                  fill
-                  className="object-cover"
-                  sizes="(max-width: 768px) 100vw, 50vw"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              </div>
-              <div className="flex flex-col justify-center p-6 sm:p-8">
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  All-Time Stats Hub
-                </h2>
-                <p className="mt-3 text-sm leading-6 text-muted-foreground">
-                  A dedicated home for athlete medals, titles rankings, and
-                  future stats categories.
-                </p>
-                <div className="mt-6 flex flex-col gap-2 sm:flex-row">
-                  <Button asChild>
-                    <Link href="/bape/olympics/stats">
-                      View Stats Hub
-                    </Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </BapePanel>
+        <section>
+          <Link
+            href="/bape/olympics/stats"
+            aria-label="Open Bape Olympics Stats"
+            className="group relative isolate flex min-h-64 items-end overflow-hidden rounded-[1.5rem] border border-border bg-card p-6 shadow-sm transition duration-300 hover:-translate-y-1 hover:border-foreground/20 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:min-h-72 sm:p-8"
+          >
+            <Image
+              src="https://i.postimg.cc/NFDtzH92/hardpic.png"
+              alt=""
+              fill
+              className="-z-10 object-cover opacity-50 blur-[1px] transition duration-500 group-hover:scale-105 group-hover:opacity-60"
+              sizes="(max-width: 768px) 100vw, 1100px"
+            />
+            <div className="absolute inset-0 -z-10 bg-gradient-to-r from-black/85 via-black/55 to-black/20" />
+            <span className="flex w-full items-center justify-between gap-4 text-2xl font-semibold tracking-tight text-white sm:text-3xl">
+              Bape Olympics Stats
+              <ArrowUpRight aria-hidden="true" className="size-6 shrink-0 transition-transform group-hover:-translate-y-1 group-hover:translate-x-1" />
+            </span>
+          </Link>
         </section>
       </div>
     </BapePageShell>

@@ -1,10 +1,19 @@
 import { updateSession } from "@/lib/supabase/proxy";
-import { type NextRequest } from "next/server";
+import { supabaseEnabled } from "@/lib/supabase/env";
+import { NextResponse, type NextRequest } from "next/server";
 
 export async function proxy(request: NextRequest) {
-  return await updateSession(request);
+  if (!supabaseEnabled) {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  if (request.nextUrl.pathname.startsWith("/protected")) {
+    return await updateSession(request);
+  }
+
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/protected/:path*"],
+  matcher: ["/auth/:path*", "/protected/:path*"],
 };

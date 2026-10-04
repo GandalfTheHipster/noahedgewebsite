@@ -1,3 +1,6 @@
+// Temporarily disabled while the site runs without authentication.
+export const supabaseEnabled = false;
+
 const supabaseUrl =
   process.env.NEXT_PUBLIC_NOAHEDGEDOTCOM_SUPABASE_URL ??
   process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -7,12 +10,16 @@ const supabasePublishableKey =
   process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ??
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-export const hasSupabaseEnv = Boolean(supabaseUrl && supabasePublishableKey);
+export const hasSupabaseEnv = supabaseEnabled && Boolean(supabaseUrl && supabasePublishableKey);
 
 export function getSupabaseEnv(): {
   supabaseUrl: string;
   supabasePublishableKey: string;
 } {
+  if (!supabaseEnabled) {
+    throw new Error("Supabase is temporarily disabled.");
+  }
+
   const url = supabaseUrl;
   const publishableKey = supabasePublishableKey;
   const missing: string[] = [];

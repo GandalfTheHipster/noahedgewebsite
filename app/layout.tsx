@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { ThemeProvider } from "next-themes";
+import Script from "next/script";
+import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
 const defaultUrl = process.env.VERCEL_URL
@@ -20,14 +21,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          {children}
-        </ThemeProvider>
+        <ThemeProvider>{children}</ThemeProvider>
+        <Script id="theme-init" strategy="beforeInteractive">
+          {`(function(){try{var theme=localStorage.getItem("theme")||"system";var dark=theme==="dark"||(theme==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var resolved=dark?"dark":"light";document.documentElement.classList.remove("light","dark");document.documentElement.classList.add(resolved);document.documentElement.style.colorScheme=resolved}catch(e){}})()`}
+        </Script>
       </body>
     </html>
   );

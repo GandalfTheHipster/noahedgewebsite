@@ -2,6 +2,7 @@ export type OlympicCountry = {
   name: string
   flag: string
   aliases?: string[]
+  rosterFlag?: string
 }
 
 export const OLYMPIC_COUNTRIES: OlympicCountry[] = [
@@ -43,6 +44,11 @@ export const OLYMPIC_COUNTRIES: OlympicCountry[] = [
   {
     name: "San Marino",
     flag: "🇸🇲",
+  },
+  {
+    name: "TBD",
+    flag: "🏴‍☠️",
+    rosterFlag: "🇸🇲",
   },
   {
     name: "Scotland",

@@ -9,10 +9,7 @@ export default function OlympicsTitlesRankingPage() {
   return (
     <OlympicsStatsFrame>
       <section className="grid gap-6">
-        <BapeSectionHeader
-          title="Titles Ranking"
-          description="Ranked by total Bape Olympics titles won as part of a champion nation."
-        />
+        <BapeSectionHeader title="Titles Ranking" />
 
         <AllTimeChampionsList champions={champions} />
       </section>

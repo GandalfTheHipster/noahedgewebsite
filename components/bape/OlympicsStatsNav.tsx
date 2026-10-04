@@ -8,7 +8,6 @@ import { cn } from "@/lib/utils"
 const items = [
   { href: "/bape/olympics/stats", label: "Athlete Medal Table" },
   { href: "/bape/olympics/stats/titles", label: "Titles Ranking" },
-  { href: "/bape/olympics/stats/records", label: "Future Stats" },
 ]
 
 export function OlympicsStatsNav() {

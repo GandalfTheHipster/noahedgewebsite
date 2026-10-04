@@ -113,13 +113,15 @@ export function getAllTimeOlympicAthletes(): AllTimeOlympicAthlete[] {
     }
   }
 
-  return [...athletes.values()].sort((a, b) => {
-    if (b.points !== a.points) return b.points - a.points
-    if (b.gold !== a.gold) return b.gold - a.gold
-    if (b.silver !== a.silver) return b.silver - a.silver
-    if (b.bronze !== a.bronze) return b.bronze - a.bronze
-    return a.name.localeCompare(b.name)
-  })
+  return [...athletes.values()]
+    .filter((athlete) => athlete.medals > 0)
+    .sort((a, b) => {
+      if (b.points !== a.points) return b.points - a.points
+      if (b.gold !== a.gold) return b.gold - a.gold
+      if (b.silver !== a.silver) return b.silver - a.silver
+      if (b.bronze !== a.bronze) return b.bronze - a.bronze
+      return a.name.localeCompare(b.name)
+    })
 }
 
 export function getAllTimeOlympicChampions(): AllTimeOlympicChampion[] {

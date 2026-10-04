@@ -18,6 +18,9 @@ export function OlympicsSectionNav({
   const baseHref = `/bape/olympics/${year}`
   const items = [
     { href: baseHref, label: "Overview" },
+    ...(isUpcoming && year === "2026"
+      ? [{ href: `${baseHref}/information`, label: "Information" }]
+      : []),
     ...(!isUpcoming
       ? [{ href: `${baseHref}/medaltable`, label: "Medal Table" }]
       : []),

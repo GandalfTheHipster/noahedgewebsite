@@ -11,10 +11,7 @@ export default function OlympicsStatsPage() {
   return (
     <OlympicsStatsFrame>
       <section className="grid gap-6">
-        <BapeSectionHeader
-          title="Athlete Medal Table"
-          description="Generated from every completed event podium across the Olympics archive."
-        />
+        <BapeSectionHeader title="Athlete Medal Table" />
 
         <div className="overflow-x-auto">
           <Suspense fallback={null}>

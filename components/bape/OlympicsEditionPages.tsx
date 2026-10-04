@@ -172,7 +172,7 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
   )
 }
 
-function OlympicsPageFrame({
+export function OlympicsPageFrame({
   data,
   children,
 }: OlympicsEditionPageProps & {
@@ -196,7 +196,7 @@ function OlympicsPageFrame({
   )
 }
 
-function getOlympicsEditionLogo(year: string) {
+export function getOlympicsEditionLogo(year: string) {
   if (year === "2026") {
     return {
       light: "https://i.postimg.cc/j5KKMgT0/lavendar.png",
@@ -788,7 +788,7 @@ function getTeamRosters(data: OlympicPageData): TeamRoster[] {
       const captain = data.captains?.[entry.name]
       const members = country
         ? BAPE_PROFILES.filter((profile) =>
-            profile.country.includes(country.flag),
+            profile.country.includes(country.rosterFlag ?? country.flag),
           )
             .map((profile) => `${profile.firstName} ${profile.lastName}`)
             .sort((a, b) => {

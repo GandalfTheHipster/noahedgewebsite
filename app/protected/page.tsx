@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 
+import { supabaseEnabled } from "@/lib/supabase/env";
 import { createClient } from "@/lib/supabase/server";
 import { InfoIcon } from "lucide-react";
 import { FetchDataSteps } from "@/components/tutorial/fetch-data-steps";
@@ -17,6 +18,10 @@ async function UserDetails() {
 }
 
 export default function ProtectedPage() {
+  if (!supabaseEnabled) {
+    redirect("/");
+  }
+
   return (
     <div className="flex-1 w-full flex flex-col gap-12">
       <div className="w-full">

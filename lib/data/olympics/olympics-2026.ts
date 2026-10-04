@@ -27,7 +27,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   captains: {
     "South Africa": "Noah Edge",
     Mongolia: "Lucas Cinquina",
-    "San Marino": "Jayden Chang",
+    TBD: "Jayden Chang",
     Scotland: "Elvin Lamprecht",
   },
 
@@ -54,7 +54,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       pts: 0,
     },
     {
-      name: "San Marino",
+      name: "TBD",
       gold: 0,
       silver: 0,
       bronze: 0,

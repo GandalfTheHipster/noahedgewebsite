@@ -1,15 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import { Button } from "@/components/ui/button"
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
+import { ArrowUpRight } from "lucide-react"
 import { ThemeSwitcher } from "@/components/theme-switcher"
 import { SocialLinks } from "@/components/landing/SocialLinks"
 import { SiteNav } from "@/components/site-nav"
@@ -19,7 +11,7 @@ const projects = [
     imageSrc: "https://i.postimg.cc/wB8jxcqN/IMG-0666.jpg",
     title: "Bape Olympics",
     description:
-      "Annual multi-event competition archive with squads, medals, events, winners, and all-time rankings.",
+      "Annual multi-event beer-based competition archive with squads, medals, events, winners, and all-time rankings.",
     buttonText: "View Bape Olympics",
     href: "/bape/olympics",
   },
@@ -27,15 +19,9 @@ const projects = [
     imageSrc: "https://i.postimg.cc/ZR6kb86T/beerponglogo.png",
     title: "Bape Beer Pong League",
     description:
-      "League hub for standings, results, team profiles, and the playoff bracket.",
-    buttonText: "View League",
+      "The Bape Beer Pong League is the pinnacle of competitive Beer Pong in Australia. View stats, results and standings here.",
+    buttonText: "View Beer Pong League",
     href: "/bape/beerpong",
-  },
-  {
-    title: "LuckyAS",
-    description:
-      "A class project allocation app built for a software engineering assignment.",
-    buttonText: "Coming Soon",
   },
 ]
 
@@ -45,14 +31,14 @@ export default function Home() {
       <div className="flex min-h-screen w-full flex-col items-center">
         <SiteNav />
 
-        <div className="flex w-full max-w-6xl flex-1 flex-col items-center px-4 py-6 sm:px-5 sm:py-12">
-          <section className="grid w-full items-center gap-7 py-6 md:grid-cols-[1.1fr_0.9fr] md:gap-10 md:py-14">
+        <div className="flex w-full max-w-6xl flex-1 flex-col items-center px-5 sm:px-8">
+          <section className="grid w-full items-center gap-8 py-12 sm:py-16 md:grid-cols-[1fr_320px] md:gap-16 md:py-20 lg:gap-24">
             <div className="flex flex-col items-center gap-6 text-center md:items-start md:text-left">
-              <div className="space-y-4">
-                <h1 className="max-w-3xl text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+              <div className="space-y-5">
+                <h1 className="text-5xl font-semibold leading-[1.05] tracking-[-0.045em] sm:text-6xl lg:text-7xl">
                   Noah Edge
                 </h1>
-                <p className="mx-auto max-w-xl text-base leading-7 text-muted-foreground sm:text-lg md:mx-0 md:max-w-2xl md:text-xl md:leading-8">
+                <p className="mx-auto max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8 md:mx-0">
                   I&apos;m a West Australian software engineering student at
                   Curtin University with a passion for history, politics, and
                   video games.
@@ -61,15 +47,15 @@ export default function Home() {
               <SocialLinks />
             </div>
 
-            <div className="relative order-first mx-auto w-full max-w-[14rem] md:order-none md:max-w-md">
-              <div className="absolute -inset-3 rounded-[2rem] bg-muted/60 md:-inset-4" />
-              <div className="relative overflow-hidden rounded-[1.5rem] border bg-card shadow-xl md:rounded-[1.75rem]">
+            <div className="relative order-first mx-auto w-full max-w-[11rem] md:order-none md:max-w-none">
+              <div className="relative overflow-hidden rounded-2xl border border-border/60 bg-muted">
                 <Image
                   src="https://i.postimg.cc/ZqjfKrd3/IMG-8793.jpg"
                   alt="Noah Edge"
                   width={900}
                   height={1200}
                   priority
+                  sizes="176px"
                   className="aspect-square h-full w-full object-cover object-center md:hidden"
                 />
                 <Image
@@ -78,75 +64,58 @@ export default function Home() {
                   width={900}
                   height={1200}
                   priority
+                  sizes="320px"
                   className="hidden h-full w-full object-cover md:block md:aspect-[4/5] md:object-[center_30%]"
                 />
               </div>
             </div>
           </section>
 
-          <section id="projects" className="w-full py-8 sm:py-12 md:py-16">
-            <div className="mb-5 max-w-2xl text-center md:mb-8 md:text-left">
-              <p className="text-sm font-medium uppercase tracking-[0.25em] text-muted-foreground">
-                Projects
-              </p>
-              <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-                Ongoing projects
-              </h2>
-            </div>
+          <section
+            id="projects"
+            aria-labelledby="projects-heading"
+            className="w-full border-t border-border/60 py-10 sm:py-12 md:pb-20"
+          >
+            <h2
+              id="projects-heading"
+              className="mb-6 text-2xl font-semibold tracking-tight sm:mb-8 sm:text-3xl"
+            >
+              Projects
+            </h2>
 
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               {projects.map((project) => (
-                <Card
-                  key={project.title}
-                  className="group flex h-full flex-col overflow-hidden rounded-[1.25rem] pt-0 transition duration-300 hover:-translate-y-1 hover:shadow-xl"
-                >
-                  <div className="relative aspect-[2.2/1] w-full overflow-hidden md:aspect-video">
-                    {project.imageSrc ? (
-                      <>
-                        <Image
-                          src={project.imageSrc}
-                          alt=""
-                          width={700}
-                          height={400}
-                          className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/10 to-transparent" />
-                      </>
-                    ) : (
-                      <div className="flex h-full w-full items-center justify-center bg-muted/70">
-                        <div className="text-center">
-                          <p className="text-sm font-medium uppercase tracking-[0.3em] text-muted-foreground">
-                            Coming Soon
-                          </p>
-                          <p className="mt-2 text-3xl font-semibold">
-                            LuckyAS
-                          </p>
-                        </div>
+                <article key={project.title} className="h-full">
+                  <Link
+                    href={project.href}
+                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card transition-colors hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+                  >
+                    <div className="aspect-video overflow-hidden border-b border-border/60 bg-black">
+                      <Image
+                        src={project.imageSrc}
+                        alt=""
+                        width={700}
+                        height={400}
+                        sizes="(min-width: 1152px) 532px, (min-width: 768px) 46vw, 100vw"
+                        className={`h-full w-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03] ${project.href === "/bape/beerpong" ? "object-contain p-5" : "object-cover"}`}
+                      />
+                    </div>
+                    <div className="flex flex-1 flex-col p-5 sm:p-6">
+                      <h3 className="text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
+                        {project.title}
+                      </h3>
+                      <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                        {project.description}
+                      </p>
+                      <div className="mt-auto pt-6">
+                        <span className="flex items-center justify-between border-t border-border/60 pt-4 text-sm font-medium">
+                          {project.buttonText}
+                          <ArrowUpRight aria-hidden="true" className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
+                        </span>
                       </div>
-                    )}
-                  </div>
-                  <CardHeader className="gap-2 px-4 pb-0 sm:px-6">
-                    <CardTitle className="text-xl leading-tight">
-                      {project.title}
-                    </CardTitle>
-                  </CardHeader>
-                  <CardContent className="px-4 sm:px-6">
-                    <CardDescription className="leading-6">
-                      {project.description}
-                    </CardDescription>
-                  </CardContent>
-                  <CardFooter className="mt-auto px-4 sm:px-6">
-                    {project.href ? (
-                      <Button asChild className="w-full">
-                        <Link href={project.href}>{project.buttonText}</Link>
-                      </Button>
-                    ) : (
-                      <Button className="w-full" disabled>
-                        {project.buttonText}
-                      </Button>
-                    )}
-                  </CardFooter>
-                </Card>
+                    </div>
+                  </Link>
+                </article>
               ))}
             </div>
           </section>
