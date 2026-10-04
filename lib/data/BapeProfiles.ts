@@ -247,7 +247,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "",
+    avatarUrl: "https://i.postimg.cc/d3pprSsD/hs-james.png",
     country: ["🇸🇲"],
   },
   {
