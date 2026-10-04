@@ -241,13 +241,13 @@ export const BAPE_PROFILES: BapeProfile[] = [
   },
   {
     bapeID: 20,
-    firstName: "Kohl",
-    lastName: "",
+    firstName: "James",
+    lastName: "Crossley",
     gold: 0,
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/VNpLbyL0/hs-kohl.png",
+    avatarUrl: "",
     country: ["🇸🇲"],
   },
   {
