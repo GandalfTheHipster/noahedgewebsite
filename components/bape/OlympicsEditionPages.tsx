@@ -1,7 +1,7 @@
 import type { ReactNode } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRight, CalendarDays, MapPin, Medal, Trophy, Users } from "lucide-react"
+import { ArrowUpRight, CalendarDays, CircleDollarSign, MapPin, Medal, Trophy, Users } from "lucide-react"
 
 import {
   BapePageShell,
@@ -58,6 +58,8 @@ export function OlympicsOverviewPage({ data }: OlympicsEditionPageProps) {
           hasResults={hasResults}
         />
 
+        {data.information?.length ? <OlympicsKeyDetails data={data} /> : null}
+
         <TeamRosterPanel
           rosters={teamRosters}
           mvp={data.mvp}
@@ -68,6 +70,33 @@ export function OlympicsOverviewPage({ data }: OlympicsEditionPageProps) {
 
       </section>
     </OlympicsPageFrame>
+  )
+}
+
+function OlympicsKeyDetails({ data }: OlympicsEditionPageProps) {
+  return (
+    <BapePanel className="overflow-hidden shadow-none">
+      <div className="grid divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+        {data.information?.map((item) => {
+          const Icon = item.icon === "fee" ? CircleDollarSign : CalendarDays
+
+          return (
+            <div key={item.label} className="flex items-center gap-3 px-4 py-4 sm:block sm:px-6">
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-muted text-muted-foreground">
+                <Icon className="size-4" aria-hidden="true" />
+              </span>
+              <div className="sm:mt-3">
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground">
+                  {item.label}
+                </p>
+                <p className="mt-1 text-lg font-semibold tracking-tight">{item.detail}</p>
+                {item.note ? <p className="mt-1 text-xs text-muted-foreground">{item.note}</p> : null}
+              </div>
+            </div>
+          )
+        })}
+      </div>
+    </BapePanel>
   )
 }
 

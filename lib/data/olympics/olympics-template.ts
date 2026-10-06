@@ -46,6 +46,12 @@ export type OlympicHighlight = {
 }
 
 export type OlympicPageData = {
+  information?: Array<{
+    label: string
+    detail: string
+    note?: string
+    icon: "calendar" | "fee"
+  }>
   calendar?: Array<{
     date: string
     label: string

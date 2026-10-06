@@ -24,6 +24,24 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   description: "",
 
   host: "Mundaring",
+  information: [
+    {
+      label: "Olympics fee",
+      detail: "$300",
+      note: "Due by October 21, 2026",
+      icon: "fee",
+    },
+    {
+      label: "Information night",
+      detail: "October 17, 2026",
+      icon: "calendar",
+    },
+    {
+      label: "Launch event",
+      detail: "November 14, 2026",
+      icon: "calendar",
+    },
+  ],
   calendar: [
     {
       date: "2026-11-20",
