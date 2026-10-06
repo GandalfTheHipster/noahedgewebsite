@@ -9,7 +9,7 @@ export default function BeerPong2026SeasonPage() {
   return (
     <BapePageShell>
       <div className="flex flex-col gap-8">
-        <BeerPongPageHeader title="Beer Pong · 2026–2027" />
+        <BeerPongPageHeader title="Bape Beer Pong League" />
         <BeerPongSectionNav />
         <BapePanel className="overflow-hidden">
           <div>
