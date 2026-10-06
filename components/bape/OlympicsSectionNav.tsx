@@ -21,15 +21,17 @@ export function OlympicsSectionNav({
     ...(isUpcoming && year === "2026"
       ? [{ href: `${baseHref}/information`, label: "Information" }]
       : []),
+    ...(year === "2026" ? [{ href: `${baseHref}/teams`, label: "Teams" }] : []),
     ...(!isUpcoming
       ? [{ href: `${baseHref}/medaltable`, label: "Medal Table" }]
       : []),
+    ...(year === "2026" ? [{ href: `${baseHref}/calendar`, label: "Calendar" }] : []),
     { href: `${baseHref}/events`, label: "Events" },
     ...(!isUpcoming ? [{ href: `${baseHref}/images`, label: "Images" }] : []),
   ]
 
   return (
-    <nav className="sticky top-2 z-20 mx-auto flex w-fit max-w-full flex-wrap justify-center gap-2 rounded-[1.5rem] border bg-card p-2 sm:mx-0 sm:w-full sm:justify-start">
+    <nav className="sticky top-2 z-20 mx-auto flex w-full max-w-full flex-wrap justify-evenly gap-2 rounded-[1.5rem] border bg-card p-2 sm:mx-0 sm:justify-start">
       {items.map((item) => {
         const isActive = pathname === item.href
 
