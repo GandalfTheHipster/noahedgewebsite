@@ -48,3 +48,4 @@ package-lock.json
 # Supabase local runtime artifacts (may contain generated secrets)
 /supabase/.branches/
 /supabase/.temp/
+.DS_Store

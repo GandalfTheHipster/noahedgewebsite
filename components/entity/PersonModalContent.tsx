@@ -6,9 +6,9 @@ import type { ReactNode } from "react"
 import { CountryProfileButton } from "@/components/entity/CountryProfileButton"
 import { EntityTrigger } from "@/components/entity/EntityTrigger"
 import { TeamProfileButton } from "@/components/entity/TeamProfileButton"
+import { PersonPortraitHistory } from "@/components/entity/PersonPortraitHistory"
 import {
   BAPE_PROFILES,
-  getBapeProfileAvatar,
 } from "@/lib/data/BapeProfiles"
 import { getBadgesForPerson } from "@/lib/data/badges"
 import { BEERPONG_TEAMS } from "@/lib/data/beerpong/beerpong"
@@ -147,7 +147,7 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
   const badges = getBadgesForPerson(profile.bapeID)
   const upcomingTeam = OLYMPICS_2026_DATA.medalTable.find((team) => {
     const country = getOlympicCountry(team.name)
-    return country ? profile.country.includes(country.flag) : false
+    return country ? profile.country.includes(country.rosterFlag ?? country.flag) : false
   })
   const upcomingCountry = upcomingTeam
     ? getOlympicCountry(upcomingTeam.name)
@@ -208,13 +208,7 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-3 pr-12">
-        <Image
-          src={getBapeProfileAvatar(profile)}
-          alt={fullName}
-          width={88}
-          height={88}
-          className="h-16 w-16 shrink-0 rounded-xl border object-cover"
-        />
+        <PersonPortraitHistory profile={profile} />
 
         <div className="min-w-0">
           <h2 className="truncate text-xl font-bold tracking-tight sm:text-2xl">

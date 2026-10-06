@@ -1,3 +1,16 @@
+export type BapePortrait = {
+  imageUrl: string
+  /** Year (YYYY) or full date (YYYY-MM-DD) this portrait became active. */
+  addedOn?: string
+  /** Omit when the image's origin has not been confirmed. */
+  isAiGenerated?: boolean
+}
+
+export type HistoricalBapePortrait = BapePortrait & {
+  /** Date replaced, in YYYY-MM-DD format; null if the date is unknown. */
+  swappedOutOn: string | null
+}
+
 export type BapeProfile = {
   bapeID: number
   firstName: string
@@ -7,6 +20,10 @@ export type BapeProfile = {
   bronze: number
   pointsAllTime: number
   avatarUrl: string
+  avatarAddedOn?: string
+  avatarIsAiGenerated?: boolean
+  /** Previous portraits, newest first. Keep the current portrait in avatarUrl. */
+  portraitHistory?: HistoricalBapePortrait[]
   country: string[] // flags as array
 }
 
@@ -26,7 +43,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 5,
     bronze: 4,
     pointsAllTime: 41,
-    avatarUrl: "https://i.postimg.cc/RFT8LHmj/hs-aleksa.png",
+    avatarUrl: "/images/players/RFT8LHmj-hs-aleksa.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇷🇸", "🇰🇿", "🇲🇳"],
   },
   {
@@ -37,7 +56,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 5,
     bronze: 7,
     pointsAllTime: 38,
-    avatarUrl: "https://i.postimg.cc/8C6Mj2Rn/hs-jack.png",
+    avatarUrl: "/images/players/8C6Mj2Rn-hs-jack.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: [
       "🇨🇮",
       "🇳🇴",
@@ -52,7 +73,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 7,
     bronze: 7,
     pointsAllTime: 36,
-    avatarUrl: "https://i.postimg.cc/G2RVDjWF/hs-andrew.png",
+    avatarUrl: "/images/players/G2RVDjWF-hs-andrew.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇨🇮", "🇳🇴"],
   },
   {
@@ -63,7 +86,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 6,
     bronze: 6,
     pointsAllTime: 33,
-    avatarUrl: "https://i.postimg.cc/hPVGQK6m/hs-daniel.png",
+    avatarUrl: "/images/players/hPVGQK6m-hs-daniel.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇩🇪", "🇰🇷"],
   },
   {
@@ -74,7 +99,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 5,
     bronze: 4,
     pointsAllTime: 32,
-    avatarUrl: "https://i.postimg.cc/v8z9gLnM/hs-elvin.png",
+    avatarUrl: "/images/players/v8z9gLnM-hs-elvin.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: [
       "🇩🇪",
       "🇰🇿",
@@ -89,7 +116,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 3,
     bronze: 4,
     pointsAllTime: 31,
-    avatarUrl: "https://i.postimg.cc/5N1PK9pf/hs-kyle.png",
+    avatarUrl: "/images/players/5N1PK9pf-hs-kyle.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: [
       "🇨🇮",
       "🇰🇿",
@@ -104,7 +133,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 7,
     bronze: 7,
     pointsAllTime: 30,
-    avatarUrl: "https://i.postimg.cc/MGVgXLFZ/hs-dempsey.png",
+    avatarUrl: "/images/players/MGVgXLFZ-hs-dempsey.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇷🇸", "🇳🇴", "🇲🇳"],
   },
   {
@@ -115,7 +146,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 5,
     bronze: 2,
     pointsAllTime: 30,
-    avatarUrl: "https://i.postimg.cc/8PmyC6pr/hs-brady.png",
+    avatarUrl: "/images/players/8PmyC6pr-hs-brady.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇰🇿"],
   },
   {
@@ -126,7 +159,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 5,
     bronze: 4,
     pointsAllTime: 29,
-    avatarUrl: "https://i.postimg.cc/yxYGQ8YW/hs-joe.png",
+    avatarUrl: "/images/players/yxYGQ8YW-hs-joe.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇷🇸", "🇰🇷", "🇲🇳"],
   },
   {
@@ -137,7 +172,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 2,
     bronze: 6,
     pointsAllTime: 25,
-    avatarUrl: "https://i.postimg.cc/PqsNFPD2/hs-lucas.png",
+    avatarUrl: "/images/players/PqsNFPD2-hs-lucas.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇨🇮", "🇰🇷", "🇲🇳"],
   },
   {
@@ -148,7 +185,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 3,
     bronze: 6,
     pointsAllTime: 24,
-    avatarUrl: "https://i.postimg.cc/28LkRCrJ/hs-cian.png",
+    avatarUrl: "/images/players/28LkRCrJ-hs-cian.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇰🇷"],
   },
   {
@@ -159,7 +198,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 4,
     bronze: 4,
     pointsAllTime: 15,
-    avatarUrl: "https://i.postimg.cc/hPNGff2c/hs-sam.png",
+    avatarUrl: "/images/players/hPNGff2c-hs-sam.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇳🇴"],
   },
   {
@@ -170,7 +211,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 2,
     bronze: 1,
     pointsAllTime: 14,
-    avatarUrl: "https://i.postimg.cc/j5f5BRd4/hs-priyen.png",
+    avatarUrl: "/images/players/j5f5BRd4-hs-priyen.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇷🇸"],
   },
   {
@@ -181,7 +224,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 4,
     bronze: 2,
     pointsAllTime: 10,
-    avatarUrl: "https://i.postimg.cc/wMfGSY72/hs-noah.png",
+    avatarUrl: "/images/players/wMfGSY72-hs-noah.webp",
+    avatarAddedOn: "2019",
+    avatarIsAiGenerated: false,
     country: ["🇩🇪", "🇿🇦"],
   },
   {
@@ -192,7 +237,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 3,
     bronze: 2,
     pointsAllTime: 8,
-    avatarUrl: "https://i.postimg.cc/5yxQP5gW/hs-todd.png",
+    avatarUrl: "/images/players/5yxQP5gW-hs-todd.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🇩🇪"],
   },
   {
@@ -203,7 +250,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/CMPRWygF/hs-cruz-clean.png",
+    avatarUrl: "/images/players/CMPRWygF-hs-cruz-clean.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇿🇦"],
   },
   {
@@ -214,7 +263,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/QCH1RhYx/hs-jayden-clean.png",
+    avatarUrl: "/images/players/QCH1RhYx-hs-jayden-clean.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇸🇲"],
   },
   {
@@ -225,7 +276,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/tT75WKQd/hs-eric-clean.png",
+    avatarUrl: "/images/players/tT75WKQd-hs-eric-clean.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇿🇦"],
   },
   {
@@ -236,7 +289,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/x8RqcJ1T/hs-luke.png",
+    avatarUrl: "/images/players/x8RqcJ1T-hs-luke.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇿🇦"],
   },
   {
@@ -247,7 +302,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/d3pprSsD/hs-james.png",
+    avatarUrl: "/images/players/d3pprSsD-hs-james.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇸🇲"],
   },
   {
@@ -258,7 +315,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/8CKTQ2rs/hs-jayden.png",
+    avatarUrl: "/images/players/8CKTQ2rs-hs-jayden.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇸🇲"],
   },
   {
@@ -269,7 +328,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/vmBcVLrS/hs-raven.png",
+    avatarUrl: "/images/players/vmBcVLrS-hs-raven.webp",
+    avatarAddedOn: "2026",
+    avatarIsAiGenerated: true,
     country: ["🇸🇲"],
   },
   {
@@ -280,7 +341,9 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 0,
     bronze: 0,
     pointsAllTime: 0,
-    avatarUrl: "https://i.postimg.cc/PJL8DfrB/hs-stevena.png",
+    avatarUrl: "/images/players/PJL8DfrB-hs-stevena.webp",
+    avatarAddedOn: "2023",
+    avatarIsAiGenerated: false,
     country: ["🏴󠁧󠁢󠁳󠁣󠁴󠁿"],
   },
 ]

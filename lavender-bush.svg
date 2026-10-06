@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="800" height="800" viewBox="0 0 800 800" role="img" aria-labelledby="title desc">
+  <title id="title">Flowing lavender</title>
+  <desc id="desc">An abstract white lavender silhouette with soft sweeping curves and tapered negative spaces on a lavender background.</desc>
+  <rect width="800" height="800" fill="#B49ADB"/>
+  <path fill="#FFFFFF" d="
+    M326 690
+    C390 605 431 520 435 446
+    C437 406 424 373 418 344
+    C461 382 466 430 447 479
+    C499 414 502 353 477 302
+    C459 266 449 239 460 208
+    C426 234 425 273 439 310
+    C399 267 398 219 421 179
+    C380 202 369 250 391 299
+    C345 267 325 221 335 179
+    C302 220 312 276 349 319
+    C370 343 390 363 402 388
+    C356 354 312 348 288 309
+    C279 347 304 380 344 404
+    C366 417 387 429 400 449
+    C354 428 310 435 272 405
+    C279 448 309 469 351 480
+    C368 485 383 492 391 506
+    C350 497 318 511 283 494
+    C304 532 339 542 375 537
+    C369 595 343 650 326 690
+    Z"/>
+</svg>

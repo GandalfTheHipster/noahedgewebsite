@@ -9,6 +9,7 @@ import {
   BapeSectionHeader,
 } from "@/components/bape/BapePageChrome"
 import { OlympicsEditionHeader } from "@/components/bape/OlympicsEditionHeader"
+import { UpcomingOlympicsEvent } from "@/components/bape/UpcomingOlympicsEvent"
 import { OlympicsEventCard } from "@/components/bape/OlympicsEventCard"
 import { OlympicsImageGallery } from "@/components/bape/OlympicsImageGallery"
 import { OlympicsSectionNav } from "@/components/bape/OlympicsSectionNav"
@@ -269,13 +270,16 @@ function UpcomingEventCategoryList({ events }: { events: OlympicEvent[] }) {
           </h2>
           <div className="grid gap-2 sm:grid-cols-2 xl:grid-cols-3">
             {category.events.map((event) => (
-              <div
+              <UpcomingOlympicsEvent
                 key={event.id}
-                className="flex min-h-16 items-center gap-3 rounded-2xl border bg-card px-4 py-3"
-              >
-                <span className="shrink-0 text-2xl leading-none">{event.emoji}</span>
-                <span className="text-sm font-semibold">{event.name}</span>
-              </div>
+                event={event}
+                hasMedalGames={
+                  category.name === "Team Sports" ||
+                  event.id === "beer-pong" ||
+                  event.id === "two-square" ||
+                  event.id === "wii-baseball"
+                }
+              />
             ))}
           </div>
         </section>

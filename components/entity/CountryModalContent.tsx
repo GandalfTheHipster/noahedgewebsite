@@ -47,7 +47,7 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
   }
 
   const members = BAPE_PROFILES.filter((profile) =>
-    profile.country.includes(country.flag),
+    profile.country.includes(country.rosterFlag ?? country.flag),
   )
 
   const medalTableEntries = olympicsArchive

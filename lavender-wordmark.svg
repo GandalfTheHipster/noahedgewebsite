@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560" role="img" aria-labelledby="title desc">
+<title id="title">Lavender</title>
+<desc id="desc">A white lavender-shaped L paired with sculpted, flowing lowercase letters on a lavender background. All lettering is drawn as vector outlines.</desc>
+<rect width="1600" height="560" fill="#B49ADB"/>
+<g fill="#FFFFFF">
+<path id="lavender-L" transform="translate(-28 -7) scale(.57)" d="     M326 690     C390 605 431 520 435 446     C437 406 424 373 418 344     C461 382 466 430 447 479     C499 414 502 353 477 302     C459 266 449 239 460 208     C426 234 425 273 439 310     C399 267 398 219 421 179     C380 202 369 250 391 299     C345 267 325 221 335 179     C302 220 312 276 349 319     C370 343 390 363 402 388     C356 354 312 348 288 309     C279 347 304 380 344 404     C366 417 387 429 400 449     C354 428 310 435 272 405     C279 448 309 469 351 480     C368 485 383 492 391 506     C350 497 318 511 283 494     C304 532 339 542 375 537     C369 595 343 650 326 690     Z"/>
+<g transform="translate(275 202)">
+<path aria-label="a" transform="translate(0 0)" fill-rule="evenodd" d="M111 23C78-10 19 15 7 77C-8 144 15 186 57 184C84 183 103 165 115 143C109 173 129 191 162 171C143 174 141 160 145 136L168 12C148 23 130 27 111 23ZM104 41C127 62 104 145 75 163C50 179 41 152 45 117C50 75 78 18 104 41Z"/>
+<path aria-label="v" transform="translate(173 0)" fill-rule="evenodd" d="M0 20C35-1 65 11 60 44L44 136C40 157 44 169 52 170C95 134 119 73 100 18C151-1 151 51 126 94C103 134 73 162 39 186C8 176 1 153 8 119L23 48C27 26 18 20 0 20Z"/>
+<path aria-label="e" transform="translate(321 0)" fill-rule="evenodd" d="M42 112C35 164 73 182 122 142C103 180 57 197 27 173C-3 150-4 111 10 74C28 28 72 1 109 15C158 33 139 93 42 112ZM44 97C90 89 116 51 97 33C79 16 53 51 44 97Z"/>
+<path aria-label="n" transform="translate(468 0)" fill-rule="evenodd" d="M0 25C25 10 52 6 61 22C66 31 62 43 60 53C84 22 116 4 141 16C169 30 158 63 150 100L140 146C135 169 143 174 160 167C137 192 107 187 103 165C100 146 116 100 120 70C128 23 87 42 63 81C48 105 39 150 33 180L-1 180L25 52C29 33 20 25 0 25Z"/>
+<path aria-label="d" transform="translate(642 0)" fill-rule="evenodd" d="M111 23C78-10 19 15 7 77C-8 144 15 186 57 184C84 183 103 165 115 143C109 173 129 191 162 171C143 174 141 160 145 136L190-91C169-63 145-60 127-61C149-52 144-33 139-9L132 26C124 25 117 23 111 23ZM104 41C127 62 104 145 75 163C50 179 41 152 45 117C50 75 78 18 104 41Z"/>
+<path aria-label="e" transform="translate(824 0)" fill-rule="evenodd" d="M42 112C35 164 73 182 122 142C103 180 57 197 27 173C-3 150-4 111 10 74C28 28 72 1 109 15C158 33 139 93 42 112ZM44 97C90 89 116 51 97 33C79 16 53 51 44 97Z"/>
+<path aria-label="r" transform="translate(971 0)" fill-rule="evenodd" d="M0 25C25 10 52 6 61 22C67 32 62 48 59 61C86 15 112 3 138 17C153 25 151 48 133 61C128 37 103 40 82 60C56 86 45 125 34 180L0 180L25 52C29 33 20 25 0 25Z"/>
+</g></g></svg>
