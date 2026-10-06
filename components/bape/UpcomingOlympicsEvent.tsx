@@ -12,9 +12,11 @@ import type { OlympicEvent } from "@/lib/data/olympics/olympics-template"
 export function UpcomingOlympicsEvent({
   event,
   hasMedalGames,
+  compact = false,
 }: {
   event: OlympicEvent
   hasMedalGames: boolean
+  compact?: boolean
 }) {
   const order = event.battingOrder ?? event.playingOrder
   const orderLabel = event.battingOrder ? "Batting order" : "Playing order"
@@ -26,10 +28,13 @@ export function UpcomingOlympicsEvent({
       <Dialog.Trigger asChild>
         <button
           type="button"
-          className="flex min-h-16 items-center gap-3 rounded-2xl border bg-card px-4 py-3 text-left transition hover:border-foreground/30 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+          id={`event-${event.id}`}
+          className={compact
+            ? "mt-1 inline-flex min-h-8 items-center gap-1.5 rounded-md text-left text-sm font-semibold text-foreground underline-offset-4 hover:text-violet-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            : "flex min-h-16 items-center gap-3 rounded-2xl border bg-card px-4 py-3 text-left transition hover:border-foreground/30 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"}
         >
-          <span aria-hidden="true" className="shrink-0 text-2xl leading-none">{event.emoji}</span>
-          <span className="text-sm font-semibold">{event.name}</span>
+          <span aria-hidden="true" className={compact ? "shrink-0 text-base leading-none" : "shrink-0 text-2xl leading-none"}>{event.emoji}</span>
+          <span className={compact ? "" : "text-sm font-semibold"}>{event.name}</span>
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
@@ -51,8 +56,7 @@ export function UpcomingOlympicsEvent({
               <X className="size-5" />
             </button>
           </Dialog.Close>
-          {event.id !== "cooking" ? (
-          <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4">
+          <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
             <div>
               <dt className="text-xs font-medium text-muted-foreground">Date</dt>
               <dd className="mt-1 text-sm font-semibold">{event.scheduledDate || "To be confirmed"}</dd>
@@ -61,8 +65,13 @@ export function UpcomingOlympicsEvent({
               <dt className="text-xs font-medium text-muted-foreground">Time</dt>
               <dd className="mt-1 text-sm font-semibold">{event.scheduledTime || "To be confirmed"}</dd>
             </div>
+            {event.location ? (
+              <div className="col-span-2 sm:col-span-1">
+                <dt className="text-xs font-medium text-muted-foreground">Location</dt>
+                <dd className="mt-1 text-sm font-semibold">{event.location}</dd>
+              </div>
+            ) : null}
           </dl>
-          ) : null}
           {event.id === "cooking" ? (
             <div className="mt-6 grid gap-6">
               <section className="grid gap-3" aria-label="Chosen dishes">

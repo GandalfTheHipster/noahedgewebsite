@@ -15,6 +15,7 @@ export type OlympicEvent = {
   status?: "completed" | "upcoming" | "cancelled"
   scheduledDate?: string
   scheduledTime?: string
+  location?: string
   openingMatches?: [string, string][]
   battingOrder?: string[]
   runs?: Record<string, number | null>
@@ -45,6 +46,14 @@ export type OlympicHighlight = {
 }
 
 export type OlympicPageData = {
+  calendar?: Array<{
+    date: string
+    label: string
+    items: Array<
+      | { eventId: string }
+      | { name: string; time: string; location?: string }
+    >
+  }>
   title: string
   date: string
   startDate?: string

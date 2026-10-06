@@ -169,7 +169,63 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
         )}
       </section>
 
+      {data.calendar?.length ? <OlympicsCalendar data={data} /> : null}
     </OlympicsPageFrame>
+  )
+}
+
+function OlympicsCalendar({ data }: OlympicsEditionPageProps) {
+  const days = data.calendar ?? []
+  const columns = [days.slice(0, 1), days.slice(1, 2), days.slice(2)].filter(
+    (column) => column.length > 0,
+  )
+
+  return (
+    <section className="grid gap-5" aria-label="Calendar">
+      <BapeSectionHeader title="Calendar" description="*Schedule subject to change." />
+      <div className="grid items-start gap-4 lg:grid-cols-3">
+        {columns.map((column) => (
+          <div key={column[0].date} className="grid content-start gap-4">
+          {column.map((day) => (
+          <BapePanel key={day.date} className="overflow-hidden">
+            <div className="flex items-center gap-3 border-b bg-muted/20 px-5 py-4">
+              <CalendarDays className="size-5 shrink-0 text-violet-500" aria-hidden="true" />
+              <h2 className="text-base font-semibold">
+                <time dateTime={day.date}>{day.label}</time>
+              </h2>
+            </div>
+            <ol className="divide-y px-5">
+              {day.items.map((item) => {
+                const event = "eventId" in item
+                  ? data.events.find((event) => event.id === item.eventId)
+                  : undefined
+                const name = "name" in item ? item.name : event?.name
+                const time = "time" in item ? item.time : event?.scheduledTime
+                const location = ("location" in item ? item.location : undefined) ?? event?.location
+                const hasMedalGames = Boolean(event && (
+                  ["Team Sports", "Athletics"].includes(getEventCategory(event)) ||
+                  ["beer-pong", "two-square", "wii-baseball"].includes(event.id)
+                ))
+
+                return (
+                  <li key={"eventId" in item ? item.eventId : item.name} className="py-4">
+                    {time ? <p className="text-xs font-medium tabular-nums text-muted-foreground">{time}</p> : null}
+                    {event ? (
+                      <UpcomingOlympicsEvent event={event} hasMedalGames={hasMedalGames} compact />
+                    ) : (
+                      <p className="mt-1 text-sm font-semibold">{name}</p>
+                    )}
+                    {location ? <p className="mt-1 text-xs text-muted-foreground">{location}</p> : null}
+                  </li>
+                )
+              })}
+            </ol>
+          </BapePanel>
+          ))}
+          </div>
+        ))}
+      </div>
+    </section>
   )
 }
 
