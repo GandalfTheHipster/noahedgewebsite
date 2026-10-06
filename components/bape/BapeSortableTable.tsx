@@ -28,6 +28,7 @@ type BapeSortableTableProps<T> = {
   initialSort?: SortingState
   getRowKey: (row: T) => string
   isHighlighted?: (row: T, index: number) => boolean
+  columnWidths?: Record<string, string>
 }
 
 export function BapeSortableTable<T>({
@@ -36,6 +37,7 @@ export function BapeSortableTable<T>({
   initialSort = [],
   getRowKey,
   isHighlighted,
+  columnWidths,
 }: BapeSortableTableProps<T>) {
   const [sorting, setSorting] = useState<SortingState>(initialSort)
   const table = useReactTable({
@@ -49,14 +51,15 @@ export function BapeSortableTable<T>({
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border bg-card shadow-sm">
-      <Table>
+      <Table className={cn(columnWidths && "table-fixed")}>
         <TableHeader className="bg-muted/30">
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id} className="hover:bg-transparent">
               {headerGroup.headers.map((header) => (
                 <TableHead
                   key={header.id}
-                  className="h-14 px-4 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground"
+                  style={{ width: columnWidths?.[header.column.id] }}
+                  className="h-14 px-3 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground"
                 >
                   {header.isPlaceholder
                     ? null
@@ -75,11 +78,15 @@ export function BapeSortableTable<T>({
               key={getRowKey(row.original)}
               className={cn(
                 "hover:bg-muted/25",
-                isHighlighted?.(row.original, index) && "bg-foreground/[0.025]",
+                isHighlighted?.(row.original, index) && "bg-[#f8c75c]/[0.08]",
               )}
             >
               {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id} className="px-4 py-4 text-sm">
+                <TableCell
+                  key={cell.id}
+                  style={{ width: columnWidths?.[cell.column.id] }}
+                  className="px-3 py-4 text-sm"
+                >
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
                 </TableCell>
               ))}
@@ -112,8 +119,8 @@ export function BapeSortableHeader({
       variant="ghost"
       size="sm"
       className={cn(
-        "-mx-2 h-8 gap-1.5 px-2 text-xs font-semibold uppercase tracking-[0.16em] text-muted-foreground hover:bg-background/70 hover:text-foreground",
-        align === "right" && "ml-auto",
+        "h-8 w-full gap-1.5 px-2 text-sm font-semibold uppercase tracking-[0.12em] text-muted-foreground hover:bg-background/70 hover:text-foreground",
+        align === "right" ? "justify-end" : "justify-start",
       )}
       onClick={() => column.toggleSorting(sorted === "asc")}
     >

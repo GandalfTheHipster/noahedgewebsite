@@ -16,6 +16,8 @@ type EntityTriggerProps = {
   id: string
   children: React.ReactNode
   className?: string
+  "aria-label"?: string
+  title?: string
 }
 
 export const EntityTrigger = forwardRef<HTMLButtonElement, EntityTriggerProps>(
@@ -25,10 +27,12 @@ export const EntityTrigger = forwardRef<HTMLButtonElement, EntityTriggerProps>(
       id,
       children,
       className,
+      "aria-label": ariaLabel,
+      title: triggerTitle,
     },
     ref,
   ) {
-    const title =
+    const dialogTitle =
       type === "team"
         ? "Team profile"
         : type === "person"
@@ -42,6 +46,8 @@ export const EntityTrigger = forwardRef<HTMLButtonElement, EntityTriggerProps>(
           <button
             ref={ref}
             type="button"
+            aria-label={ariaLabel}
+            title={triggerTitle}
             className={cn(
               "cursor-pointer text-left underline-offset-4 transition hover:underline focus-visible:rounded-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
               className ?? "font-medium",
@@ -54,7 +60,7 @@ export const EntityTrigger = forwardRef<HTMLButtonElement, EntityTriggerProps>(
         <Dialog.Portal>
           <Dialog.Overlay className="fixed inset-0 z-50 bg-black/55" />
           <Dialog.Content className="fixed left-1/2 top-1/2 z-50 grid max-h-[86dvh] w-[calc(100%-2rem)] max-w-2xl -translate-x-1/2 -translate-y-1/2 overflow-hidden rounded-2xl border bg-background shadow-2xl focus:outline-none">
-            <Dialog.Title className="sr-only">{title}</Dialog.Title>
+            <Dialog.Title className="sr-only">{dialogTitle}</Dialog.Title>
             <Dialog.Close asChild>
               <button
                 type="button"

@@ -100,14 +100,14 @@ export default function OlympicsHubPage() {
                 key={href}
                 href={href}
                 aria-label={title}
-                className="group flex min-h-44 flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-violet-400/20 bg-card p-5 text-center shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-violet-400/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:min-h-48"
+                className="group flex min-h-44 flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-foreground/20 bg-card p-5 text-center shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-foreground/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:min-h-48"
               >
-                <span className="grid size-20 place-items-center rounded-2xl border border-violet-400/20 bg-violet-400/[0.08] text-violet-700 transition-colors group-hover:bg-violet-400/[0.14] dark:text-violet-300 sm:size-24">
+                <span className="grid size-20 place-items-center rounded-2xl border border-foreground/20 bg-foreground/[0.08] text-foreground transition-colors group-hover:bg-foreground/[0.14] sm:size-24">
                   <Icon aria-hidden="true" className="size-11 sm:size-12" strokeWidth={1.6} />
                 </span>
                 <span className="flex items-center gap-2 font-semibold tracking-tight sm:text-lg">
                   {title}
-                  <ArrowUpRight aria-hidden="true" className="size-4 text-muted-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
+                  <ArrowUpRight aria-hidden="true" className="size-4 text-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
                 </span>
               </Link>
             ))}

@@ -9,6 +9,7 @@ import {
 } from "@/components/bape/BapeSortableTable"
 import { EntityTrigger } from "@/components/entity/EntityTrigger"
 import { PersonProfileButton } from "@/components/entity/PersonProfileButton"
+import { getOlympicCountry } from "@/lib/data/olympics/countries"
 import { cn } from "@/lib/utils"
 
 export type AllTimeLeaderboardAthlete = {
@@ -36,18 +37,7 @@ export function AllTimeLeaderboardTable({
         id: "rank",
         header: "#",
         enableSorting: false,
-        cell: ({ row }) => (
-          <span
-            className={cn(
-              "grid size-9 place-items-center rounded-full border text-sm font-bold tabular-nums",
-              row.index === 0
-                ? "border-foreground bg-foreground text-background shadow-sm"
-                : "bg-muted/35 text-muted-foreground",
-            )}
-          >
-            {row.index + 1}
-          </span>
-        ),
+        cell: ({ row }) => <RankBadge rank={row.index + 1} />,
       },
       {
         accessorKey: "name",
@@ -55,24 +45,18 @@ export function AllTimeLeaderboardTable({
           <BapeSortableHeader label="Athlete" column={column} />
         ),
         cell: ({ row }) => (
-          <div className="min-w-[220px] max-w-[320px]">
+          <div className="flex min-w-0 items-center gap-2">
             <PersonProfileButton
               bapeID={String(row.original.id)}
               labelMode="full"
-              className="w-full justify-start border-transparent bg-transparent px-0 shadow-none hover:bg-transparent hover:shadow-none"
+              nameClassName="text-base sm:text-lg"
+              className="w-fit min-w-0 justify-start rounded-none border-0 bg-transparent p-0 shadow-none hover:translate-y-0 hover:border-transparent hover:bg-transparent hover:shadow-none"
+            />
+            <CountryFlagRow
+              athleteId={row.original.id}
+              teams={row.original.teams}
             />
           </div>
-        ),
-      },
-      {
-        accessorKey: "teams",
-        header: "Teams",
-        enableSorting: false,
-        cell: ({ row }) => (
-          <CountryFlagRow
-            athleteId={row.original.id}
-            teams={row.original.teams}
-          />
         ),
       },
       {
@@ -81,7 +65,10 @@ export function AllTimeLeaderboardTable({
           <BapeSortableHeader label="PTS" column={column} align="right" />
         ),
         cell: ({ row }) => (
-          <StrongNumber value={row.original.points} className="text-2xl" />
+          <StrongNumber
+            value={row.original.points}
+            className="text-2xl font-bold"
+          />
         ),
       },
       {
@@ -115,7 +102,7 @@ export function AllTimeLeaderboardTable({
 
   return (
     <>
-      <div className="grid gap-3 md:hidden">
+      <div className="overflow-hidden rounded-[1.5rem] border bg-card shadow-sm lg:hidden">
         {athletes.map((athlete, index) => (
           <AthleteMobileCard
             key={athlete.id}
@@ -125,13 +112,21 @@ export function AllTimeLeaderboardTable({
         ))}
       </div>
 
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <BapeSortableTable
           data={athletes}
           columns={columns}
           initialSort={[{ id: "points", desc: true }]}
           getRowKey={(athlete) => String(athlete.id)}
           isHighlighted={(_, index) => index === 0}
+          columnWidths={{
+            rank: "6%",
+            name: "46%",
+            points: "12%",
+            gold: "12%",
+            silver: "12%",
+            bronze: "12%",
+          }}
         />
       </div>
     </>
@@ -150,65 +145,75 @@ function AthleteMobileCard({
   return (
     <div
       className={cn(
-        "rounded-2xl border bg-card p-4 shadow-sm",
-        isLeader && "bg-foreground/[0.03]",
+        "flex items-center gap-3 border-b p-3.5 last:border-b-0 sm:p-4",
+        isLeader && "bg-[#f8c75c]/[0.07]",
       )}
     >
-      <div className="flex items-start gap-3">
-        <span
-          className={cn(
-            "grid size-9 shrink-0 place-items-center rounded-full border text-sm font-bold tabular-nums",
-            isLeader
-              ? "border-foreground bg-foreground text-background shadow-sm"
-              : "bg-muted/35 text-muted-foreground",
-          )}
-        >
-          {rank}
-        </span>
+      <div className="flex w-full min-w-0 items-center gap-2">
+        <RankBadge rank={rank} />
 
         <div className="min-w-0 flex-1">
           <PersonProfileButton
             bapeID={String(athlete.id)}
             labelMode="full"
-            className="max-w-full border-transparent bg-transparent px-0 shadow-none hover:bg-transparent hover:shadow-none"
+            nameClassName="whitespace-normal text-lg font-semibold leading-tight sm:text-xl"
+            className="max-w-full min-w-0 justify-start rounded-none border-0 bg-transparent p-0 shadow-none hover:translate-y-0 hover:border-transparent hover:bg-transparent hover:shadow-none"
           />
-          <div className="mt-2">
-            <CountryFlagRow athleteId={athlete.id} teams={athlete.teams} />
+        </div>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <CountryFlagRow athleteId={athlete.id} teams={athlete.teams} compact />
+          <div className="flex items-center gap-1">
+            <MobileMedalCount label="Gold" value={athlete.gold} tone="gold" />
+            <MobileMedalCount label="Silver" value={athlete.silver} tone="silver" />
+            <MobileMedalCount label="Bronze" value={athlete.bronze} tone="bronze" />
+          </div>
+          <div className="ml-1 flex items-baseline gap-1 border-l pl-2.5 text-right">
+            <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
+              PTS
+            </span>
+            <span className="text-lg font-bold tabular-nums">{athlete.points}</span>
           </div>
         </div>
-
-        <div className="text-right">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            PTS
-          </p>
-          <p className="text-2xl font-bold tabular-nums">{athlete.points}</p>
-        </div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-2">
-        <MobileMedalStat label="Gold" value={athlete.gold} tone="gold" />
-        <MobileMedalStat label="Silver" value={athlete.silver} tone="silver" />
-        <MobileMedalStat label="Bronze" value={athlete.bronze} tone="bronze" />
       </div>
     </div>
+  )
+}
+
+function RankBadge({ rank }: { rank: number }) {
+  return (
+    <span
+      className={cn(
+        "grid size-9 shrink-0 place-items-center rounded-full border text-sm font-bold tabular-nums",
+        rank === 1 && "border-[#b47a00]/35 bg-[#f8c75c]/25 text-[#7a5100] dark:text-[#f8c75c]",
+        rank === 2 && "border-slate-400/30 bg-slate-300/30 text-slate-700 dark:text-slate-200",
+        rank === 3 && "border-[#8a4f18]/30 bg-[#9a5724]/15 text-[#8a3f0f] dark:text-[#dfb582]",
+        rank > 3 && "bg-muted/35 text-muted-foreground",
+      )}
+    >
+      {rank}
+    </span>
   )
 }
 
 function CountryFlagRow({
   athleteId,
   teams,
+  compact = false,
 }: {
   athleteId: number
   teams: string[]
+  compact?: boolean
 }) {
   return (
-    <div className="flex min-w-[96px] items-center gap-1.5 whitespace-nowrap text-xl leading-none">
+    <div className={cn("flex shrink-0 items-center whitespace-nowrap leading-none opacity-70", compact ? "gap-0 text-sm" : "gap-1 text-base")}>
       {teams.map((team) => (
         <EntityTrigger
           key={`${athleteId}-${team}`}
           type="country"
           id={team}
-          className="rounded-md px-1 py-0.5 text-xl leading-none hover:bg-muted/50 hover:no-underline"
+          aria-label={`View ${getOlympicCountry(team)?.name ?? team} profile`}
+          title={getOlympicCountry(team)?.name ?? team}
+          className={cn("rounded-sm px-0.5 py-0.5 leading-none hover:bg-transparent hover:underline-offset-2", compact ? "text-sm" : "text-base")}
         >
           {team}
         </EntityTrigger>
@@ -244,22 +249,13 @@ function MedalCount({
   tone: "gold" | "silver" | "bronze"
 }) {
   return (
-    <div className="flex justify-end">
-      <span
-        className={cn(
-          "inline-flex size-11 items-center justify-center rounded-full text-base font-bold tabular-nums text-neutral-950 shadow-sm ring-1 ring-inset",
-          tone === "gold" && "bg-[#f8c75c] ring-[#b47a00]/35",
-          tone === "silver" && "bg-[#e5e7e9] ring-black/10 dark:bg-[#d8dde3]",
-          tone === "bronze" && "bg-[#9a5724] text-white ring-[#7a3f16]/40 dark:bg-[#b66a31]",
-        )}
-      >
-        {value}
-      </span>
+    <div className="flex justify-center">
+      <MedalBadge value={value} tone={tone} />
     </div>
   )
 }
 
-function MobileMedalStat({
+function MobileMedalCount({
   label,
   value,
   tone,
@@ -269,20 +265,32 @@ function MobileMedalStat({
   tone: "gold" | "silver" | "bronze"
 }) {
   return (
-    <div className="rounded-xl border bg-background p-3 text-center">
-      <p
-        className={cn(
-          "text-[10px] font-bold uppercase tracking-wide text-muted-foreground",
-          tone === "gold" && "text-[#9a6500] dark:text-[#f8c75c]",
-          tone === "silver" && "text-slate-600 dark:text-[#d8dde3]",
-          tone === "bronze" && "text-[#9a5724] dark:text-[#d98a4b]",
-        )}
-      >
-        {label}
-      </p>
-      <div className="mt-2 flex justify-center">
-        <MedalCount value={value} tone={tone} />
-      </div>
-    </div>
+    <span role="img" aria-label={`${label}: ${value}`} title={`${label}: ${value}`}>
+      <MedalBadge value={value} tone={tone} size="size-7 text-xs" />
+    </span>
+  )
+}
+
+function MedalBadge({
+  value,
+  tone,
+  size = "size-9 text-sm",
+}: {
+  value: number
+  tone: "gold" | "silver" | "bronze"
+  size?: string
+}) {
+  return (
+    <span
+      className={cn(
+        "inline-flex items-center justify-center rounded-full font-bold tabular-nums text-neutral-950 ring-1 ring-inset",
+        size,
+        tone === "gold" && "bg-[#f8c75c] ring-[#b47a00]/35",
+        tone === "silver" && "bg-[#e5e7e9] ring-black/10 dark:bg-[#d8dde3]",
+        tone === "bronze" && "bg-[#9a5724] text-white ring-[#7a3f16]/40 dark:bg-[#b66a31]",
+      )}
+    >
+      {value}
+    </span>
   )
 }

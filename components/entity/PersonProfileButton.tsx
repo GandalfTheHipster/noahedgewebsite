@@ -16,6 +16,7 @@ type PersonProfileButtonProps = {
   compact?: boolean
   meta?: string
   teamFlag?: string
+  nameClassName?: string
   labelMode?: PersonLabelMode
 }
 
@@ -27,6 +28,7 @@ export function PersonProfileButton({
   compact = false,
   meta,
   teamFlag,
+  nameClassName,
   labelMode: fixedLabelMode,
 }: PersonProfileButtonProps) {
   const numericBapeID = Number(bapeID)
@@ -125,7 +127,7 @@ export function PersonProfileButton({
 
       {visibleName ? (
         <span className="min-w-0">
-          <span className="block whitespace-nowrap text-sm font-medium text-foreground group-hover:underline">
+          <span className={cn("block whitespace-nowrap text-sm font-medium text-foreground group-hover:underline", nameClassName)}>
             {visibleName}
           </span>
           {meta && labelMode === "full" ? (
