@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils"
 
 type PersonProfileButtonProps = {
+  olympicsYear?: string
   bapeID: string
   className?: string
   compact?: boolean
@@ -23,6 +24,7 @@ type PersonProfileButtonProps = {
 type PersonLabelMode = "full" | "first" | "icon"
 
 export function PersonProfileButton({
+  olympicsYear,
   bapeID,
   className,
   compact = false,
@@ -109,7 +111,7 @@ export function PersonProfileButton({
     >
       <span className="relative shrink-0">
         <Image
-          src={getBapeProfileAvatar(profile)}
+          src={getBapeProfileAvatar(profile, olympicsYear)}
           alt={fullName}
           width={compact ? 28 : 34}
           height={compact ? 28 : 34}

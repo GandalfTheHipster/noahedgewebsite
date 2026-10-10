@@ -98,7 +98,7 @@ function Medalist({ name, year }: { name: string; year: string }) {
       {profile ? (
         <span className="relative shrink-0">
           <Image
-            src={getBapeProfileAvatar(profile)}
+            src={getBapeProfileAvatar(profile, year)}
             alt=""
             width={36}
             height={36}

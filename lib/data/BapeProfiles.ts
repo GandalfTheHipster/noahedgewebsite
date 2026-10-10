@@ -7,6 +7,8 @@ export type BapePortrait = {
 }
 
 export type HistoricalBapePortrait = BapePortrait & {
+  /** Olympic editions that retain this portrait instead of the current one. */
+  olympicsYears?: string[]
   /** Date replaced, in YYYY-MM-DD format; null if the date is unknown. */
   swappedOutOn: string | null
 }
@@ -30,7 +32,15 @@ export type BapeProfile = {
 export const DEFAULT_BAPE_PROFILE_AVATAR =
   "https://i.postimg.cc/rpbnfSZH/hs-generic.png"
 
-export function getBapeProfileAvatar(profile: Pick<BapeProfile, "avatarUrl">) {
+export function getBapeProfileAvatar(
+  profile: Pick<BapeProfile, "avatarUrl" | "portraitHistory">,
+  olympicsYear?: string,
+) {
+  const historicalPortrait = olympicsYear
+    ? profile.portraitHistory?.find((portrait) => portrait.olympicsYears?.includes(olympicsYear))
+    : undefined
+  if (historicalPortrait?.imageUrl.trim()) return historicalPortrait.imageUrl
+
   return profile.avatarUrl?.trim() || DEFAULT_BAPE_PROFILE_AVATAR
 }
 
@@ -224,9 +234,17 @@ export const BAPE_PROFILES: BapeProfile[] = [
     silver: 4,
     bronze: 2,
     pointsAllTime: 10,
-    avatarUrl: "/images/players/wMfGSY72-hs-noah.webp",
-    avatarAddedOn: "2019",
-    avatarIsAiGenerated: false,
+    avatarUrl: "/images/players/ZRdGNWdm-hs-noah.webp",
+    avatarAddedOn: "2026-10-10",
+    portraitHistory: [
+      {
+        imageUrl: "/images/players/wMfGSY72-hs-noah.webp",
+        addedOn: "2019",
+        isAiGenerated: false,
+        swappedOutOn: "2026-10-10",
+        olympicsYears: ["2021", "2023"],
+      },
+    ],
     country: ["🇩🇪", "🇿🇦"],
   },
   {

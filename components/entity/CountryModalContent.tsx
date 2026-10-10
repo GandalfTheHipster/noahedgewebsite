@@ -216,6 +216,7 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
                 <div className="mt-3 grid gap-2">
                   {edition.medals.map((medal) => (
                     <CountryMedalRow
+                      year={edition.year}
                       key={`${edition.year}-${medal.event}-${medal.medal}`}
                       medal={medal.medal}
                       emoji={medal.emoji}
@@ -239,12 +240,14 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
 }
 
 function CountryMedalRow({
+  year,
   medal,
   emoji,
   event,
   winners,
   teamMemberCount,
 }: {
+  year: string
   medal: string
   emoji: string
   event: string
@@ -267,6 +270,7 @@ function CountryMedalRow({
           {winners.map((winner) => (
             <PersonProfileButton
               key={`${event}-${medal}-${winner}`}
+              olympicsYear={year}
               bapeID={getPersonIdByName(winner)}
               compact
               className="px-2 py-1"

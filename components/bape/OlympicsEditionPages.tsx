@@ -61,6 +61,7 @@ export function OlympicsOverviewPage({ data }: OlympicsEditionPageProps) {
         {data.information?.length ? <OlympicsKeyDetails data={data} /> : null}
 
         <TeamRosterPanel
+          year={data.date}
           rosters={teamRosters}
           mvp={data.mvp}
           hasResults={hasResults}
@@ -106,6 +107,7 @@ export function OlympicsTeamsPage({ data }: OlympicsEditionPageProps) {
   return (
     <OlympicsPageFrame data={data}>
       <TeamRosterPanel
+        year={data.date}
         rosters={getTeamRosters(data)}
         mvp={data.mvp}
         hasResults={hasResults}
@@ -413,10 +415,12 @@ type TeamRoster = {
 }
 
 function TeamRosterPanel({
+  year,
   rosters,
   mvp,
   hasResults,
 }: {
+  year: string
   rosters: TeamRoster[]
   mvp?: string
   hasResults: boolean
@@ -477,6 +481,7 @@ function TeamRosterPanel({
             <div className="mt-4 grid gap-2 md:grid-cols-2">
               {roster.members.map((member) => (
                 <RosterMemberRow
+                  year={year}
                   key={member}
                   name={member}
                   subtitles={getRosterSubtitles(member, roster.captain, mvp)}
@@ -601,10 +606,12 @@ function getRosterSubtitles(member: string, captain?: string, mvp?: string) {
 }
 
 function RosterMemberRow({
+  year,
   name,
   subtitles,
   isUpcoming,
 }: {
+  year: string
   name: string
   subtitles: Array<{
     label: string
@@ -635,7 +642,7 @@ function RosterMemberRow({
     >
       <span className="relative size-14 shrink-0 overflow-hidden rounded-xl bg-muted">
         <Image
-          src={getBapeProfileAvatar(profile)}
+          src={getBapeProfileAvatar(profile, year)}
           alt={name}
           fill
           sizes="56px"
