@@ -267,7 +267,7 @@ function OlympicsCalendar({ data }: OlympicsEditionPageProps) {
                     const location = ("location" in item ? item.location : undefined) ?? event?.location
                     const hasMedalGames = Boolean(event && (
                       ["Team Sports", "Athletics"].includes(getEventCategory(event)) ||
-                      ["beer-pong", "two-square", "wii-baseball"].includes(event.id)
+                      ["beer-pong", "two-square", "wii-tennis"].includes(event.id)
                     ))
 
                     return (
@@ -396,7 +396,7 @@ function UpcomingEventCategoryList({ events }: { events: OlympicEvent[] }) {
                   category.name === "Team Sports" ||
                   event.id === "beer-pong" ||
                   event.id === "two-square" ||
-                  event.id === "wii-baseball"
+                  event.id === "wii-tennis"
                 }
               />
             ))}
