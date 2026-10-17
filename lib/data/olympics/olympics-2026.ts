@@ -47,6 +47,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       date: "2026-11-20",
       label: "Friday, 20 November",
       items: [
+        { name: "Bape Olympics 2026 🏆", time: "All day · 20–23 November" },
+        { name: "Stay: The Lavender Patch", time: "20–23 November" },
         { name: "Check in", time: "2pm" },
         { name: "Opening Ceremony", time: "3pm", location: "The Lavender Patch" },
         { eventId: "cooking" },
@@ -62,7 +64,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         { eventId: "pickleball" },
         { eventId: "sprint" },
         { eventId: "cricket" },
-        { eventId: "cooking-1" },
+        { eventId: "cooking-2" },
         { eventId: "wii-bowling" },
         { eventId: "beer-pong" },
       ],
@@ -125,17 +127,17 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   events: [
     {
       id: "cooking",
-      name: "Cooking 2",
+      name: "Cooking 1",
       emoji: "🧑‍🍳",
       status: "upcoming",
       scheduledDate: "20 November 2026",
-      scheduledTime: "5:30–7 pm",
+      scheduledTime: "5–6:30 pm",
       location: "The Lavender Patch",
       chosenDishes: { Mongolia: null, Scotland: null, "South Africa": null, TBD: null },
     },
     {
-      id: "cooking-1",
-      name: "Cooking 1",
+      id: "cooking-2",
+      name: "Cooking 2",
       emoji: "🧑‍🍳",
       status: "upcoming",
       scheduledDate: "21 November 2026",
@@ -270,7 +272,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
     },
     {
       id: "wii-tennis",
-      name: "Tennis",
+      name: "Wii Tennis",
       emoji: "🎾",
       status: "upcoming",
       scheduledDate: "20 November 2026",
