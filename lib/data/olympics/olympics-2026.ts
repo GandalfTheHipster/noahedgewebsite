@@ -47,8 +47,6 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       date: "2026-11-20",
       label: "Friday, 20 November",
       items: [
-        { name: "Bape Olympics 2026 🏆", time: "All day · 20–23 November" },
-        { name: "Stay: The Lavender Patch", time: "20–23 November" },
         { name: "Check in", time: "2pm" },
         { name: "Opening Ceremony", time: "3pm", location: "The Lavender Patch" },
         { eventId: "cooking" },
