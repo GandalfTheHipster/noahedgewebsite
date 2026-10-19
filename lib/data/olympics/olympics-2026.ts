@@ -49,7 +49,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       items: [
         { name: "Check in", time: "2pm" },
         { name: "Opening Ceremony", time: "3pm", location: "The Lavender Patch" },
-        { eventId: "cooking" },
+        { eventId: "cooking", eventNightId: "night-one" },
         { eventId: "trivia" },
         { eventId: "wii-tennis" },
         { eventId: "mario-kart" },
@@ -62,7 +62,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         { eventId: "pickleball" },
         { eventId: "sprint" },
         { eventId: "cricket" },
-        { eventId: "cooking-2" },
+        { eventId: "cooking", eventNightId: "night-two" },
         { eventId: "wii-bowling" },
         { eventId: "beer-pong" },
       ],
@@ -87,7 +87,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   captains: {
     "South Africa": "Noah Edge",
     Mongolia: "Lucas Cinquina",
-    TBD: "Jayden Chang",
+    Estonia: "Jayden Chang",
     Scotland: "Elvin Lamprecht",
   },
 
@@ -114,7 +114,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       pts: 0,
     },
     {
-      name: "TBD",
+      name: "Estonia",
       gold: 0,
       silver: 0,
       bronze: 0,
@@ -125,22 +125,29 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   events: [
     {
       id: "cooking",
-      name: "Cooking 1",
+      name: "Cooking",
       emoji: "🧑‍🍳",
       status: "upcoming",
-      scheduledDate: "20 November 2026",
-      scheduledTime: "5–6:30 pm",
-      location: "The Lavender Patch",
-      chosenDishes: { Mongolia: null, Scotland: null, "South Africa": null, TBD: null },
-    },
-    {
-      id: "cooking-2",
-      name: "Cooking 2",
-      emoji: "🧑‍🍳",
-      status: "upcoming",
-      scheduledDate: "21 November 2026",
-      scheduledTime: "5–6:30 pm",
-      location: "The Lavender Patch",
+      nights: [
+        {
+          id: "night-one",
+          label: "Night One",
+          date: "2026-11-20",
+          scheduledTime: "5–6:30 pm",
+          location: "The Lavender Patch",
+          chosenDishes: { Mongolia: null, "South Africa": null },
+          points: { Mongolia: null, "South Africa": null },
+        },
+        {
+          id: "night-two",
+          label: "Night Two",
+          date: "2026-11-21",
+          scheduledTime: "5–6:30 pm",
+          location: "The Lavender Patch",
+          chosenDishes: { Estonia: null, Scotland: null },
+          points: { Estonia: null, Scotland: null },
+        },
+      ],
     },
     {
       id: "trivia",
@@ -150,8 +157,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledDate: "20 November 2026",
       scheduledTime: "7–8:30 pm",
       location: "The Lavender Patch",
-      masterminds: { Mongolia: null, Scotland: null, "South Africa": null, TBD: null },
-      points: { Mongolia: null, Scotland: null, "South Africa": null, TBD: null },
+      masterminds: { Mongolia: null, Scotland: null, "South Africa": null, Estonia: null },
+      points: { Mongolia: null, Scotland: null, "South Africa": null, Estonia: null },
     },
     {
       id: "futsal",
@@ -162,7 +169,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledTime: "4–5:30 pm",
       location: "Mundaring Hard Courts",
       openingMatches: [
-        ["TBD", "Scotland"],
+        ["Estonia", "Scotland"],
         ["Mongolia", "South Africa"],
       ],
     },
@@ -176,7 +183,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       location: "Mundaring Hard Courts",
       openingMatches: [
         ["Scotland", "Mongolia"],
-        ["South Africa", "TBD"],
+        ["South Africa", "Estonia"],
       ],
     },
     {
@@ -189,7 +196,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       location: "The Lavender Patch",
       openingMatches: [
         ["Scotland", "Mongolia"],
-        ["South Africa", "TBD"],
+        ["South Africa", "Estonia"],
       ],
     },
     {
@@ -202,7 +209,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       location: "Mundaring Tennis Club",
       openingMatches: [
         ["Scotland", "South Africa"],
-        ["Mongolia", "TBD"],
+        ["Mongolia", "Estonia"],
       ],
     },
     {
@@ -213,8 +220,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledDate: "21 November 2026",
       scheduledTime: "2–4 pm",
       location: "Harry Riseborough Oval",
-      battingOrder: ["TBD", "Scotland", "Mongolia", "South Africa"],
-      runs: { TBD: null, Scotland: null, Mongolia: null, "South Africa": null },
+      battingOrder: ["Estonia", "Scotland", "Mongolia", "South Africa"],
+      runs: { Estonia: null, Scotland: null, Mongolia: null, "South Africa": null },
     },
     {
       id: "two-square",
@@ -225,7 +232,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledTime: "1–2 pm",
       location: "Harry Riseborough Oval",
       openingMatches: [
-        ["TBD", "Scotland"],
+        ["Estonia", "Scotland"],
         ["Mongolia", "South Africa"],
       ],
     },
@@ -265,8 +272,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledDate: "21 November 2026",
       scheduledTime: "6:30–7:30 pm",
       location: "The Lavender Patch",
-      playingOrder: ["Mongolia", "Scotland", "TBD", "South Africa"],
-      points: { Mongolia: null, Scotland: null, TBD: null, "South Africa": null },
+      playingOrder: ["Mongolia", "Scotland", "Estonia", "South Africa"],
+      points: { Mongolia: null, Scotland: null, Estonia: null, "South Africa": null },
     },
     {
       id: "wii-tennis",
@@ -278,7 +285,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       location: "The Lavender Patch",
       openingMatches: [
         ["Scotland", "South Africa"],
-        ["Mongolia", "TBD"],
+        ["Mongolia", "Estonia"],
       ],
     },
     {
@@ -289,7 +296,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledDate: "20 November 2026",
       scheduledTime: "9:30–11 pm",
       location: "The Lavender Patch",
-      points: { Mongolia: null, Scotland: null, "South Africa": null, TBD: null },
+      points: { Mongolia: null, Scotland: null, "South Africa": null, Estonia: null },
     },
   ],
 }

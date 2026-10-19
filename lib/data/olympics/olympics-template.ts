@@ -7,6 +7,16 @@ export type OlympicMedalTableEntry = {
   pts: number
 }
 
+export type OlympicEventNight = {
+  id: string
+  label: string
+  date?: string
+  scheduledTime?: string
+  location?: string
+  chosenDishes?: Record<string, string | null>
+  points?: Record<string, number | null>
+}
+
 export type OlympicEvent = {
   id: string
   name: string
@@ -24,6 +34,7 @@ export type OlympicEvent = {
   runners?: string[]
   masterminds?: Record<string, string | null>
   chosenDishes?: Record<string, string | null>
+  nights?: OlympicEventNight[]
   provisionalTopTen?: string[]
 
   gold?: string[]
@@ -56,7 +67,7 @@ export type OlympicPageData = {
     date: string
     label: string
     items: Array<
-      | { eventId: string }
+      | { eventId: string; eventNightId?: string }
       | { name: string; time: string; location?: string }
     >
   }>

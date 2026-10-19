@@ -46,9 +46,8 @@ export const OLYMPIC_COUNTRIES: OlympicCountry[] = [
     flag: "🇸🇲",
   },
   {
-    name: "TBD",
-    flag: "🏴‍☠️",
-    rosterFlag: "🇸🇲",
+    name: "Estonia",
+    flag: "🇪🇪",
   },
   {
     name: "Scotland",

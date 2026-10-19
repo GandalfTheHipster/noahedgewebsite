@@ -204,7 +204,7 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
         />
 
         {data.events.length > 0 && !hasResults ? (
-          <UpcomingEventCategoryList events={data.events} />
+          <UpcomingEventCategoryList data={data} />
         ) : data.events.length > 0 ? (
           <EventCategoryList events={completedEvents} year={data.date} />
         ) : (
@@ -239,6 +239,7 @@ export function OlympicsCalendarPage({ data }: OlympicsEditionPageProps) {
 
 function OlympicsCalendar({ data }: OlympicsEditionPageProps) {
   const days = data.calendar ?? []
+  const participants = getTeamRosters(data).flatMap((roster) => roster.members)
   const columns = [days.slice(0, 1), days.slice(1, 2), days.slice(2)].filter(
     (column) => column.length > 0,
   )
@@ -263,18 +264,21 @@ function OlympicsCalendar({ data }: OlympicsEditionPageProps) {
                       ? data.events.find((event) => event.id === item.eventId)
                       : undefined
                     const name = "name" in item ? item.name : event?.name
-                    const time = "time" in item ? item.time : event?.scheduledTime
-                    const location = ("location" in item ? item.location : undefined) ?? event?.location
+                    const eventNight = event && "eventNightId" in item
+                      ? event.nights?.find((night) => night.id === item.eventNightId)
+                      : undefined
+                    const time = "time" in item ? item.time : eventNight?.scheduledTime ?? event?.scheduledTime
+                    const location = ("location" in item ? item.location : undefined) ?? eventNight?.location ?? event?.location
                     const hasMedalGames = Boolean(event && (
                       ["Team Sports", "Athletics"].includes(getEventCategory(event)) ||
                       ["beer-pong", "two-square", "wii-tennis"].includes(event.id)
                     ))
 
                     return (
-                      <li key={"eventId" in item ? item.eventId : item.name} className="py-4">
+                      <li key={"eventId" in item ? `${item.eventId}-${"eventNightId" in item ? item.eventNightId ?? "" : ""}` : item.name} className="py-4">
                         {time ? <p className="text-xs font-medium tabular-nums text-muted-foreground">{time}</p> : null}
                         {event ? (
-                          <UpcomingOlympicsEvent event={event} hasMedalGames={hasMedalGames} compact />
+                          <UpcomingOlympicsEvent event={event} hasMedalGames={hasMedalGames} participants={participants} compact />
                         ) : (
                           <p className="mt-1 text-sm font-semibold">{name}</p>
                         )}
@@ -377,7 +381,9 @@ function EventCategoryList({
   )
 }
 
-function UpcomingEventCategoryList({ events }: { events: OlympicEvent[] }) {
+function UpcomingEventCategoryList({ data }: OlympicsEditionPageProps) {
+  const participants = getTeamRosters(data).flatMap((roster) => roster.members)
+  const events = data.events
   const categories = groupEventsByCategory(events)
 
   return (
@@ -392,6 +398,7 @@ function UpcomingEventCategoryList({ events }: { events: OlympicEvent[] }) {
               <UpcomingOlympicsEvent
                 key={event.id}
                 event={event}
+                participants={participants}
                 hasMedalGames={
                   category.name === "Team Sports" ||
                   event.id === "beer-pong" ||

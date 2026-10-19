@@ -284,7 +284,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     avatarUrl: "/images/players/QCH1RhYx-hs-jayden-clean.webp",
     avatarAddedOn: "2026",
     avatarIsAiGenerated: true,
-    country: ["🇸🇲"],
+    country: ["🇪🇪"],
   },
   {
     bapeID: 18,
@@ -323,7 +323,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     avatarUrl: "/images/players/d3pprSsD-hs-james.webp",
     avatarAddedOn: "2026",
     avatarIsAiGenerated: true,
-    country: ["🇸🇲"],
+    country: ["🇪🇪"],
   },
   {
     bapeID: 21,
@@ -336,7 +336,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     avatarUrl: "/images/players/8CKTQ2rs-hs-jayden.webp",
     avatarAddedOn: "2026",
     avatarIsAiGenerated: true,
-    country: ["🇸🇲"],
+    country: ["🇪🇪"],
   },
   {
     bapeID: 23,
@@ -349,7 +349,7 @@ export const BAPE_PROFILES: BapeProfile[] = [
     avatarUrl: "/images/players/vmBcVLrS-hs-raven.webp",
     avatarAddedOn: "2026",
     avatarIsAiGenerated: true,
-    country: ["🇸🇲"],
+    country: ["🇪🇪"],
   },
   {
     bapeID: 22,

@@ -12,10 +12,12 @@ import type { OlympicEvent } from "@/lib/data/olympics/olympics-template"
 export function UpcomingOlympicsEvent({
   event,
   hasMedalGames,
+  participants,
   compact = false,
 }: {
   event: OlympicEvent
   hasMedalGames: boolean
+  participants?: string[]
   compact?: boolean
 }) {
   const order = event.battingOrder ?? event.playingOrder
@@ -56,7 +58,7 @@ export function UpcomingOlympicsEvent({
               <X className="size-5" />
             </button>
           </Dialog.Close>
-          <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
+          {!event.nights?.length ? <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
             <div>
               <dt className="text-xs font-medium text-muted-foreground">Date</dt>
               <dd className="mt-1 text-sm font-semibold">{event.scheduledDate || "To be confirmed"}</dd>
@@ -71,22 +73,9 @@ export function UpcomingOlympicsEvent({
                 <dd className="mt-1 text-sm font-semibold">{event.location}</dd>
               </div>
             ) : null}
-          </dl>
-          {event.id === "cooking" ? (
-            <div className="mt-6 grid gap-6">
-              <section className="grid gap-3" aria-label="Chosen dishes">
-                <h3 className="text-sm font-semibold">Chosen dishes</h3>
-                <ul className="grid gap-2">
-                  {Object.entries(event.chosenDishes ?? {}).map(([country, dish]) => (
-                    <li key={country} className="flex items-center gap-3 rounded-xl border bg-muted/20 px-4 py-2">
-                      <MatchTeam country={country} align="left" />
-                      <span className="text-right text-sm text-muted-foreground">{dish ?? "Undecided"}</span>
-                    </li>
-                  ))}
-                </ul>
-              </section>
-              <EventPodium />
-            </div>
+          </dl> : null}
+          {event.nights?.length ? (
+            <CookingDetails nights={event.nights} />
           ) : event.id === "mario-kart" ? (
             <div className="mt-6 grid gap-6">
               <section className="grid gap-3" aria-label="Mario Kart points">
@@ -116,7 +105,9 @@ export function UpcomingOlympicsEvent({
               <EventPodium />
             </div>
           ) : event.provisionalTopTen?.length ? (
-            <DrinkingTopTen players={event.provisionalTopTen} />
+            <DrinkingTopTen
+              players={event.provisionalTopTen.filter((player) => !participants || participants.includes(player))}
+            />
           ) : event.masterminds ? (
             <TriviaDetails event={event} />
           ) : event.runners?.length ? (
@@ -179,6 +170,108 @@ export function UpcomingOlympicsEvent({
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+  )
+}
+
+function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]> }) {
+  const countries = [...new Set(nights.flatMap((night) => Object.keys(night.points ?? night.chosenDishes ?? {})))]
+  const totals = countries.map((country) => {
+    const scores = nights
+      .map((night) => night.points?.[country])
+      .filter((score): score is number => score != null)
+    return {
+      country,
+      total: scores.length === nights.length
+        ? scores.reduce((sum, score) => sum + score, 0)
+        : null,
+    }
+  }).sort((a, b) => {
+    if (a.total == null) return b.total == null ? 0 : 1
+    if (b.total == null) return -1
+    return b.total - a.total
+  })
+
+  let previousTotal: number | null = null
+  let previousRank = 0
+  const rankedTotals = totals.map((entry, index) => {
+    const rank = entry.total == null
+      ? null
+      : entry.total === previousTotal
+        ? previousRank
+        : index + 1
+    if (entry.total != null) {
+      previousTotal = entry.total
+      previousRank = rank ?? previousRank
+    }
+    return { ...entry, rank }
+  })
+
+  return (
+    <div className="mt-6 grid gap-6">
+      {nights.map((night) => {
+        const nightCountries = Object.keys(night.points ?? night.chosenDishes ?? {})
+        return (
+        <section key={night.id} className="grid gap-3" aria-label={night.label}>
+          <div>
+            <h3 className="text-base font-semibold">{night.label}</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {night.date ? new Date(`${night.date}T12:00:00`).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "Date to be confirmed"}
+              {night.scheduledTime ? ` · ${night.scheduledTime}` : ""}
+              {night.location ? ` · ${night.location}` : ""}
+            </p>
+          </div>
+          <div className="overflow-hidden rounded-xl border">
+            <table className="w-full text-sm">
+              <caption className="sr-only">{night.label} cooking dishes and scores</caption>
+              <thead className="bg-muted/40 text-muted-foreground">
+                <tr>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Country</th>
+                  <th scope="col" className="px-4 py-3 text-left font-medium">Chosen dish</th>
+                  <th scope="col" className="px-4 py-3 text-right font-medium">Score</th>
+                </tr>
+              </thead>
+              <tbody>
+                {nightCountries.map((country) => {
+                  const score = night.points?.[country]
+                  return (
+                    <tr key={country} className="border-t">
+                      <th scope="row" className="px-4 py-2"><MatchTeam country={country} align="left" /></th>
+                      <td className="px-4 py-2 text-muted-foreground">{night.chosenDishes?.[country] ?? "Undecided"}</td>
+                      <td className="px-4 py-2 text-right font-semibold tabular-nums">{score ?? <span aria-label="Not recorded">—</span>}</td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+        )
+      })}
+      <section className="grid gap-3" aria-label="Total cooking score ranking">
+        <h3 className="text-base font-semibold">Total Score Ranking</h3>
+        <div className="overflow-hidden rounded-xl border">
+          <table className="w-full text-sm">
+            <caption className="sr-only">Combined cooking scores across both nights</caption>
+            <thead className="bg-muted/40 text-muted-foreground">
+              <tr>
+                <th scope="col" className="w-16 px-4 py-3 text-center font-medium">Rank</th>
+                <th scope="col" className="px-4 py-3 text-left font-medium">Country</th>
+                <th scope="col" className="px-4 py-3 text-right font-medium">Total score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rankedTotals.map(({ country, total, rank }) => (
+                <tr key={country} className="border-t">
+                  <td className="px-4 py-2 text-center font-semibold tabular-nums">{rank ?? <span aria-label="Unranked">—</span>}</td>
+                  <th scope="row" className="px-4 py-2"><MatchTeam country={country} align="left" /></th>
+                  <td className="px-4 py-2 text-right font-semibold tabular-nums">{total ?? <span aria-label="Not recorded">—</span>}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </div>
   )
 }
 

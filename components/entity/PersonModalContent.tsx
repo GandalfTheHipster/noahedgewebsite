@@ -23,6 +23,44 @@ type PersonModalContentProps = {
 }
 
 const olympicsArchive = [OLYMPICS_2021_DATA, OLYMPICS_2023_DATA]
+const additionalPersonStrengths: Record<string, Array<{ name: string; emoji: string }>> = {
+  "Jayden Chang": [
+    { name: "Pickleball", emoji: "🥒" },
+    { name: "Futsal", emoji: "⚽️" },
+  ],
+  "Eric Yao": [
+    { name: "Pickleball", emoji: "🥒" },
+    { name: "Cooking", emoji: "🧑‍🍳" },
+  ],
+  "Noah Edge": [
+    { name: "Basketball", emoji: "🏀" },
+    { name: "Drinking", emoji: "🍺" },
+    { name: "Beer Pong", emoji: "🏓" },
+    { name: "FIFA", emoji: "🏟️" },
+  ],
+  "Cruz Deabreu": [
+    { name: "Beer Pong", emoji: "🏓" },
+    { name: "Basketball", emoji: "🏀" },
+  ],
+  "Steven Aldrin": [
+    { name: "Cooking", emoji: "🧑‍🍳" },
+    { name: "Trivia", emoji: "🙋‍♂️" },
+    { name: "Drinking", emoji: "🍺" },
+  ],
+  "Jayden Lee": [{ name: "Mario Kart", emoji: "🏎️" }],
+}
+
+function getPersonStrengths(fullName: string) {
+  const strengths = olympicsArchive.flatMap((olympics) =>
+    olympics.events
+      .filter((event) => event.gold?.includes(fullName))
+      .map((event) => ({ name: event.name, emoji: event.emoji })),
+  )
+
+  strengths.push(...(additionalPersonStrengths[fullName] ?? []))
+
+  return [...new Map(strengths.map((strength) => [strength.name.toLocaleLowerCase(), strength])).values()]
+}
 
 function getOlympicsEditionLogo(year: string) {
   if (year === "2026") {
@@ -145,6 +183,7 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
 
   const fullName = `${profile.firstName} ${profile.lastName}`
   const badges = getBadgesForPerson(profile.bapeID)
+  const strengths = getPersonStrengths(fullName)
   const upcomingTeam = OLYMPICS_2026_DATA.medalTable.find((team) => {
     const country = getOlympicCountry(team.name)
     return country ? profile.country.includes(country.rosterFlag ?? country.flag) : false
@@ -336,6 +375,24 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
             </p>
           ) : null}
         </div>
+      </StatSection>
+
+      <StatSection title="Strengths">
+        {strengths.length > 0 ? (
+          <div className="flex flex-wrap gap-2">
+            {strengths.map((strength) => (
+              <span
+                key={strength.name}
+                className="inline-flex items-center gap-2 rounded-full border bg-muted/20 px-3 py-2 text-sm font-medium"
+              >
+                <span aria-hidden="true">{strength.emoji}</span>
+                {strength.name}
+              </span>
+            ))}
+          </div>
+        ) : (
+          <p className="text-sm text-muted-foreground">No strengths listed yet.</p>
+        )}
       </StatSection>
 
       <StatSection title="Badges">
