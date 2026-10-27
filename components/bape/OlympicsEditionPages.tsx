@@ -604,7 +604,7 @@ function RosterMemberRow({
       )}
     >
       <span
-        className="relative size-11 shrink-0 rounded-xl bg-muted ring-1 ring-inset ring-foreground/5"
+        className="relative size-14 shrink-0 overflow-hidden rounded-2xl bg-muted ring-1 ring-inset ring-foreground/5"
         style={teamColor ? {
           backgroundColor: teamColor === "#ffffff"
             ? "#e5e5e5"
@@ -615,8 +615,9 @@ function RosterMemberRow({
           src={getBapeProfileAvatar(profile, year)}
           alt={name}
           fill
-          sizes="44px"
-          className="portrait-shadow rounded-xl object-cover"
+          sizes="56px"
+          unoptimized
+          className="origin-top scale-110 object-cover"
         />
       </span>
       <span className="min-w-0 flex-1">
