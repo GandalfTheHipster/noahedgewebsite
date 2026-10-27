@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Script from "next/script";
 import { ThemeProvider } from "@/components/theme-provider";
 import "./globals.css";
 
@@ -19,12 +18,23 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html
+      lang="en"
+      className="dark"
+      style={{ colorScheme: "dark" }}
+      suppressHydrationWarning
+    >
+      <head>
+        {/* Apply saved preferences before the browser paints the page. */}
+        <script
+          id="theme-init"
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var stored=localStorage.getItem("theme");var theme=stored==="light"||stored==="system"?stored:"dark";var dark=theme==="dark"||(theme==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var resolved=dark?"dark":"light";document.documentElement.classList.remove("light","dark");document.documentElement.classList.add(resolved);document.documentElement.style.colorScheme=resolved}catch(e){}})()`,
+          }}
+        />
+      </head>
       <body className="antialiased">
         <ThemeProvider>{children}</ThemeProvider>
-        <Script id="theme-init" strategy="beforeInteractive">
-          {`(function(){try{var theme=localStorage.getItem("theme")||"dark";var dark=theme==="dark"||(theme==="system"&&window.matchMedia("(prefers-color-scheme: dark)").matches);var resolved=dark?"dark":"light";document.documentElement.classList.remove("light","dark");document.documentElement.classList.add(resolved);document.documentElement.style.colorScheme=resolved}catch(e){}})()`}
-        </Script>
       </body>
     </html>
   );

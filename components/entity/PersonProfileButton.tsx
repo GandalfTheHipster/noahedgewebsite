@@ -116,7 +116,7 @@ export function PersonProfileButton({
           width={compact ? 28 : 34}
           height={compact ? 28 : 34}
           className={cn(
-            "rounded-full object-cover",
+            "portrait-shadow rounded-full object-cover",
             compact ? "h-7 w-7" : "h-8 w-8",
           )}
         />
@@ -229,7 +229,7 @@ export function PersonProfileCardByName({
           alt={fullName}
           fill
           sizes={isLarge ? "320px" : "112px"}
-          className="object-cover transition duration-300 group-hover:scale-105"
+          className="portrait-shadow object-cover transition duration-300 group-hover:scale-105"
         />
       </span>
       <span className={cn("min-w-0", isLarge ? "mt-4" : "mt-2")}>

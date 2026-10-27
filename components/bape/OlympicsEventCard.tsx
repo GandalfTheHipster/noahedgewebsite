@@ -1,8 +1,5 @@
 import Image from "next/image"
-import { Medal } from "lucide-react"
 
-import { BapePanel } from "@/components/bape/BapePageChrome"
-import { CountryProfileButton } from "@/components/entity/CountryProfileButton"
 import { EntityTrigger } from "@/components/entity/EntityTrigger"
 import { BAPE_PROFILES, getBapeProfileAvatar } from "@/lib/data/BapeProfiles"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
@@ -10,50 +7,45 @@ import type { OlympicEvent } from "@/lib/data/olympics/olympics-template"
 import { cn } from "@/lib/utils"
 
 const medals = [
-  { key: "gold", label: "Gold", color: "bg-amber-100 text-amber-800 dark:bg-amber-400/15 dark:text-amber-300" },
-  { key: "silver", label: "Silver", color: "bg-slate-100 text-slate-600 dark:bg-slate-400/15 dark:text-slate-300" },
-  { key: "bronze", label: "Bronze", color: "bg-orange-100 text-orange-800 dark:bg-orange-400/15 dark:text-orange-300" },
+  { key: "gold", label: "Gold", color: "border-[#b47a00]/35 bg-gradient-to-br from-[#edbd55] to-[#d5a23b] text-neutral-950" },
+  { key: "silver", label: "Silver", color: "border-black/10 bg-gradient-to-br from-[#d7dbe0] to-[#b8c0c9] text-neutral-950" },
+  { key: "bronze", label: "Bronze", color: "border-[#8a4f18]/30 bg-gradient-to-br from-[#d4a875] to-[#b98752] text-neutral-950" },
 ] as const
 
-export function OlympicsEventCard({
-  event,
+export function OlympicsEventResultsList({
+  events,
   year,
-  isUpcoming = false,
+  category,
 }: {
-  event: OlympicEvent
+  events: OlympicEvent[]
   year: string
-  isUpcoming?: boolean
+  category: string
 }) {
   return (
-    <BapePanel className="overflow-hidden rounded-2xl shadow-none">
-      <div className="flex items-center gap-2.5 border-b bg-muted/20 px-3 py-2.5 sm:gap-3 sm:px-5 sm:py-4">
-        <span aria-hidden="true" className="grid size-8 shrink-0 place-items-center rounded-lg border bg-background text-lg sm:size-10 sm:rounded-xl sm:text-xl">
-          {event.emoji}
-        </span>
-        <h3 className="min-w-0 flex-1 text-base font-semibold tracking-tight sm:text-lg">{event.name}</h3>
-      </div>
-      {!isUpcoming ? (
-        <div className="grid divide-y sm:grid-cols-3 sm:divide-x sm:divide-y-0">
+    <div aria-label={`${category} results, ${year}`} className="grid min-w-0 divide-y divide-border/40 rounded-2xl border border-border/60 bg-background px-3 sm:px-4">
+      {events.map((event) => (
+        <div key={event.id} className="grid min-w-0 grid-cols-2 items-center gap-2 py-2.5 sm:gap-4">
+          <h3 className="flex min-w-0 items-center gap-2 text-xs font-medium leading-snug text-foreground/90 sm:gap-2.5 sm:text-sm">
+            <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center text-lg leading-none sm:size-7 sm:text-xl">{event.emoji}</span>
+            <span className="min-w-0 [overflow-wrap:anywhere]">{event.name}</span>
+          </h3>
+          <div className="grid w-full min-w-0 max-w-64 grid-cols-3 items-stretch justify-self-end gap-1.5 sm:gap-2">
           {medals.map((medal) => (
-            <div key={medal.key} className={cn("flex min-w-0 items-center gap-2 px-3 py-1.5 sm:block sm:p-5", medal.key === "gold" && "bg-amber-50/50 dark:bg-amber-400/[0.04]")}>
-              <div className="flex shrink-0 items-center gap-2 sm:mb-3">
-                <span className={cn("grid size-7 place-items-center rounded-full", medal.color)}>
-                  <Medal aria-hidden="true" className="size-4" />
-                </span>
-                <p className="sr-only text-xs font-semibold uppercase tracking-[0.14em] sm:not-sr-only">{medal.label}</p>
-              </div>
-              <div className="grid min-w-0 flex-1 grid-cols-2 items-center gap-x-2 gap-y-0.5 [&>*:only-child]:col-span-2 sm:grid-cols-1 sm:gap-1 sm:[&>*:only-child]:col-span-1">
-                {event[medal.key]?.length ? getMedalRecipients(event[medal.key]!, year).map((name) => (
-                  <Medalist key={name} name={name} year={year} />
-                )) : (
-                  <p className="py-1 text-sm text-muted-foreground">No result recorded</p>
-                )}
+            <div key={medal.key} className={cn("flex min-w-0 flex-col rounded-lg border border-border/60 bg-background", medal.color)}>
+              <span className="sr-only">{medal.label}</span>
+              <div className="flex flex-1 flex-col justify-center">
+              {event[medal.key]?.length ? getMedalRecipients(event[medal.key]!, year).map((name) => (
+                <Medalist key={name} name={name} year={year} />
+              )) : (
+                <span className="flex min-h-10 items-center justify-center text-xs text-muted-foreground" aria-label="No result recorded">—</span>
+              )}
               </div>
             </div>
           ))}
+          </div>
         </div>
-      ) : null}
-    </BapePanel>
+      ))}
+    </div>
   )
 }
 
@@ -85,39 +77,37 @@ function Medalist({ name, year }: { name: string; year: string }) {
   const profile = BAPE_PROFILES.find(
     (profile) => `${profile.firstName} ${profile.lastName}` === name,
   )
-  const flag = profile
+  const teamFlag = profile
     ? year === "2023" ? profile.country[1] ?? profile.country[0] : profile.country[0]
     : undefined
+  const team = teamFlag ? getOlympicCountry(teamFlag) : undefined
+  const className = "flex min-h-11 w-full min-w-0 items-center justify-center rounded-lg bg-transparent p-1 text-center text-[10px] font-medium leading-tight [overflow-wrap:anywhere] hover:bg-transparent hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
   if (country) {
-    return <CountryProfileButton country={name} className="rounded-lg border-0 bg-transparent px-1 py-1 shadow-none hover:translate-y-0 hover:shadow-none" />
+    return (
+      <EntityTrigger type="country" id={country.name} className={className}>
+        <span aria-hidden="true" className="text-lg leading-none sm:text-xl">{country.flag}</span>
+        <span className="sr-only">{country.name}</span>
+      </EntityTrigger>
+    )
   }
 
-  const content = (
-    <>
-      {profile ? (
-        <span className="relative shrink-0">
-          <Image
-            src={getBapeProfileAvatar(profile, year)}
-            alt=""
-            width={36}
-            height={36}
-            className="size-7 rounded-full object-cover sm:size-9"
-          />
-          {flag ? (
-            <span aria-hidden="true" className="absolute -bottom-0.5 -right-1 grid size-4 place-items-center rounded-full bg-background text-[11px] leading-none">
-              {flag}
-            </span>
-          ) : null}
-        </span>
-      ) : null}
-      <span className="min-w-0 break-words text-xs font-medium leading-4 sm:text-sm sm:leading-6">{name}</span>
-    </>
-  )
-
   return profile ? (
-    <EntityTrigger type="person" id={String(profile.bapeID)} className="flex min-h-11 min-w-0 max-w-full items-center gap-2 rounded-lg px-1 py-1.5 text-left hover:bg-muted/60 sm:gap-3">
-      {content}
+    <EntityTrigger type="person" id={String(profile.bapeID)} className={className}>
+      <span className="relative shrink-0">
+        <Image
+          src={getBapeProfileAvatar(profile, year)}
+          alt={team ? `${name}, ${team.name}` : name}
+          width={36}
+          height={36}
+          className="size-8 rounded-md object-cover sm:size-9"
+        />
+        {teamFlag ? (
+          <span aria-hidden="true" className="absolute -bottom-0.5 -right-1 text-[10px] leading-none">
+            {teamFlag}
+          </span>
+        ) : null}
+      </span>
     </EntityTrigger>
-  ) : <div className="flex min-w-0 items-start gap-2 px-1 py-1">{content}</div>
+  ) : <span className={className}>{name}</span>
 }

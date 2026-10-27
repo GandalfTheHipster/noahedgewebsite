@@ -13,6 +13,7 @@ export type OlympicEventNight = {
   date?: string
   scheduledTime?: string
   location?: string
+  judges?: number[]
   chosenDishes?: Record<string, string | null>
   points?: Record<string, number | null>
 }
@@ -35,7 +36,8 @@ export type OlympicEvent = {
   masterminds?: Record<string, string | null>
   chosenDishes?: Record<string, string | null>
   nights?: OlympicEventNight[]
-  provisionalTopTen?: string[]
+  /** Drinking contributions keyed by full member name; team totals are calculated from these. */
+  drinkingContributions?: Record<string, number | null>
 
   gold?: string[]
   silver?: string[]
@@ -57,12 +59,7 @@ export type OlympicHighlight = {
 }
 
 export type OlympicPageData = {
-  information?: Array<{
-    label: string
-    detail: string
-    note?: string
-    icon: "calendar" | "fee"
-  }>
+  launchEvent?: { date: string }
   calendar?: Array<{
     date: string
     label: string

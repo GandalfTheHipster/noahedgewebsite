@@ -2,22 +2,23 @@
 
 import Image from "next/image"
 import { Dialog } from "radix-ui"
-import { X } from "lucide-react"
+import { ArrowUpRight, ChevronDown, X } from "lucide-react"
 
 import { EntityTrigger } from "@/components/entity/EntityTrigger"
-import { BAPE_PROFILES, getBapeProfileAvatar } from "@/lib/data/BapeProfiles"
+import { BAPE_PROFILES, DEFAULT_BAPE_PROFILE_AVATAR, getBapeProfileAvatar } from "@/lib/data/BapeProfiles"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
+import { getDrinkingStandings, type DrinkingTeamRoster } from "@/lib/olympics-drinking"
 import type { OlympicEvent } from "@/lib/data/olympics/olympics-template"
 
 export function UpcomingOlympicsEvent({
   event,
   hasMedalGames,
-  participants,
+  teamRosters = [],
   compact = false,
 }: {
   event: OlympicEvent
   hasMedalGames: boolean
-  participants?: string[]
+  teamRosters?: DrinkingTeamRoster[]
   compact?: boolean
 }) {
   const order = event.battingOrder ?? event.playingOrder
@@ -33,18 +34,31 @@ export function UpcomingOlympicsEvent({
           id={`event-${event.id}`}
           className={compact
             ? "mt-1 inline-flex min-h-8 items-center gap-1.5 rounded-md text-left text-sm font-semibold text-foreground underline-offset-4 hover:text-violet-600 hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            : "flex min-h-16 items-center gap-3 rounded-2xl border bg-card px-4 py-3 text-left transition hover:border-foreground/30 hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"}
+            : "group flex min-h-20 w-full min-w-0 items-center gap-3 rounded-lg px-1 py-4 text-left transition hover:bg-muted/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"}
         >
-          <span aria-hidden="true" className={compact ? "shrink-0 text-base leading-none" : "shrink-0 text-2xl leading-none"}>{event.emoji}</span>
-          <span className={compact ? "" : "text-sm font-semibold"}>{event.name}</span>
+          <span aria-hidden="true" className={compact ? "shrink-0 text-base leading-none" : "grid size-10 shrink-0 place-items-center rounded-xl bg-muted/40 text-xl leading-none"}>{event.emoji}</span>
+          <span className={compact ? "" : "min-w-0 flex-1"}>
+            <span className={compact ? "" : "block text-sm font-medium text-foreground/90 group-hover:underline underline-offset-4"}>{event.name}</span>
+            {!compact ? (
+              <span className="mt-1 block text-xs leading-5 text-muted-foreground">
+                {event.scheduledDate
+                  ? [event.scheduledDate, event.scheduledTime].filter(Boolean).join(" · ")
+                  : event.nights?.length
+                    ? `${event.nights.length} sessions`
+                    : "View event details"}
+              </span>
+            ) : null}
+          </span>
+          {!compact ? <ArrowUpRight aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground/60 transition group-hover:text-foreground" /> : null}
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/55" />
         <Dialog.Content
           aria-describedby={undefined}
-          className="fixed left-1/2 top-1/2 z-50 max-h-[86dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto rounded-2xl border bg-background p-6 shadow-2xl focus:outline-none"
+          className={`fixed left-1/2 top-1/2 z-50 max-h-[86dvh] w-[calc(100%-2rem)] max-w-lg -translate-x-1/2 -translate-y-1/2 overflow-y-auto overscroll-contain rounded-2xl border bg-background shadow-2xl focus:outline-none ${event.nights?.length ? "" : "p-6"}`}
         >
+          <div className={event.nights?.length ? "sticky top-0 z-10 border-b bg-background px-4 py-4 sm:px-5" : ""}>
           <div className="flex items-center gap-3 pr-10">
             <span aria-hidden="true" className="text-3xl leading-none">{event.emoji}</span>
             <Dialog.Title className="text-xl font-semibold">{event.name}</Dialog.Title>
@@ -58,7 +72,13 @@ export function UpcomingOlympicsEvent({
               <X className="size-5" />
             </button>
           </Dialog.Close>
-          {!event.nights?.length ? <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
+          </div>
+          <div className={event.nights?.length ? "px-4 pb-5 sm:px-5" : ""}>
+          {event.id === "drinking" ? (
+            <p className="mt-6 rounded-xl border bg-muted/20 p-4 text-sm">
+              Begins at check-in and ends when the closing ceremony begins.
+            </p>
+          ) : !event.nights?.length ? <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
             <div>
               <dt className="text-xs font-medium text-muted-foreground">Date</dt>
               <dd className="mt-1 text-sm font-semibold">{event.scheduledDate || "To be confirmed"}</dd>
@@ -104,10 +124,8 @@ export function UpcomingOlympicsEvent({
               </section>
               <EventPodium />
             </div>
-          ) : event.provisionalTopTen?.length ? (
-            <DrinkingTopTen
-              players={event.provisionalTopTen.filter((player) => !participants || participants.includes(player))}
-            />
+          ) : event.id === "drinking" ? (
+            <DrinkingDetails rosters={teamRosters} contributions={event.drinkingContributions} />
           ) : event.masterminds ? (
             <TriviaDetails event={event} />
           ) : event.runners?.length ? (
@@ -167,6 +185,7 @@ export function UpcomingOlympicsEvent({
               ))}
             </div>
           )}
+          </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
@@ -207,27 +226,22 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
   })
 
   return (
-    <div className="mt-6 grid gap-6">
+    <div className="mt-4 grid gap-5">
       {nights.map((night) => {
         const nightCountries = Object.keys(night.points ?? night.chosenDishes ?? {})
         return (
-        <section key={night.id} className="grid gap-3" aria-label={night.label}>
-          <div>
-            <h3 className="text-base font-semibold">{night.label}</h3>
-            <p className="mt-1 text-xs text-muted-foreground">
-              {night.date ? new Date(`${night.date}T12:00:00`).toLocaleDateString("en-AU", { weekday: "long", day: "numeric", month: "long", year: "numeric" }) : "Date to be confirmed"}
-              {night.scheduledTime ? ` · ${night.scheduledTime}` : ""}
-              {night.location ? ` · ${night.location}` : ""}
-            </p>
+        <section key={night.id} className="overflow-hidden rounded-xl border" aria-label={night.label}>
+          <div className="border-b bg-muted/30 px-3 py-2.5">
+            <h3 className="text-sm font-semibold">{night.label}</h3>
           </div>
-          <div className="overflow-hidden rounded-xl border">
+          <div>
             <table className="w-full text-sm">
               <caption className="sr-only">{night.label} cooking dishes and scores</caption>
-              <thead className="bg-muted/40 text-muted-foreground">
+              <thead className="text-[11px] text-muted-foreground">
                 <tr>
-                  <th scope="col" className="px-4 py-3 text-left font-medium">Country</th>
-                  <th scope="col" className="px-4 py-3 text-left font-medium">Chosen dish</th>
-                  <th scope="col" className="px-4 py-3 text-right font-medium">Score</th>
+                  <th scope="col" className="px-3 py-2 text-left font-medium">Country</th>
+                  <th scope="col" className="px-3 py-2 text-left font-medium">Chosen dish</th>
+                  <th scope="col" className="px-3 py-2 text-right font-medium">Score</th>
                 </tr>
               </thead>
               <tbody>
@@ -235,36 +249,65 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
                   const score = night.points?.[country]
                   return (
                     <tr key={country} className="border-t">
-                      <th scope="row" className="px-4 py-2"><MatchTeam country={country} align="left" /></th>
-                      <td className="px-4 py-2 text-muted-foreground">{night.chosenDishes?.[country] ?? "Undecided"}</td>
-                      <td className="px-4 py-2 text-right font-semibold tabular-nums">{score ?? <span aria-label="Not recorded">—</span>}</td>
+                      <th scope="row" className="px-3 py-1.5"><MatchTeam country={country} align="left" compact /></th>
+                      <td className="px-3 py-1.5 text-muted-foreground">{night.chosenDishes?.[country] ?? "Undecided"}</td>
+                      <td className="px-3 py-1.5 text-right font-semibold tabular-nums">{score ?? <span aria-label="Not recorded">—</span>}</td>
                     </tr>
                   )
                 })}
               </tbody>
             </table>
           </div>
+          {night.judges?.length ? (
+            <details className="group border-t bg-muted/10" aria-label={`${night.label} judging panel`}>
+              <summary className="flex min-h-9 cursor-pointer list-none items-center gap-2 px-3 py-2 text-xs font-medium text-muted-foreground transition hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
+                <span>Judging panel</span>
+                <span className="rounded-full bg-muted px-1.5 py-0.5 text-[10px] tabular-nums">{night.judges.length}</span>
+                <ChevronDown aria-hidden="true" className="ml-auto size-3.5 transition-transform group-open:rotate-180" />
+              </summary>
+              <ul className="grid gap-0.5 border-t p-1.5 sm:grid-cols-2">
+                {night.judges.map((judgeId) => {
+                  const profile = BAPE_PROFILES.find((person) => person.bapeID === judgeId)
+                  if (!profile) return null
+                  return (
+                    <li key={judgeId}>
+                      <EntityTrigger type="person" id={String(judgeId)} className="flex min-h-9 w-full items-center gap-2 rounded-md px-1.5 py-1 text-left text-xs font-medium transition hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring">
+                        {getBapeProfileAvatar(profile) === DEFAULT_BAPE_PROFILE_AVATAR ? (
+                          <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center rounded-full bg-violet-500/10 text-[9px] font-semibold text-violet-700 dark:text-violet-300">
+                            {profile.firstName[0]}{profile.lastName[0]}
+                          </span>
+                        ) : (
+                          <Image src={getBapeProfileAvatar(profile)} alt="" width={24} height={24} className="portrait-shadow size-6 shrink-0 rounded-full object-cover" />
+                        )}
+                        <span className="break-words">{profile.firstName} {profile.lastName}</span>
+                      </EntityTrigger>
+                    </li>
+                  )
+                })}
+              </ul>
+            </details>
+          ) : null}
         </section>
         )
       })}
       <section className="grid gap-3" aria-label="Total cooking score ranking">
-        <h3 className="text-base font-semibold">Total Score Ranking</h3>
+        <h3 className="text-sm font-semibold">Overall standings</h3>
         <div className="overflow-hidden rounded-xl border">
           <table className="w-full text-sm">
             <caption className="sr-only">Combined cooking scores across both nights</caption>
-            <thead className="bg-muted/40 text-muted-foreground">
+            <thead className="text-[11px] text-muted-foreground">
               <tr>
-                <th scope="col" className="w-16 px-4 py-3 text-center font-medium">Rank</th>
-                <th scope="col" className="px-4 py-3 text-left font-medium">Country</th>
-                <th scope="col" className="px-4 py-3 text-right font-medium">Total score</th>
+                <th scope="col" className="w-16 px-3 py-2 text-center font-medium">Rank</th>
+                <th scope="col" className="px-3 py-2 text-left font-medium">Country</th>
+                <th scope="col" className="px-3 py-2 text-right font-medium">Total score</th>
               </tr>
             </thead>
             <tbody>
               {rankedTotals.map(({ country, total, rank }) => (
                 <tr key={country} className="border-t">
-                  <td className="px-4 py-2 text-center font-semibold tabular-nums">{rank ?? <span aria-label="Unranked">—</span>}</td>
-                  <th scope="row" className="px-4 py-2"><MatchTeam country={country} align="left" /></th>
-                  <td className="px-4 py-2 text-right font-semibold tabular-nums">{total ?? <span aria-label="Not recorded">—</span>}</td>
+                  <td className="px-3 py-1.5 text-center font-semibold tabular-nums">{rank ?? <span aria-label="Unranked">—</span>}</td>
+                  <th scope="row" className="px-3 py-1.5"><MatchTeam country={country} align="left" compact /></th>
+                  <td className="px-3 py-1.5 text-right font-semibold tabular-nums">{total ?? <span aria-label="Not recorded">—</span>}</td>
                 </tr>
               ))}
             </tbody>
@@ -275,40 +318,60 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
   )
 }
 
-function DrinkingTopTen({ players }: { players: string[] }) {
+function DrinkingDetails({ rosters, contributions }: {
+  rosters: DrinkingTeamRoster[]
+  contributions?: Record<string, number | null>
+}) {
+  const teams = getDrinkingStandings(rosters, contributions)
+
   return (
-    <section className="mt-6 grid gap-3" aria-label="Drinking top ten">
-      <h3 className="text-sm font-semibold">Top ten</h3>
-      <p className="text-xs text-muted-foreground">Placeholder rankings — results to be confirmed.</p>
-      <div className="overflow-hidden rounded-xl border">
-        <table className="w-full text-sm">
-          <caption className="sr-only">Provisional drinking top ten players</caption>
-          <thead className="bg-muted/40 text-muted-foreground">
-            <tr>
-              <th scope="col" className="w-16 px-4 py-3 text-center font-medium">Rank</th>
-              <th scope="col" className="px-4 py-3 text-left font-medium">Player</th>
-            </tr>
-          </thead>
-          <tbody>
-            {players.slice(0, 10).map((name, index) => {
-              const profile = BAPE_PROFILES.find((person) => `${person.firstName} ${person.lastName}` === name)
-              return (
-                <tr key={name} className="border-t">
-                  <td className="px-4 py-2 text-center font-semibold tabular-nums">{index + 1}</td>
-                  <th scope="row" className="px-4 py-2 text-left font-semibold">
-                    {profile ? (
-                      <EntityTrigger type="person" id={String(profile.bapeID)} className="flex min-h-10 w-full items-center gap-3 text-sm font-semibold">
-                        <Image src={getBapeProfileAvatar(profile)} alt="" width={40} height={40} className="size-10 shrink-0 rounded-full object-cover" />
-                        <span>{name}</span>
-                      </EntityTrigger>
-                    ) : name}
-                  </th>
-                </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+    <section className="mt-6 grid gap-4" aria-label="Drinking team standings">
+      <section className="rounded-xl border bg-muted/20 p-4" aria-label="Drinking medals">
+        <h3 className="text-sm font-semibold">Medals</h3>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Medals are awarded by total team drinks: 🥇 gold for the highest total,
+          🥈 silver for second, and 🥉 bronze for third.
+        </p>
+      </section>
+      <h3 className="text-sm font-semibold">Team scores</h3>
+      {teams.map(({ team, score, members }) => (
+        <section key={team} className="overflow-hidden rounded-xl border" aria-label={`${team} drinking contributions`}>
+          <div className="flex items-center gap-3 bg-muted/40 px-4 py-3">
+            <MatchTeam country={team} align="left" />
+            <div className="shrink-0 text-right">
+              <p className="text-xs text-muted-foreground">Total team score</p>
+              <p className="text-base font-semibold tabular-nums">{score ?? 0}</p>
+            </div>
+          </div>
+          <table className="w-full text-sm">
+            <caption className="sr-only">{team} members ranked by drinking contribution</caption>
+            <thead className="sr-only">
+              <tr>
+                <th scope="col">Member</th>
+                <th scope="col">Contribution</th>
+              </tr>
+            </thead>
+            <tbody>
+              {members.map(({ name, score: contribution }) => {
+                const profile = BAPE_PROFILES.find((person) => `${person.firstName} ${person.lastName}` === name)
+                return (
+                  <tr key={name} className="border-t">
+                    <th scope="row" className="px-4 py-2 text-left font-semibold">
+                      {profile ? (
+                        <EntityTrigger type="person" id={String(profile.bapeID)} className="flex min-h-10 w-full items-center gap-2 text-sm font-semibold">
+                          <Image src={getBapeProfileAvatar(profile)} alt="" width={32} height={32} className="portrait-shadow hidden size-8 shrink-0 rounded-full object-cover sm:block" />
+                          <span className="break-words">{name}</span>
+                        </EntityTrigger>
+                      ) : name}
+                    </th>
+                    <td className="px-4 py-2 text-right font-semibold tabular-nums">{contribution ?? <span className="sr-only">Not recorded</span>}</td>
+                  </tr>
+                )
+              })}
+            </tbody>
+          </table>
+        </section>
+      ))}
     </section>
   )
 }
@@ -318,6 +381,7 @@ function TriviaDetails({ event }: { event: OlympicEvent }) {
 
   return (
     <div className="mt-6 grid gap-6">
+      <p className="text-sm text-muted-foreground">Organised by Andrew Turnbull.</p>
       <section className="grid gap-3" aria-label="Mastermind chosen">
         <h3 className="text-sm font-semibold">Mastermind chosen</h3>
         <ul className="grid gap-2">
@@ -366,7 +430,7 @@ function SprintRunners({ runners }: { runners: string[] }) {
                       alt=""
                       width={40}
                       height={40}
-                      className="size-10 shrink-0 rounded-full object-cover"
+                      className="portrait-shadow size-10 shrink-0 rounded-full object-cover"
                     />
                     <span>{name}</span>
                   </EntityTrigger>
@@ -454,14 +518,14 @@ function GameSlot({ label, teams }: { label: string; teams?: [string, string] })
   )
 }
 
-function MatchTeam({ country, align = "center" }: { country?: string; align?: "left" | "center" }) {
+function MatchTeam({ country, align = "center", compact = false }: { country?: string; align?: "left" | "center"; compact?: boolean }) {
   const team = country ? getOlympicCountry(country) : undefined
 
   return country ? (
     <EntityTrigger
       type="country"
       id={team?.name ?? country}
-      className={`flex min-h-10 min-w-0 w-full items-center gap-2 py-1 text-sm font-semibold ${align === "left" ? "justify-start text-left" : "justify-center text-center"}`}
+      className={`flex ${compact ? "min-h-8" : "min-h-10"} min-w-0 w-full items-center gap-2 py-1 text-sm font-semibold ${align === "left" ? "justify-start text-left" : "justify-center text-center"}`}
     >
       {team?.flag ? <span aria-hidden="true" className="shrink-0 text-lg">{team.flag}</span> : null}
       <span className="min-w-0 break-words">{team?.name ?? country}</span>

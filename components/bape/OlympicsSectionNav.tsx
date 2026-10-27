@@ -28,7 +28,7 @@ export function OlympicsSectionNav({
   ]
 
   return (
-    <nav className="sticky top-2 z-20 mx-auto flex w-full max-w-full flex-wrap justify-evenly gap-2 rounded-[1.5rem] border bg-card p-2 sm:mx-0 sm:justify-start">
+    <nav aria-label="Edition navigation" className="mx-auto flex w-full min-w-0 max-w-full flex-wrap justify-start gap-x-2 border-b border-border/70">
       {items.map((item) => {
         const isActive = pathname === item.href
 
@@ -37,10 +37,11 @@ export function OlympicsSectionNav({
             key={item.href}
             href={item.href}
             scroll={false}
+            aria-current={isActive ? "page" : undefined}
             className={cn(
-              "rounded-full px-4 py-2 text-sm font-medium text-muted-foreground transition hover:bg-muted hover:text-foreground",
+              "relative -mb-px min-w-fit flex-1 whitespace-nowrap border-b-2 border-transparent px-2 pb-3 pt-2 text-center text-sm font-medium text-muted-foreground transition hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring md:flex-none md:px-4 md:text-left",
               isActive &&
-                "bg-foreground text-background hover:bg-foreground hover:text-background",
+                "border-foreground text-foreground",
             )}
           >
             {item.label}

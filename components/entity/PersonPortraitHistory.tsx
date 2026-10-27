@@ -29,7 +29,7 @@ function PortraitCard({ portrait, current, swappedOutOn, name }: {
   return (
     <li className="flex min-w-0 gap-3 rounded-xl border bg-muted/10 p-3">
       <div className="relative size-20 shrink-0 overflow-hidden rounded-lg bg-muted/30 sm:size-24">
-        <Image src={portrait.imageUrl} alt={`${current ? "Current" : "Previous"} portrait of ${name}`} fill sizes="96px" className="object-contain" />
+        <Image src={portrait.imageUrl} alt={`${current ? "Current" : "Previous"} portrait of ${name}`} fill sizes="96px" className="portrait-shadow object-contain" />
       </div>
       <div className="min-w-0 py-0.5">
         <div className="flex flex-wrap items-center gap-1.5">
@@ -62,7 +62,7 @@ export function PersonPortraitHistory({ profile }: { profile: BapeProfile }) {
     <Dialog.Root>
       <Dialog.Trigger asChild>
         <button type="button" aria-label={`View portrait history for ${name}`} title="View portrait history" className="group relative shrink-0 rounded-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2">
-          <Image src={current.imageUrl} alt={name} width={88} height={88} className="h-16 w-16 rounded-xl border object-cover transition group-hover:brightness-90" />
+          <Image src={current.imageUrl} alt={name} width={88} height={88} className="portrait-shadow h-16 w-16 rounded-xl border object-cover transition group-hover:brightness-90" />
           <span className="absolute -bottom-1 -right-1 rounded-full border bg-background p-1"><History aria-hidden="true" className="size-3" /></span>
         </button>
       </Dialog.Trigger>
