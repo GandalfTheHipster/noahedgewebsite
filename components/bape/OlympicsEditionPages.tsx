@@ -498,7 +498,7 @@ function OlympicsAtAGlance({
 
   return (
     <BapePanel className="overflow-hidden rounded-xl border-border/50 bg-muted/[0.08] shadow-none">
-      <div className="grid grid-cols-2 sm:grid-cols-4 [&>*]:border-border/70 [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t sm:[&>*+*]:border-l sm:[&>*:nth-child(n+3)]:border-t-0">
+      <div className="grid grid-cols-2 lg:grid-cols-4 [&>*]:min-w-0 [&>*]:border-border/70 [&>*:nth-child(even)]:border-l [&>*:nth-child(n+3)]:border-t lg:[&>*+*]:border-l lg:[&>*:nth-child(n+3)]:border-t-0">
         <EditionMetric
           icon={<Medal className="size-4" />}
           label="Teams"
@@ -540,12 +540,12 @@ function EditionMetric({
   href?: string
 }) {
   const content = (
-    <div className="flex items-center gap-2.5 px-4 py-3.5 sm:px-5">
+    <div className="flex min-w-0 items-center gap-2.5 px-4 py-3.5 sm:px-5">
       <span className="shrink-0 text-muted-foreground/70">
         {icon}
       </span>
       <div className="min-w-0">
-        <p className="text-lg font-semibold leading-tight tracking-tight sm:text-xl">{value}</p>
+        <p className="text-lg font-semibold leading-tight tracking-tight [overflow-wrap:anywhere] sm:text-xl">{value}</p>
         <p className="mt-0.5 text-[11px] text-muted-foreground">
           {label}
         </p>
