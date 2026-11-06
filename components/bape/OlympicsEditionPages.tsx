@@ -214,18 +214,18 @@ function OlympicsCalendar({ data }: OlympicsEditionPageProps) {
   return (
     <section className="grid gap-5" aria-label="Calendar">
       <BapeSectionHeader title="Calendar" />
-      <div className="grid items-start gap-4 lg:grid-cols-3">
+      <div className="grid gap-4 lg:grid-cols-3">
         {columns.map((column) => (
-          <div key={column[0].date} className="grid content-start gap-4">
+          <div key={column[0].date} className="flex flex-col gap-4">
             {column.map((day) => (
-              <BapePanel key={day.date} className="overflow-hidden rounded-2xl border-border/70 shadow-none">
+              <BapePanel key={day.date} className="flex flex-col overflow-hidden rounded-2xl border-border/70 shadow-none first:flex-1">
                 <div className="flex shrink-0 items-center gap-2.5 border-b border-border/70 bg-muted/25 px-4 py-4">
                   <CalendarDays className="size-4 shrink-0 text-violet-500 dark:text-violet-400" aria-hidden="true" />
                   <h3 className="text-sm font-semibold">
                     <time dateTime={day.date}>{day.label}</time>
                   </h3>
                 </div>
-                <ol className="divide-y divide-border/60 px-4">
+                <ol className="flex flex-1 flex-col divide-y divide-border/60 px-4">
                   {day.items.map((item) => {
                     const event = "eventId" in item
                       ? data.events.find((event) => event.id === item.eventId)
@@ -242,7 +242,7 @@ function OlympicsCalendar({ data }: OlympicsEditionPageProps) {
                     ))
 
                     return (
-                      <li key={"eventId" in item ? `${item.eventId}-${"eventNightId" in item ? item.eventNightId ?? "" : ""}` : item.name} className="py-4">
+                      <li key={"eventId" in item ? `${item.eventId}-${"eventNightId" in item ? item.eventNightId ?? "" : ""}` : item.name} className="flex-1 py-4">
                         {time ? <p className="text-xs font-medium tabular-nums text-muted-foreground">{time}</p> : null}
                         {event ? (
                           <UpcomingOlympicsEvent event={event} hasMedalGames={hasMedalGames} teamRosters={teamRosters} compact />

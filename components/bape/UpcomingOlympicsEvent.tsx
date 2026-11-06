@@ -152,29 +152,11 @@ export function UpcomingOlympicsEvent({
               </ol>
               <ScoreMedals order={order} results={results} scoreLabel={scoreLabel} />
             </section>
+          ) : event.id === "pickleball" ? (
+            <PickleballDetails event={event} />
           ) : hasMedalGames ? (
             <div className="mt-6 grid gap-5">
-              <section className="grid gap-3" aria-label="Opening matches">
-                <h3 className="text-sm font-semibold">Opening matches</h3>
-                {event.openingMatches?.length ? (
-                  event.openingMatches.map((teams, index) => (
-                    <GameSlot key={index} label={`Match ${index + 1}`} teams={teams} />
-                  ))
-                ) : (
-                  <>
-                    <GameSlot label="Match 1" />
-                    <GameSlot label="Match 2" />
-                  </>
-                )}
-              </section>
-              <section className="grid gap-3" aria-label="Gold medal game">
-                <h3 className="text-sm font-semibold"><span aria-hidden="true">🥇 </span>Gold medal game</h3>
-                <GameSlot label="Gold medal game" />
-              </section>
-              <section className="grid gap-3" aria-label="Bronze medal game">
-                <h3 className="text-sm font-semibold"><span aria-hidden="true">🥉 </span>Bronze medal game</h3>
-                <GameSlot label="Bronze medal game" />
-              </section>
+              <MedalGames openingMatches={event.openingMatches} />
             </div>
           ) : (
             <div className="mt-6 grid gap-3" role="list" aria-label="Games to be scheduled">
@@ -189,6 +171,53 @@ export function UpcomingOlympicsEvent({
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+  )
+}
+
+function PickleballDetails({ event }: { event: OlympicEvent }) {
+  return (
+    <div className="mt-6 grid gap-5">
+      <p className="text-xs text-muted-foreground">
+        Two players per team in each division.
+      </p>
+      {event.divisions?.map((division) => (
+        <section key={division.name} className="grid gap-4 rounded-xl border p-3 sm:p-4" aria-label={division.name}>
+          <h3 className="border-b pb-3 text-base font-semibold">{division.name}</h3>
+          <MedalGames openingMatches={event.openingMatches} players={division.players} />
+        </section>
+      ))}
+    </div>
+  )
+}
+
+function MedalGames({ openingMatches, players }: {
+  openingMatches?: OlympicEvent["openingMatches"]
+  players?: Record<string, [string, string]>
+}) {
+  return (
+    <>
+      <section className="grid gap-3" aria-label="Opening matches">
+        <h3 className="text-sm font-semibold">Opening matches</h3>
+        {openingMatches?.length ? (
+          openingMatches.map((teams, index) => (
+            <GameSlot key={index} label={`Match ${index + 1}`} teams={teams} players={players} />
+          ))
+        ) : (
+          <>
+            <GameSlot label="Match 1" />
+            <GameSlot label="Match 2" />
+          </>
+        )}
+      </section>
+      <section className="grid gap-3" aria-label="Gold medal game">
+        <h3 className="text-sm font-semibold"><span aria-hidden="true">🥇 </span>Gold medal game</h3>
+        <GameSlot label="Gold medal game" />
+      </section>
+      <section className="grid gap-3" aria-label="Bronze medal game">
+        <h3 className="text-sm font-semibold"><span aria-hidden="true">🥉 </span>Bronze medal game</h3>
+        <GameSlot label="Bronze medal game" />
+      </section>
+    </>
   )
 }
 
@@ -507,13 +536,36 @@ function ScoreMedals({ order, results, scoreLabel }: {
   )
 }
 
-function GameSlot({ label, teams }: { label: string; teams?: [string, string] }) {
+function GameSlot({ label, teams, players }: {
+  label: string
+  teams?: [string, string]
+  players?: Record<string, [string, string]>
+}) {
   return (
     <div className="grid min-h-20 grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-3 rounded-xl border border-dashed bg-muted/20 px-4 py-3" role="group" aria-label={label}>
       {!teams ? <span className="sr-only">{label}: teams to be confirmed</span> : null}
-      <MatchTeam country={teams?.[0]} />
+      <MatchLineup country={teams?.[0]} players={players} />
       <span aria-hidden={teams ? undefined : true} className="text-xs font-medium text-muted-foreground">vs</span>
-      <MatchTeam country={teams?.[1]} />
+      <MatchLineup country={teams?.[1]} players={players} />
+    </div>
+  )
+}
+
+function MatchLineup({ country, players }: {
+  country?: string
+  players?: Record<string, [string, string]>
+}) {
+  const members = country ? players?.[country] : undefined
+  if (!members) return <MatchTeam country={country} />
+
+  return (
+    <div className="min-w-0">
+      <MatchTeam country={country} />
+      <ul className="mt-1 grid gap-1 text-center text-xs leading-5 text-muted-foreground">
+        {members.map((name) => (
+          <li key={name} className="break-words">{name}</li>
+        ))}
+      </ul>
     </div>
   )
 }
