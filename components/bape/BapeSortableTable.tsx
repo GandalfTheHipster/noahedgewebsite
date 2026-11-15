@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { Suspense, useState } from "react"
 import {
   flexRender,
   getCoreRowModel,
@@ -31,7 +31,16 @@ type BapeSortableTableProps<T> = {
   columnWidths?: Record<string, string>
 }
 
-export function BapeSortableTable<T>({
+export function BapeSortableTable<T>(props: BapeSortableTableProps<T>) {
+  // TanStack Table reads Date.now() while rendering in development.
+  return (
+    <Suspense fallback={null}>
+      <SortableTable {...props} />
+    </Suspense>
+  )
+}
+
+function SortableTable<T>({
   data,
   columns,
   initialSort = [],
