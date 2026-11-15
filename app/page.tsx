@@ -11,16 +11,14 @@ const projects = [
     imageSrc: "https://i.postimg.cc/wB8jxcqN/IMG-0666.jpg",
     title: "Bape Olympics",
     description:
-      "Annual multi-event beer-based competition archive with squads, medals, events, winners, and all-time rankings.",
-    buttonText: "View Bape Olympics",
+      "Events, medals and questionable athleticism.",
     href: "/bape/olympics",
   },
   {
     imageSrc: "https://i.postimg.cc/ZR6kb86T/beerponglogo.png",
     title: "Bape Beer Pong League",
     description:
-      "The Bape Beer Pong League is the pinnacle of competitive Beer Pong in Australia. View stats, results and standings here.",
-    buttonText: "View Beer Pong League",
+      "Fixtures, results and standings.",
     href: "/bape/beerpong",
   },
 ]
@@ -31,7 +29,7 @@ export default function Home() {
       <div className="flex min-h-screen w-full flex-col items-center">
         <SiteNav />
 
-        <div className="flex w-full max-w-6xl flex-1 flex-col items-center px-5 sm:px-8">
+        <div className="flex w-full max-w-6xl flex-col items-center px-5 sm:px-8">
           <section className="grid w-full items-center gap-8 py-12 sm:py-16 md:grid-cols-[1fr_320px] md:gap-16 md:py-20 lg:gap-24">
             <div className="flex flex-col items-center gap-6 text-center md:items-start md:text-left">
               <div className="space-y-5">
@@ -39,9 +37,8 @@ export default function Home() {
                   Noah Edge
                 </h1>
                 <p className="mx-auto max-w-lg text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8 md:mx-0">
-                  I&apos;m a West Australian software engineering student at
-                  Curtin University with a passion for history, politics, and
-                  video games.
+                  Software engineering student at Curtin, based in Perth. Into
+                  history, politics and video games.
                 </p>
               </div>
               <SocialLinks />
@@ -74,7 +71,7 @@ export default function Home() {
           <section
             id="projects"
             aria-labelledby="projects-heading"
-            className="w-full border-t border-border/60 py-10 sm:py-12 md:pb-20"
+            className="w-full border-t border-border/60 pt-10 pb-12 sm:pt-12 md:pb-20"
           >
             <h2
               id="projects-heading"
@@ -83,14 +80,14 @@ export default function Home() {
               Projects
             </h2>
 
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 md:grid-cols-2 md:gap-8">
               {projects.map((project) => (
                 <article key={project.title} className="h-full">
                   <Link
                     href={project.href}
-                    className="group flex h-full flex-col overflow-hidden rounded-2xl border border-border/70 bg-card transition-colors hover:border-foreground/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
+                    className="group flex h-full flex-col rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background"
                   >
-                    <div className="aspect-video overflow-hidden border-b border-border/60 bg-black">
+                    <div className="aspect-video overflow-hidden rounded-lg bg-black">
                       <Image
                         src={project.imageSrc}
                         alt=""
@@ -100,19 +97,14 @@ export default function Home() {
                         className={`h-full w-full motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03] ${project.href === "/bape/beerpong" ? "object-contain p-5" : "object-cover"}`}
                       />
                     </div>
-                    <div className="flex flex-1 flex-col p-5 sm:p-6">
-                      <h3 className="text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
+                    <div className="flex flex-1 flex-col pt-5">
+                      <h3 className="flex items-center gap-3 text-xl font-semibold leading-snug tracking-tight sm:text-2xl">
                         {project.title}
+                        <ArrowUpRight aria-hidden="true" className="h-4 w-4 shrink-0 text-muted-foreground transition-colors group-hover:text-foreground" />
                       </h3>
-                      <p className="mt-3 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
+                      <p className="mt-2 text-sm leading-6 text-muted-foreground sm:text-base sm:leading-7">
                         {project.description}
                       </p>
-                      <div className="mt-auto pt-6">
-                        <span className="flex items-center justify-between border-t border-border/60 pt-4 text-sm font-medium">
-                          {project.buttonText}
-                          <ArrowUpRight aria-hidden="true" className="h-4 w-4 text-muted-foreground transition-colors group-hover:text-foreground" />
-                        </span>
-                      </div>
                     </div>
                   </Link>
                 </article>
@@ -120,6 +112,40 @@ export default function Home() {
             </div>
           </section>
         </div>
+
+        <section
+          id="contact"
+          aria-labelledby="contact-heading"
+          className="w-full max-w-6xl px-5 sm:px-8"
+        >
+          <div className="grid gap-8 border-t border-border/60 py-10 sm:py-12 md:grid-cols-2 md:pb-20">
+            <div>
+              <h2
+                id="contact-heading"
+                className="text-2xl font-semibold tracking-tight sm:text-3xl"
+              >
+                Say hello
+              </h2>
+              <a
+                href="mailto:hello@noahedge.com"
+                className="mt-4 inline-block max-w-full break-words rounded-sm text-base underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
+              >
+                hello@noahedge.com
+              </a>
+            </div>
+            <div>
+              <h3 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+                Complain about me
+              </h3>
+              <a
+                href="mailto:grievances@noahedge.com"
+                className="mt-4 inline-block max-w-full break-words rounded-sm text-base underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:text-lg"
+              >
+                grievances@noahedge.com
+              </a>
+            </div>
+          </div>
+        </section>
 
         <footer className="w-full border-t border-border/60 bg-background/80">
           <div className="mx-auto flex w-full max-w-6xl items-center justify-center px-5 py-8">

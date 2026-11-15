@@ -6,7 +6,7 @@ export function SocialLinks() {
     "h-5 w-5"
 
   const linkClass =
-    "flex h-11 w-11 items-center justify-center rounded-full border border-border/70 text-muted-foreground transition-colors hover:border-foreground/30 hover:bg-muted hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+    "flex h-11 w-11 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
   const links = {
     github: "https://github.com/GandalfTheHipster",
@@ -16,7 +16,7 @@ export function SocialLinks() {
   }
 
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-1 md:-ml-3">
       <Link href={links.github} target="_blank" rel="noopener noreferrer" aria-label="GitHub" className={linkClass}>
         <Github className={iconClass} aria-hidden="true" />
       </Link>

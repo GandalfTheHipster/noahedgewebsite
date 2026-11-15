@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, Medal, Trophy } from "lucide-react"
 
@@ -53,12 +54,18 @@ const statsLinks = [
   {
     href: "/bape/olympics/stats",
     title: "Athlete medal table",
+    image: "https://i.postimg.cc/B66pfv3j/bapesports.jpg",
     icon: Medal,
+    accent: "border-sky-400/25",
+    iconColor: "text-sky-200",
   },
   {
     href: "/bape/olympics/stats/titles",
     title: "Titles ranking",
+    image: "https://i.postimg.cc/x8JnMmg6/81A7CEEB-C84F-4834-93CD-4A3788ED1FAD-1-105-c.jpg",
     icon: Trophy,
+    accent: "border-orange-400/25",
+    iconColor: "text-orange-200",
   },
 ]
 
@@ -95,20 +102,31 @@ export default function OlympicsHubPage() {
         <section className="flex flex-col gap-5">
           <BapeSectionHeader title="Stats" />
           <div className="grid gap-4 sm:grid-cols-2">
-            {statsLinks.map(({ href, title, icon: Icon }) => (
+            {statsLinks.map(({ href, title, image, icon: Icon, accent, iconColor }) => (
               <Link
                 key={href}
                 href={href}
-                aria-label={title}
-                className="group flex min-h-44 flex-col items-center justify-center gap-4 rounded-[1.5rem] border border-foreground/20 bg-card p-5 text-center shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-foreground/40 hover:shadow-md focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background sm:min-h-48"
+                className={`group flex h-full flex-col overflow-hidden rounded-[1.5rem] border bg-card p-4 shadow-sm motion-safe:transition motion-safe:duration-300 motion-safe:hover:-translate-y-1 hover:border-foreground/20 hover:shadow-xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-4 focus-visible:ring-offset-background ${accent}`}
               >
-                <span className="grid size-20 place-items-center rounded-2xl border border-foreground/20 bg-foreground/[0.08] text-foreground transition-colors group-hover:bg-foreground/[0.14] sm:size-24">
-                  <Icon aria-hidden="true" className="size-11 sm:size-12" strokeWidth={1.6} />
-                </span>
-                <span className="flex items-center gap-2 font-semibold tracking-tight sm:text-lg">
-                  {title}
-                  <ArrowUpRight aria-hidden="true" className="size-4 text-foreground transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5 group-hover:text-foreground" />
-                </span>
+                <div className={`relative isolate grid min-h-48 place-items-center overflow-hidden rounded-2xl border bg-zinc-900 sm:min-h-52 ${accent}`}>
+                  <Image
+                    src={image}
+                    alt=""
+                    fill
+                    sizes="(max-width: 639px) 100vw, (max-width: 1024px) 50vw, 460px"
+                    className="object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/65 transition-colors group-hover:bg-black/55" />
+                  <div className="relative flex flex-col items-center gap-3 px-4 py-6 text-center text-white">
+                    <span className={`grid size-16 place-items-center rounded-2xl border bg-black/50 ${accent} ${iconColor}`}>
+                      <Icon aria-hidden="true" className="size-9" strokeWidth={1.75} />
+                    </span>
+                    <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
+                      {title}
+                    </h3>
+                  </div>
+                  <ArrowUpRight aria-hidden="true" className="absolute right-3 top-3 size-8 rounded-lg bg-black/60 p-1.5 text-white" />
+                </div>
               </Link>
             ))}
           </div>

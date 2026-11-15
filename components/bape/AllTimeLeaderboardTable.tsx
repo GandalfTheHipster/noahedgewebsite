@@ -145,35 +145,33 @@ function AthleteMobileCard({
   return (
     <div
       className={cn(
-        "flex items-center gap-3 border-b p-3.5 last:border-b-0 sm:p-4",
+        "grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-x-2.5 gap-y-2 border-b p-3 last:border-b-0 sm:gap-x-3 sm:p-4",
         isLeader && "bg-[#f8c75c]/[0.07]",
       )}
     >
-      <div className="flex w-full min-w-0 items-center gap-2">
-        <RankBadge rank={rank} />
-
-        <div className="min-w-0 flex-1">
-          <PersonProfileButton
-            bapeID={String(athlete.id)}
-            labelMode="full"
-            nameClassName="whitespace-normal text-lg font-semibold leading-tight sm:text-xl"
-            className="max-w-full min-w-0 justify-start rounded-none border-0 bg-transparent p-0 shadow-none hover:translate-y-0 hover:border-transparent hover:bg-transparent hover:shadow-none"
-          />
-        </div>
-        <div className="flex shrink-0 items-center gap-1.5">
+      <RankBadge rank={rank} />
+      <div className="flex min-w-0 items-center gap-2">
+        <PersonProfileButton
+          bapeID={String(athlete.id)}
+          labelMode="full"
+          nameClassName="whitespace-normal break-words text-base font-semibold leading-tight sm:text-lg"
+          className="max-w-full min-w-0 justify-start rounded-none border-0 bg-transparent p-0 shadow-none hover:translate-y-0 hover:border-transparent hover:bg-transparent hover:shadow-none"
+        />
+        {athlete.teams.length > 0 && (
           <CountryFlagRow athleteId={athlete.id} teams={athlete.teams} compact />
-          <div className="flex items-center gap-1">
-            <MobileMedalCount label="Gold" value={athlete.gold} tone="gold" />
-            <MobileMedalCount label="Silver" value={athlete.silver} tone="silver" />
-            <MobileMedalCount label="Bronze" value={athlete.bronze} tone="bronze" />
-          </div>
-          <div className="ml-1 flex items-baseline gap-1 border-l pl-2.5 text-right">
-            <span className="text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
-              PTS
-            </span>
-            <span className="text-lg font-bold tabular-nums">{athlete.points}</span>
-          </div>
-        </div>
+        )}
+      </div>
+      <div className="text-right leading-none">
+        <span className="block text-lg font-bold tabular-nums">{athlete.points}</span>
+        <span className="mt-1 block text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
+          <span aria-hidden="true">PTS</span>
+          <span className="sr-only">points</span>
+        </span>
+      </div>
+      <div className="col-span-full grid grid-cols-3 divide-x rounded-lg border bg-muted/20 py-1.5">
+        <MobileMedalCount label="Gold" value={athlete.gold} tone="gold" />
+        <MobileMedalCount label="Silver" value={athlete.silver} tone="silver" />
+        <MobileMedalCount label="Bronze" value={athlete.bronze} tone="bronze" />
       </div>
     </div>
   )
@@ -205,7 +203,7 @@ function CountryFlagRow({
   compact?: boolean
 }) {
   return (
-    <div className={cn("flex shrink-0 items-center whitespace-nowrap leading-none opacity-70", compact ? "gap-0 text-sm" : "gap-1 text-base")}>
+    <div className={cn("flex shrink-0 items-center whitespace-nowrap leading-none opacity-70", compact ? "max-w-[40%] flex-wrap gap-x-1 gap-y-0.5 text-sm" : "gap-1 text-base")}>
       {teams.map((team) => (
         <EntityTrigger
           key={`${athleteId}-${team}`}
@@ -265,9 +263,10 @@ function MobileMedalCount({
   tone: "gold" | "silver" | "bronze"
 }) {
   return (
-    <span role="img" aria-label={`${label}: ${value}`} title={`${label}: ${value}`}>
-      <MedalBadge value={value} tone={tone} size="size-7 text-xs" />
-    </span>
+    <div className="flex items-center justify-center gap-1.5 px-1">
+      <span className="text-xs font-medium text-muted-foreground">{label}</span>
+      <MedalBadge value={value} tone={tone} size="size-6 text-xs" />
+    </div>
   )
 }
 
