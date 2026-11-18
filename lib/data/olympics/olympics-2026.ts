@@ -114,11 +114,11 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         {
           id: "night-one",
           label: "Night One",
-          judges: [24, 25, 26, 27, 28],
+          judges: [25, 24, 32, 33],
           date: "2026-11-20",
           scheduledTime: "Served 6:30 pm",
           location: "The Lavender Patch",
-          chosenDishes: { Estonia: null, "South Africa": null },
+          chosenDishes: { Estonia: null, "South Africa": "Chicken/Fish Thai Curry" },
           points: { Estonia: null, "South Africa": null },
         },
         {
