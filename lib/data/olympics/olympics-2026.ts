@@ -271,6 +271,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       emoji: "🍺",
       status: "upcoming",
       drinkingContributions: {},
+      drinkingTeamScores: { Scotland: 4.2, Mongolia: 32.2, "South Africa": 37.8, Estonia: 37.3 },
+      drinkingScoresUpdatedAt: "9:16 pm AWST, 20 November 2026",
     },
     {
       id: "wii-bowling",

@@ -22,6 +22,7 @@ function rankScores<T extends { score: number | null }>(entries: T[]) {
 export function getDrinkingStandings(
   rosters: DrinkingTeamRoster[],
   contributions: Record<string, number | null> = {},
+  teamScores: Record<string, number> = {},
 ) {
   return rankScores(rosters.map(({ team, members }) => {
     const rankedMembers = rankScores(members.map((name) => ({
@@ -33,7 +34,7 @@ export function getDrinkingStandings(
       team,
       members: rankedMembers,
       recordedCount: recorded.length,
-      score: recorded.length ? recorded.reduce((total, member) => total + member.score!, 0) : null,
+      score: teamScores[team] ?? (recorded.length ? recorded.reduce((total, member) => total + member.score!, 0) : null),
     }
   }))
 }

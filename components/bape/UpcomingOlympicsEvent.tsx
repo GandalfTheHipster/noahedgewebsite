@@ -24,7 +24,7 @@ export function UpcomingOlympicsEvent({
   result?: boolean
 }) {
   const completed = event.status === "completed"
-  const showDrinkingDetails = event.id === "drinking" && (!completed || event.drinkingContributions)
+  const showDrinkingDetails = event.id === "drinking" && (!completed || event.drinkingContributions || event.drinkingTeamScores)
   const showSchedule = !event.nights?.length && (!completed || event.scheduledDate || event.scheduledTime || event.location)
   const order = event.battingOrder ?? event.playingOrder
   const orderLabel = event.battingOrder ? "Batting order" : "Playing order"
@@ -139,7 +139,7 @@ export function UpcomingOlympicsEvent({
               {!completed && <EventPodium />}
             </div>
           ) : showDrinkingDetails ? (
-            <DrinkingDetails rosters={teamRosters} contributions={event.drinkingContributions} />
+            <DrinkingDetails rosters={teamRosters} event={event} />
           ) : event.masterminds ? (
             <TriviaDetails event={event} />
           ) : event.runners?.length ? (
@@ -366,11 +366,11 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
   )
 }
 
-function DrinkingDetails({ rosters, contributions }: {
+function DrinkingDetails({ rosters, event }: {
   rosters: DrinkingTeamRoster[]
-  contributions?: Record<string, number | null>
+  event: OlympicEvent
 }) {
-  const teams = getDrinkingStandings(rosters, contributions)
+  const teams = getDrinkingStandings(rosters, event.drinkingContributions, event.drinkingTeamScores)
 
   return (
     <section className="mt-6 grid gap-4" aria-label="Drinking team standings">
@@ -381,7 +381,12 @@ function DrinkingDetails({ rosters, contributions }: {
           🥈 silver for second, and 🥉 bronze for third.
         </p>
       </section>
-      <h3 className="text-sm font-semibold">Team scores</h3>
+      <div>
+        <h3 className="text-sm font-semibold">Team scores</h3>
+        {event.drinkingScoresUpdatedAt && (
+          <p className="text-xs text-muted-foreground">Updated {event.drinkingScoresUpdatedAt}</p>
+        )}
+      </div>
       {teams.map(({ team, score, members }) => (
         <section key={team} className="overflow-hidden rounded-xl border" aria-label={`${team} drinking contributions`}>
           <div className="flex items-center gap-3 bg-muted/40 px-4 py-3">

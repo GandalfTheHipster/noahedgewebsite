@@ -41,8 +41,10 @@ export type OlympicEvent = {
   masterminds?: Record<string, string | null>
   chosenDishes?: Record<string, string | null>
   nights?: OlympicEventNight[]
-  /** Drinking contributions keyed by full member name; team totals are calculated from these. */
+  /** Drinking contributions keyed by full member name. */
   drinkingContributions?: Record<string, number | null>
+  drinkingTeamScores?: Record<string, number>
+  drinkingScoresUpdatedAt?: string
 
   gold?: string[]
   silver?: string[]
