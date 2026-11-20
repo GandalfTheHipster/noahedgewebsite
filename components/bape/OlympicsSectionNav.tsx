@@ -19,7 +19,7 @@ export function OlympicsSectionNav({
   const items = [
     { href: baseHref, label: "Overview" },
     ...(year === "2026" ? [{ href: `${baseHref}/teams`, label: "Teams" }] : []),
-    ...(!isUpcoming
+    ...(!isUpcoming || year === "2026"
       ? [{ href: `${baseHref}/medaltable`, label: "Medal Table" }]
       : []),
     ...(year === "2026" ? [{ href: `${baseHref}/calendar`, label: "Calendar" }] : []),

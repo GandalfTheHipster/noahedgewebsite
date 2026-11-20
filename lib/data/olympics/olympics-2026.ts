@@ -124,7 +124,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         {
           id: "night-two",
           label: "Night Two",
-          judges: [29, 30, 31, 3],
+          judges: [3, 29, 28],
           date: "2026-11-21",
           scheduledTime: "Served 6:30 pm",
           location: "The Lavender Patch",

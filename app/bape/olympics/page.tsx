@@ -16,7 +16,7 @@ const editions = [
   {
     href: "/bape/olympics/2026",
     data: OLYMPICS_2026_DATA,
-    status: "Upcoming",
+    status: "Underway",
     disabled: false,
     logo: {
       light: "https://i.postimg.cc/j5KKMgT0/lavendar.png",

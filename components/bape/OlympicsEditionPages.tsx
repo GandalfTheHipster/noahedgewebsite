@@ -59,6 +59,8 @@ export function OlympicsOverviewPage({ data }: OlympicsEditionPageProps) {
         />
 
 
+        {data.date === "2026" ? <OlympicsMedalTableSection data={data} /> : null}
+
         <TeamRosterPanel
           year={data.date}
           rosters={teamRosters}
@@ -119,36 +121,61 @@ export function OlympicsImagesPage({ data }: OlympicsEditionPageProps) {
 }
 
 export function OlympicsMedalTablePage({ data }: OlympicsEditionPageProps) {
-  const hasResults = hasOlympicsResults(data)
-
   return (
-    <OlympicsPageFrame
-      data={data}
-    >
-      <section className="flex flex-col gap-5">
-        <BapeSectionHeader
-          title="Medal Table"
-          description={
-            hasResults
-              ? "Ranked by points, then medal count. Gold, silver, and bronze decide bragging rights."
-              : undefined
-          }
-        />
-
-        <BapePanel className="overflow-hidden">
-          <div className="border-b bg-muted/20 px-4 py-3 sm:px-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-              {data.date} MEDAL TABLE
-            </p>
-          </div>
-          <OlympicsMedalTable
-            entries={data.medalTable}
-            isUpcoming={!hasResults}
-          />
-        </BapePanel>
-      </section>
+    <OlympicsPageFrame data={data}>
+      <OlympicsMedalTableSection data={data} />
     </OlympicsPageFrame>
   )
+}
+
+function OlympicsMedalTableSection({ data }: OlympicsEditionPageProps) {
+  const hasResults = hasOlympicsResults(data)
+  const entries = [...data.medalTable].sort(
+    (a, b) => b.pts - a.pts || getMedalTotal(b) - getMedalTotal(a),
+  )
+  const recentResults = data.date === "2026" ? getRecentOlympicsResults(data) : []
+
+  return (
+    <section className="flex flex-col gap-5">
+      <BapeSectionHeader
+        title="Medal Table"
+        description={
+          hasResults
+            ? "Ranked by points, then medal count. Gold, silver, and bronze decide bragging rights."
+            : undefined
+        }
+      />
+
+      <OlympicsMedalTable entries={entries} isUpcoming={!hasResults} />
+      {recentResults.length > 0 && (
+        <OlympicsEventResultsList events={recentResults} year={data.date} category="Recent" />
+      )}
+    </section>
+  )
+}
+
+function getRecentOlympicsResults(data: OlympicPageData) {
+  const calendarOrder = new Map<string, number>()
+  let position = 0
+  for (const day of data.calendar ?? []) {
+    for (const item of day.items) {
+      if ("eventId" in item) calendarOrder.set(item.eventId, position++)
+    }
+  }
+
+  return data.events
+    .filter((event) => event.status === "completed" && (
+      event.winner || event.gold?.length || event.silver?.length || event.bronze?.length
+    ))
+    .reverse()
+    .sort((a, b) =>
+      (calendarOrder.get(b.id) ?? Infinity) - (calendarOrder.get(a.id) ?? Infinity),
+    )
+    .slice(0, 5)
+    .map((event) => event.gold?.length || !event.winner
+      ? event
+      : { ...event, gold: [event.winner] },
+    )
 }
 
 export function OlympicsStandingsPage({ data }: OlympicsEditionPageProps) {
@@ -646,6 +673,12 @@ function RosterMemberRow({
   )
 }
 
+const medalColumns = [
+  { key: "gold", label: "Gold", color: "bg-[#f8c75c]" },
+  { key: "silver", label: "Silver", color: "bg-[#d9dde1]" },
+  { key: "bronze", label: "Bronze", color: "bg-[#d9a66f]" },
+] as const
+
 function OlympicsMedalTable({
   entries,
   isUpcoming,
@@ -653,208 +686,68 @@ function OlympicsMedalTable({
   entries: OlympicMedalTableEntry[]
   isUpcoming: boolean
 }) {
-  return (
-    <>
-      <div className="grid gap-3 p-3 md:hidden">
-        {entries.map((entry, index) => (
-          <MedalTableMobileCard
-            key={entry.name}
-            entry={entry}
-            rank={index + 1}
-            isUpcoming={isUpcoming}
-          />
-        ))}
-      </div>
+  const headingClass = "h-14 px-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:px-3 sm:text-sm"
+  const numberClass = "px-2 py-4 text-right tabular-nums sm:px-3"
 
-      <div className="hidden md:block">
-        <Table className="min-w-[760px]">
-          <TableHeader className="bg-background">
-            <TableRow className="hover:bg-transparent">
-              <TableHead className="w-16 px-4 text-center text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Rank
+  return (
+    <div className="overflow-hidden rounded-[1.5rem] border bg-card shadow-sm">
+      <Table aria-label="Medal standings">
+        <TableHeader className="bg-muted/30">
+          <TableRow className="hover:bg-transparent">
+            <TableHead scope="col" aria-label="Rank" className={headingClass}>#</TableHead>
+            <TableHead scope="col" className={cn(headingClass, "w-full")}>Team</TableHead>
+            {medalColumns.map(({ key, label, color }) => (
+              <TableHead key={key} scope="col" className={cn(headingClass, "text-right")}>
+                <span className="inline-flex items-center justify-end gap-2">
+                  <span aria-hidden="true" className={cn("size-2.5 rounded-full", color)} />
+                  <span className="sr-only sm:not-sr-only">{label}</span>
+                </span>
               </TableHead>
-              <TableHead className="min-w-[280px] px-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Team
-              </TableHead>
-              <MedalHead label="Gold" />
-              <MedalHead label="Silver" />
-              <MedalHead label="Bronze" />
-              <TableHead className="px-4 text-right text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                Total
-              </TableHead>
-              <TableHead className="px-4 text-right text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                PTS
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {entries.map((entry, index) => (
-              <TableRow
-                key={entry.name}
-                className={cn(
-                  "group border-border/80 hover:bg-muted/25",
-                  isUpcoming && "hover:bg-muted/40",
-                  entry.pts > 0 &&
-                    index === 0 &&
-                    "bg-amber-50/60 hover:bg-amber-50/80 dark:bg-amber-950/15 dark:hover:bg-amber-950/25",
-                )}
-              >
-                <TableCell className="px-4 py-5 text-center text-sm font-semibold text-muted-foreground">
-                  {isUpcoming ? "—" : index + 1}
-                </TableCell>
-                <TableCell className="px-4 py-5">
-                  <CountryProfileButton
-                    country={entry.name}
-                    className="border-0 bg-transparent px-0 py-0 shadow-none hover:translate-y-0 hover:bg-transparent hover:shadow-none"
-                  />
-                </TableCell>
-                <TableCell className="px-4 py-5 text-right">
-                  <MedalCount value={entry.gold} tone="gold" isUpcoming={isUpcoming} />
-                </TableCell>
-                <TableCell className="px-4 py-5 text-right">
-                  <MedalCount value={entry.silver} tone="silver" isUpcoming={isUpcoming} />
-                </TableCell>
-                <TableCell className="px-4 py-5 text-right">
-                  <MedalCount value={entry.bronze} tone="bronze" isUpcoming={isUpcoming} />
-                </TableCell>
-                <TableCell className="px-4 py-5 text-right text-base font-semibold">
-                  {isUpcoming ? "—" : getMedalTotal(entry)}
-                </TableCell>
-                <TableCell className="px-4 py-5 text-right text-sm font-semibold text-muted-foreground">
-                  {isUpcoming ? "—" : entry.pts}
-                </TableCell>
-              </TableRow>
             ))}
-          </TableBody>
-        </Table>
-      </div>
-    </>
-  )
-}
-
-function MedalTableMobileCard({
-  entry,
-  rank,
-  isUpcoming,
-}: {
-  entry: OlympicMedalTableEntry
-  rank: number
-  isUpcoming: boolean
-}) {
-  const isLeader = !isUpcoming && rank === 1 && entry.pts > 0
-
-  return (
-    <div
-      className={cn(
-        "rounded-2xl border bg-card p-4 shadow-none",
-        isLeader && "bg-amber-50/60 dark:bg-amber-950/15",
-      )}
-    >
-      <div className="flex items-start gap-3">
-        <span
-          className={cn(
-            "grid size-9 shrink-0 place-items-center rounded-full border text-sm font-bold tabular-nums",
-            isLeader
-              ? "border-foreground bg-foreground text-background"
-              : "bg-muted/35 text-muted-foreground",
-          )}
-        >
-          {isUpcoming ? "—" : rank}
-        </span>
-
-        <div className="min-w-0 flex-1">
-          <CountryProfileButton
-            country={entry.name}
-            className="border-transparent bg-transparent px-0 py-0 shadow-none hover:translate-y-0 hover:bg-transparent hover:shadow-none"
-          />
-        </div>
-
-        <div className="text-right">
-          <p className="text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            PTS
-          </p>
-          <p className="text-2xl font-bold tabular-nums">
-            {isUpcoming ? "—" : entry.pts}
-          </p>
-        </div>
-      </div>
-
-      <div className="mt-4 grid grid-cols-3 gap-2 text-center">
-        <MobileMedalStat label="Gold" value={entry.gold} tone="gold" isUpcoming={isUpcoming} />
-        <MobileMedalStat label="Silver" value={entry.silver} tone="silver" isUpcoming={isUpcoming} />
-        <MobileMedalStat label="Bronze" value={entry.bronze} tone="bronze" isUpcoming={isUpcoming} />
-      </div>
-    </div>
-  )
-}
-
-function MedalHead({ label }: { label: string }) {
-  return (
-    <TableHead className="px-4 text-right text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-      <span className="inline-flex items-center justify-end gap-2">
-        <span
-          className={cn(
-            "size-2.5 rounded-full",
-            label === "Gold" && "bg-[#f8c75c]",
-            label === "Silver" && "bg-[#d9dde1]",
-            label === "Bronze" && "bg-[#d9a66f]",
-          )}
-        />
-        {label}
-      </span>
-    </TableHead>
-  )
-}
-
-function MedalCount({
-  value,
-  tone,
-  isUpcoming = false,
-}: {
-  value: number
-  tone: "gold" | "silver" | "bronze"
-  isUpcoming?: boolean
-}) {
-  return (
-    <span
-      className={cn(
-        "inline-flex size-11 items-center justify-center rounded-full text-base font-bold text-neutral-950 ring-1 ring-inset",
-        tone === "gold" && "bg-[#f8c75c] ring-[#b47a00]/35",
-        tone === "silver" && "bg-[#e5e7e9] ring-black/10 dark:bg-[#d8dde3]",
-        tone === "bronze" && "bg-[#dfb582] ring-[#8a4f18]/30",
-      )}
-    >
-      {isUpcoming ? "—" : value}
-    </span>
-  )
-}
-
-function MobileMedalStat({
-  label,
-  value,
-  tone,
-  isUpcoming,
-}: {
-  label: string
-  value: number
-  tone: "gold" | "silver" | "bronze"
-  isUpcoming: boolean
-}) {
-  return (
-    <div className="rounded-xl border bg-background p-3">
-      <p
-        className={cn(
-          "text-[10px] font-bold uppercase tracking-wide text-muted-foreground",
-          tone === "gold" && "text-[#9a6500] dark:text-[#f8c75c]",
-          tone === "silver" && "text-slate-600 dark:text-[#d8dde3]",
-          tone === "bronze" && "text-[#9a5724] dark:text-[#d98a4b]",
-        )}
-      >
-        {label}
-      </p>
-      <div className="mt-2 flex justify-center">
-        <MedalCount value={value} tone={tone} isUpcoming={isUpcoming} />
-      </div>
+            <TableHead scope="col" aria-label="Total medals" className={cn(headingClass, "text-right")}>
+              <span className="sm:hidden">Tot</span>
+              <span className="hidden sm:inline">Total</span>
+            </TableHead>
+            <TableHead scope="col" aria-label="Points" className={cn(headingClass, "text-right")}>PTS</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {entries.map((entry, index) => (
+            <TableRow
+              key={entry.name}
+              className={cn("hover:bg-muted/25", index === 0 && entry.pts > 0 && "bg-[#f8c75c]/[0.08]")}
+            >
+              <TableCell className="px-2 py-4 font-semibold tabular-nums text-muted-foreground sm:px-3">
+                {isUpcoming ? "—" : index + 1}
+              </TableCell>
+              <TableCell className="px-2 py-4 sm:px-3">
+                <CountryProfileButton
+                  country={entry.name}
+                  className="rounded-none border-0 bg-transparent p-0 shadow-none hover:translate-y-0 hover:bg-transparent hover:shadow-none"
+                />
+              </TableCell>
+              {medalColumns.map(({ key, color }) => (
+                <TableCell key={key} className={numberClass}>
+                  <span
+                    className={cn(
+                      "inline-flex size-6 items-center justify-center rounded-full text-xs font-bold text-neutral-950 ring-1 ring-inset ring-black/15 sm:size-9 sm:text-sm",
+                      color,
+                    )}
+                  >
+                    {isUpcoming ? "—" : entry[key]}
+                  </span>
+                </TableCell>
+              ))}
+              <TableCell className={numberClass}>
+                {isUpcoming ? "—" : getMedalTotal(entry)}
+              </TableCell>
+              <TableCell className={cn(numberClass, "font-bold")}>
+                {isUpcoming ? "—" : entry.pts}
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   )
 }

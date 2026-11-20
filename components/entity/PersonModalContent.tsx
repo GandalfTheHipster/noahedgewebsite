@@ -48,6 +48,11 @@ const additionalPersonStrengths: Record<string, Array<{ name: string; emoji: str
     { name: "Drinking", emoji: "🍺" },
   ],
   "Jayden Lee": [{ name: "Mario Kart", emoji: "🏎️" }],
+  "Luke Price": [
+    { name: "Drinking", emoji: "🍺" },
+    { name: "Cooking", emoji: "🧑‍🍳" },
+    { name: "Trivia", emoji: "🙋‍♂️" },
+  ],
 }
 
 function getPersonStrengths(fullName: string) {

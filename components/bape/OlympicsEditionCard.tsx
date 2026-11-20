@@ -30,7 +30,9 @@ export function OlympicsEditionCard({
   logo,
 }: OlympicsEditionCardProps) {
   const actionLabel =
-    status === "Upcoming" ? "View Upcoming Edition" : "View Previous Edition"
+    status === "Underway"
+      ? "View Current Edition"
+      : status === "Upcoming" ? "View Upcoming Edition" : "View Previous Edition"
   const actionClassName = cn(buttonVariants(), "w-full")
   const accent =
     data.date === "2021"
@@ -149,7 +151,15 @@ export function OlympicsEditionCard({
           </>
         ) : (
           <>
-            {status === "Upcoming" ? (
+            {status === "Underway" ? (
+              <div className="grid gap-1 border-y py-3 text-sm">
+                <p className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
+                  <span aria-hidden="true" className="size-2 rounded-full bg-green-500" />
+                  Underway
+                </p>
+                <p className="font-semibold">{data.startDate}</p>
+              </div>
+            ) : status === "Upcoming" ? (
               <div className="grid grid-cols-2 gap-5 border-y py-3 text-sm">
                 <div className="col-span-2 flex items-start gap-3">
                   <CalendarDays className="mt-1 size-5 text-muted-foreground" />
