@@ -15,12 +15,17 @@ export function UpcomingOlympicsEvent({
   hasMedalGames,
   teamRosters = [],
   compact = false,
+  result = false,
 }: {
   event: OlympicEvent
-  hasMedalGames: boolean
+  hasMedalGames?: boolean
   teamRosters?: DrinkingTeamRoster[]
   compact?: boolean
+  result?: boolean
 }) {
+  const completed = event.status === "completed"
+  const showDrinkingDetails = event.id === "drinking" && (!completed || event.drinkingContributions)
+  const showSchedule = !event.nights?.length && (!completed || event.scheduledDate || event.scheduledTime || event.location)
   const order = event.battingOrder ?? event.playingOrder
   const orderLabel = event.battingOrder ? "Batting order" : "Playing order"
   const scoreLabel = event.battingOrder ? "Runs" : "Points"
@@ -29,7 +34,16 @@ export function UpcomingOlympicsEvent({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button
+        {result ? (
+          <button
+            type="button"
+            className="group flex min-h-11 w-full min-w-0 items-center gap-2 rounded-md text-left text-xs font-medium leading-snug text-foreground/90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring sm:gap-2.5 sm:text-sm"
+          >
+            <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center text-lg leading-none sm:size-7 sm:text-xl">{event.emoji}</span>
+            <span className="min-w-0 underline-offset-4 group-hover:underline [overflow-wrap:anywhere]">{event.name}</span>
+            <ArrowUpRight aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
+          </button>
+        ) : <button
           type="button"
           id={`event-${event.id}`}
           className={compact
@@ -50,7 +64,7 @@ export function UpcomingOlympicsEvent({
             ) : null}
           </span>
           {!compact ? <ArrowUpRight aria-hidden="true" className="size-3.5 shrink-0 text-muted-foreground/60 transition group-hover:text-foreground" /> : null}
-        </button>
+        </button>}
       </Dialog.Trigger>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/55" />
@@ -74,11 +88,11 @@ export function UpcomingOlympicsEvent({
           </Dialog.Close>
           </div>
           <div className={event.nights?.length ? "px-4 pb-5 sm:px-5" : ""}>
-          {event.id === "drinking" ? (
+          {showDrinkingDetails && !completed ? (
             <p className="mt-6 rounded-xl border bg-muted/20 p-4 text-sm">
               Begins at check-in and ends when the closing ceremony begins.
             </p>
-          ) : !event.nights?.length ? <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
+          ) : showSchedule ? <dl className="mt-6 grid grid-cols-2 gap-3 rounded-xl border bg-muted/20 p-4 sm:grid-cols-3">
             <div>
               <dt className="text-xs font-medium text-muted-foreground">Date</dt>
               <dd className="mt-1 text-sm font-semibold">{event.scheduledDate || "To be confirmed"}</dd>
@@ -96,7 +110,7 @@ export function UpcomingOlympicsEvent({
           </dl> : null}
           {event.nights?.length ? (
             <CookingDetails nights={event.nights} />
-          ) : event.id === "mario-kart" ? (
+          ) : event.id === "mario-kart" && event.points ? (
             <div className="mt-6 grid gap-6">
               <section className="grid gap-3" aria-label="Mario Kart points">
                 <h3 className="text-sm font-semibold">Points</h3>
@@ -122,9 +136,9 @@ export function UpcomingOlympicsEvent({
                   </table>
                 </div>
               </section>
-              <EventPodium />
+              {!completed && <EventPodium />}
             </div>
-          ) : event.id === "drinking" ? (
+          ) : showDrinkingDetails ? (
             <DrinkingDetails rosters={teamRosters} contributions={event.drinkingContributions} />
           ) : event.masterminds ? (
             <TriviaDetails event={event} />
@@ -152,7 +166,7 @@ export function UpcomingOlympicsEvent({
               </ol>
               <ScoreMedals order={order} results={results} scoreLabel={scoreLabel} />
             </section>
-          ) : event.id === "pickleball" ? (
+          ) : completed ? null : event.id === "pickleball" ? (
             <PickleballDetails event={event} />
           ) : hasMedalGames ? (
             <div className="mt-6 grid gap-5">
@@ -165,6 +179,11 @@ export function UpcomingOlympicsEvent({
                   <span className="sr-only">Game {game}, to be scheduled</span>
                 </div>
               ))}
+            </div>
+          )}
+          {completed && (
+            <div className="mt-6">
+              <EventPodium event={event} />
             </div>
           )}
           </div>
@@ -422,7 +441,6 @@ function TriviaDetails({ event }: { event: OlympicEvent }) {
           ))}
         </ul>
       </section>
-      {event.status === "completed" && <EventPodium event={event} />}
       {(event.status !== "completed" || Object.values(event.points ?? {}).some((points) => points != null)) && (
         <section className="grid gap-3" aria-label="Trivia points">
           <h3 className="text-sm font-semibold">Points</h3>
@@ -488,7 +506,7 @@ function EventPodium({ event }: { event?: OlympicEvent }) {
             { medal: "bronze" as const, label: "Bronze", emoji: "🥉", height: "h-20", tone: "bg-orange-400/10 border-orange-400/30" },
           ].map(({ medal, label, emoji, height, tone }) => (
             <div key={label} className="grid gap-3 text-center">
-              <span className="text-xs text-muted-foreground">{event?.[medal]?.join(", ") || "To be confirmed"}</span>
+              <span className="text-xs text-muted-foreground">{event?.[medal]?.join(", ") || (medal === "gold" ? event?.winner : undefined) || (event ? "—" : "To be confirmed")}</span>
               <div className={`flex flex-col items-center justify-center gap-2 rounded-t-xl border ${height} ${tone}`}>
                 <span aria-hidden="true" className="text-2xl">{emoji}</span>
                 <span className="text-sm font-semibold">{label}</span>

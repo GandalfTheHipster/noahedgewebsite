@@ -1,9 +1,11 @@
 import Image from "next/image"
 
+import { UpcomingOlympicsEvent } from "@/components/bape/UpcomingOlympicsEvent"
 import { EntityTrigger } from "@/components/entity/EntityTrigger"
 import { BAPE_PROFILES, getBapeProfileAvatar } from "@/lib/data/BapeProfiles"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
 import type { OlympicEvent } from "@/lib/data/olympics/olympics-template"
+import type { DrinkingTeamRoster } from "@/lib/olympics-drinking"
 import { cn } from "@/lib/utils"
 
 const medals = [
@@ -16,18 +18,19 @@ export function OlympicsEventResultsList({
   events,
   year,
   category,
+  teamRosters,
 }: {
   events: OlympicEvent[]
   year: string
   category: string
+  teamRosters: DrinkingTeamRoster[]
 }) {
   return (
     <div aria-label={`${category} results, ${year}`} className="grid min-w-0 divide-y divide-border/40 rounded-2xl border border-border/60 bg-background px-3 sm:px-4">
       {events.map((event) => (
         <div key={event.id} className="grid min-w-0 grid-cols-2 items-center gap-2 py-2.5 sm:gap-4">
-          <h3 className="flex min-w-0 items-center gap-2 text-xs font-medium leading-snug text-foreground/90 sm:gap-2.5 sm:text-sm">
-            <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center text-lg leading-none sm:size-7 sm:text-xl">{event.emoji}</span>
-            <span className="min-w-0 [overflow-wrap:anywhere]">{event.name}</span>
+          <h3 className="min-w-0">
+            <UpcomingOlympicsEvent event={event} teamRosters={teamRosters} result />
           </h3>
           <div className="grid w-full min-w-0 max-w-64 grid-cols-3 items-stretch justify-self-end gap-1.5 sm:gap-2">
           {medals.map((medal) => (

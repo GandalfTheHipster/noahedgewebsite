@@ -148,7 +148,7 @@ function OlympicsMedalTableSection({ data }: OlympicsEditionPageProps) {
 
       <OlympicsMedalTable entries={entries} isUpcoming={!hasResults} />
       {recentResults.length > 0 && (
-        <OlympicsEventResultsList events={recentResults} year={data.date} category="Recent" />
+        <OlympicsEventResultsList events={recentResults} year={data.date} category="Recent" teamRosters={getTeamRosters(data)} />
       )}
     </section>
   )
@@ -202,7 +202,7 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
         {data.events.length > 0 && !hasResults ? (
           <UpcomingEventCategoryList data={data} />
         ) : data.events.length > 0 ? (
-          <EventCategoryList events={completedEvents} year={data.date} />
+          <EventCategoryList events={completedEvents} data={data} />
         ) : (
           <BapePanel className="p-6">
             <p className="text-sm font-medium text-muted-foreground">
@@ -353,11 +353,12 @@ export function getOlympicsEditionLogo(year: string) {
 
 function EventCategoryList({
   events,
-  year,
+  data,
 }: {
   events: OlympicEvent[]
-  year: string
+  data: OlympicPageData
 }) {
+  const teamRosters = getTeamRosters(data)
   const categories = groupEventsByCategory(events)
 
   return (
@@ -369,7 +370,7 @@ function EventCategoryList({
               {category.name}
             </h2>
           </div>
-          <OlympicsEventResultsList events={category.events} year={year} category={category.name} />
+          <OlympicsEventResultsList events={category.events} year={data.date} category={category.name} teamRosters={teamRosters} />
         </section>
       ))}
     </div>
