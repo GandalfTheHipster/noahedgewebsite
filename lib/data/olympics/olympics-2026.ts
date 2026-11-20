@@ -77,16 +77,16 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
     {
       name: "Mongolia",
       gold: 1,
-      silver: 0,
+      silver: 1,
       bronze: 0,
-      pts: 3,
+      pts: 5,
     },
     {
       name: "Scotland",
-      gold: 0,
+      gold: 1,
       silver: 1,
       bronze: 0,
-      pts: 2,
+      pts: 5,
     },
     {
       name: "South Africa",
@@ -289,7 +289,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       id: "wii-tennis",
       name: "Wii Tennis",
       emoji: "🎾",
-      status: "upcoming",
+      status: "completed",
       scheduledDate: "20 November 2026",
       scheduledTime: "8:30–9:30 pm",
       location: "The Lavender Patch",
@@ -298,6 +298,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         ["Mongolia", "Estonia"],
       ],
       openingMatchWinners: ["Scotland", "Mongolia"],
+      gold: ["Scotland"],
+      silver: ["Mongolia"],
       bronze: ["South Africa"],
     },
     {

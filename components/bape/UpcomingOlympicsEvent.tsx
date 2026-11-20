@@ -166,12 +166,17 @@ export function UpcomingOlympicsEvent({
               </ol>
               <ScoreMedals order={order} results={results} scoreLabel={scoreLabel} />
             </section>
+          ) : (hasMedalGames && !completed) || event.openingMatchWinners?.length ? (
+            <div className="mt-6 grid gap-5">
+              <MedalGames
+                openingMatches={event.openingMatches}
+                openingMatchWinners={event.openingMatchWinners}
+                goldWinner={event.gold?.[0]}
+                bronzeWinner={event.bronze?.[0]}
+              />
+            </div>
           ) : completed ? null : event.id === "pickleball" ? (
             <PickleballDetails event={event} />
-          ) : hasMedalGames ? (
-            <div className="mt-6 grid gap-5">
-              <MedalGames openingMatches={event.openingMatches} openingMatchWinners={event.openingMatchWinners} bronzeWinner={event.bronze?.[0]} />
-            </div>
           ) : (
             <div className="mt-6 grid gap-3" role="list" aria-label="Games to be scheduled">
               {[1, 2].map((game) => (
@@ -209,9 +214,10 @@ function PickleballDetails({ event }: { event: OlympicEvent }) {
   )
 }
 
-function MedalGames({ openingMatches, openingMatchWinners, bronzeWinner, players }: {
+function MedalGames({ openingMatches, openingMatchWinners, goldWinner, bronzeWinner, players }: {
   openingMatches?: OlympicEvent["openingMatches"]
   openingMatchWinners?: OlympicEvent["openingMatchWinners"]
+  goldWinner?: string
   bronzeWinner?: string
   players?: Record<string, [string, string]>
 }) {
@@ -237,7 +243,7 @@ function MedalGames({ openingMatches, openingMatchWinners, bronzeWinner, players
       </section>
       <section className="grid gap-3" aria-label="Gold medal game">
         <h3 className="text-sm font-semibold"><span aria-hidden="true">🥇 </span>Gold medal game</h3>
-        <GameSlot label="Gold medal game" teams={firstWinner && secondWinner && firstLoser && secondLoser ? [firstWinner, secondWinner] : undefined} />
+        <GameSlot label="Gold medal game" teams={firstWinner && secondWinner && firstLoser && secondLoser ? [firstWinner, secondWinner] : undefined} winner={goldWinner} />
       </section>
       <section className="grid gap-3" aria-label="Bronze medal game">
         <h3 className="text-sm font-semibold"><span aria-hidden="true">🥉 </span>Bronze medal game</h3>
