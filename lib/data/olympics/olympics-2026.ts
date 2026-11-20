@@ -92,8 +92,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       name: "South Africa",
       gold: 0,
       silver: 0,
-      bronze: 1,
-      pts: 1,
+      bronze: 2,
+      pts: 2,
     },
     {
       name: "Estonia",
@@ -298,6 +298,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         ["Mongolia", "Estonia"],
       ],
       openingMatchWinners: ["Scotland", "Mongolia"],
+      bronze: ["South Africa"],
     },
     {
       id: "mario-kart",

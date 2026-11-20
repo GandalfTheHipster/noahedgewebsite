@@ -170,7 +170,7 @@ export function UpcomingOlympicsEvent({
             <PickleballDetails event={event} />
           ) : hasMedalGames ? (
             <div className="mt-6 grid gap-5">
-              <MedalGames openingMatches={event.openingMatches} openingMatchWinners={event.openingMatchWinners} />
+              <MedalGames openingMatches={event.openingMatches} openingMatchWinners={event.openingMatchWinners} bronzeWinner={event.bronze?.[0]} />
             </div>
           ) : (
             <div className="mt-6 grid gap-3" role="list" aria-label="Games to be scheduled">
@@ -209,9 +209,10 @@ function PickleballDetails({ event }: { event: OlympicEvent }) {
   )
 }
 
-function MedalGames({ openingMatches, openingMatchWinners, players }: {
+function MedalGames({ openingMatches, openingMatchWinners, bronzeWinner, players }: {
   openingMatches?: OlympicEvent["openingMatches"]
   openingMatchWinners?: OlympicEvent["openingMatchWinners"]
+  bronzeWinner?: string
   players?: Record<string, [string, string]>
 }) {
   const [firstMatch, secondMatch] = openingMatches ?? []
@@ -240,7 +241,7 @@ function MedalGames({ openingMatches, openingMatchWinners, players }: {
       </section>
       <section className="grid gap-3" aria-label="Bronze medal game">
         <h3 className="text-sm font-semibold"><span aria-hidden="true">🥉 </span>Bronze medal game</h3>
-        <GameSlot label="Bronze medal game" teams={firstLoser && secondLoser ? [firstLoser, secondLoser] : undefined} />
+        <GameSlot label="Bronze medal game" teams={firstLoser && secondLoser ? [firstLoser, secondLoser] : undefined} winner={bronzeWinner} />
       </section>
     </>
   )
