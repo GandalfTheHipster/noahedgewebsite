@@ -411,8 +411,8 @@ function TriviaDetails({ event }: { event: OlympicEvent }) {
   return (
     <div className="mt-6 grid gap-6">
       <p className="text-sm text-muted-foreground">Organised by Andrew Turnbull.</p>
-      <section className="grid gap-3" aria-label="Mastermind chosen">
-        <h3 className="text-sm font-semibold">Mastermind chosen</h3>
+      <section className="grid gap-3" aria-label="Mastermind topics">
+        <h3 className="text-sm font-semibold">Mastermind topics</h3>
         <ul className="grid gap-2">
           {teams.map(([country, mastermind]) => (
             <li key={country} className="flex items-center gap-3 rounded-xl border bg-muted/20 px-4 py-2">
@@ -422,22 +422,25 @@ function TriviaDetails({ event }: { event: OlympicEvent }) {
           ))}
         </ul>
       </section>
-      <section className="grid gap-3" aria-label="Trivia points">
-        <h3 className="text-sm font-semibold">Points</h3>
-        <ul className="grid gap-2">
-          {teams.map(([country]) => (
-            <li key={country} className="flex items-center gap-3 rounded-xl border bg-muted/20 px-4 py-2">
-              <MatchTeam country={country} align="left" />
-              <span
-                aria-label={`${country} points: ${event.points?.[country] ?? "not recorded"}`}
-                className="flex min-h-10 w-14 shrink-0 items-center justify-center rounded-md border bg-background text-sm font-semibold tabular-nums"
-              >
-                {event.points?.[country] ?? <span aria-hidden="true">—</span>}
-              </span>
-            </li>
-          ))}
-        </ul>
-      </section>
+      {event.status === "completed" && <EventPodium event={event} />}
+      {(event.status !== "completed" || Object.values(event.points ?? {}).some((points) => points != null)) && (
+        <section className="grid gap-3" aria-label="Trivia points">
+          <h3 className="text-sm font-semibold">Points</h3>
+          <ul className="grid gap-2">
+            {teams.map(([country]) => (
+              <li key={country} className="flex items-center gap-3 rounded-xl border bg-muted/20 px-4 py-2">
+                <MatchTeam country={country} align="left" />
+                <span
+                  aria-label={`${country} points: ${event.points?.[country] ?? "not recorded"}`}
+                  className="flex min-h-10 w-14 shrink-0 items-center justify-center rounded-md border bg-background text-sm font-semibold tabular-nums"
+                >
+                  {event.points?.[country] ?? <span aria-hidden="true">—</span>}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
     </div>
   )
 }
@@ -474,18 +477,18 @@ function SprintRunners({ runners }: { runners: string[] }) {
   )
 }
 
-function EventPodium() {
+function EventPodium({ event }: { event?: OlympicEvent }) {
   return (
       <section className="grid gap-3" aria-label="Podium">
         <h3 className="text-sm font-semibold">Podium</h3>
         <div className="grid grid-cols-3 items-end gap-2">
           {[
-            { label: "Silver", emoji: "🥈", height: "h-24", tone: "bg-slate-400/10 border-slate-400/30" },
-            { label: "Gold", emoji: "🥇", height: "h-32", tone: "bg-yellow-400/10 border-yellow-400/30" },
-            { label: "Bronze", emoji: "🥉", height: "h-20", tone: "bg-orange-400/10 border-orange-400/30" },
-          ].map(({ label, emoji, height, tone }) => (
+            { medal: "silver" as const, label: "Silver", emoji: "🥈", height: "h-24", tone: "bg-slate-400/10 border-slate-400/30" },
+            { medal: "gold" as const, label: "Gold", emoji: "🥇", height: "h-32", tone: "bg-yellow-400/10 border-yellow-400/30" },
+            { medal: "bronze" as const, label: "Bronze", emoji: "🥉", height: "h-20", tone: "bg-orange-400/10 border-orange-400/30" },
+          ].map(({ medal, label, emoji, height, tone }) => (
             <div key={label} className="grid gap-3 text-center">
-              <span className="text-xs text-muted-foreground">To be confirmed</span>
+              <span className="text-xs text-muted-foreground">{event?.[medal]?.join(", ") || "To be confirmed"}</span>
               <div className={`flex flex-col items-center justify-center gap-2 rounded-t-xl border ${height} ${tone}`}>
                 <span aria-hidden="true" className="text-2xl">{emoji}</span>
                 <span className="text-sm font-semibold">{label}</span>

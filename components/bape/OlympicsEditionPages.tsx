@@ -188,6 +188,8 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
     (event) => event.status === "completed",
   )
 
+  const upcomingEvents = data.events.filter((event) => event.status === "upcoming")
+
   return (
     <OlympicsPageFrame
       data={data}
@@ -209,6 +211,12 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
           </BapePanel>
         )}
       </section>
+      {hasResults && upcomingEvents.length > 0 && (
+        <section className="flex flex-col gap-5">
+          <BapeSectionHeader title="Upcoming events" />
+          <UpcomingEventCategoryList data={data} events={upcomingEvents} />
+        </section>
+      )}
 
     </OlympicsPageFrame>
   )
@@ -368,9 +376,8 @@ function EventCategoryList({
   )
 }
 
-function UpcomingEventCategoryList({ data }: OlympicsEditionPageProps) {
+function UpcomingEventCategoryList({ data, events = data.events }: OlympicsEditionPageProps & { events?: OlympicEvent[] }) {
   const teamRosters = getTeamRosters(data)
-  const events = data.events
   const categories = groupEventsByCategory(events)
 
   return (
