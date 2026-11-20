@@ -28,6 +28,7 @@ export type OlympicEvent = {
   scheduledTime?: string
   location?: string
   openingMatches?: [string, string][]
+  openingMatchWinners?: (string | null)[]
   divisions?: {
     name: string
     /** Player pairings, keyed by country. */

@@ -297,6 +297,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         ["Scotland", "South Africa"],
         ["Mongolia", "Estonia"],
       ],
+      openingMatchWinners: ["Scotland", "Mongolia"],
     },
     {
       id: "mario-kart",
