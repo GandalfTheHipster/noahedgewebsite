@@ -75,18 +75,25 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
 
   medalTable: [
     {
+      name: "Scotland",
+      gold: 1,
+      silver: 2,
+      bronze: 0,
+      pts: 7,
+    },
+    {
       name: "Mongolia",
       gold: 1,
       silver: 1,
-      bronze: 0,
-      pts: 5,
+      bronze: 1,
+      pts: 6,
     },
     {
-      name: "Scotland",
+      name: "Estonia",
       gold: 1,
-      silver: 1,
+      silver: 0,
       bronze: 0,
-      pts: 5,
+      pts: 3,
     },
     {
       name: "South Africa",
@@ -94,13 +101,6 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       silver: 0,
       bronze: 2,
       pts: 2,
-    },
-    {
-      name: "Estonia",
-      gold: 0,
-      silver: 0,
-      bronze: 0,
-      pts: 0,
     },
   ],
 
@@ -306,7 +306,10 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       id: "mario-kart",
       name: "Mario Kart",
       emoji: "🏎️",
-      status: "upcoming",
+      status: "completed",
+      gold: ["Estonia"],
+      silver: ["Scotland"],
+      bronze: ["Mongolia"],
       scheduledDate: "20 November 2026",
       scheduledTime: "9:30–11 pm",
       location: "The Lavender Patch",
