@@ -28,7 +28,10 @@ const additionalPersonStrengths: Record<string, Array<{ name: string; emoji: str
   "Jayden Chang": [
     { name: "Pickleball", emoji: "🥒" },
     { name: "Futsal", emoji: "⚽️" },
+    { name: "Mario Kart", emoji: "🏎️" },
   ],
+  "Raven Frederickson": [{ name: "Mario Kart", emoji: "🏎️" }],
+  "James Crossley": [{ name: "Mario Kart", emoji: "🏎️" }],
   "Eric Yao": [
     { name: "Pickleball", emoji: "🥒" },
     { name: "Cooking", emoji: "🧑‍🍳" },
@@ -314,38 +317,27 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
                   ) : null}
                 </div>
 
-                <div className="mt-3 grid grid-cols-3 divide-x rounded-lg bg-muted/30 text-center">
-                  <StatTile
-                    label="Gold"
-                    value={edition.gold.length}
-                    tone="gold"
-                  />
-                  <StatTile
-                    label="Silver"
-                    value={edition.silver.length}
-                    tone="silver"
-                  />
-                  <StatTile
-                    label="Bronze"
-                    value={edition.bronze.length}
-                    tone="bronze"
-                  />
-                </div>
-
                 <details className="group/medals mt-3">
-                  <summary className="flex min-h-10 cursor-pointer list-none items-center justify-between gap-2 rounded-lg border px-3 py-2 text-xs font-medium text-muted-foreground transition hover:bg-muted/40 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden">
-                    <span className="group-open/medals:hidden">Expand to see medals</span>
-                    <span className="hidden group-open/medals:inline">Hide medals</span>
-                    <span className="sr-only"> for {edition.year} Olympics</span>
+                  <summary
+                    aria-label={`${edition.year} Olympic medals. Gold ${edition.gold.length}, silver ${edition.silver.length}, bronze ${edition.bronze.length}`}
+                    className="grid min-h-10 cursor-pointer list-none grid-cols-[repeat(3,minmax(0,1fr))_auto] items-center rounded-lg bg-muted/30 text-center transition hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
+                  >
+                    <StatTile label="Gold" value={edition.gold.length} tone="gold" />
+                    <div className="border-l">
+                      <StatTile label="Silver" value={edition.silver.length} tone="silver" />
+                    </div>
+                    <div className="border-l">
+                      <StatTile label="Bronze" value={edition.bronze.length} tone="bronze" />
+                    </div>
                     <ChevronDown
                       aria-hidden="true"
-                      className="size-4 shrink-0 transition-transform group-open/medals:rotate-180"
+                      className="mx-2 size-4 text-muted-foreground transition-transform group-open/medals:rotate-180"
                     />
                   </summary>
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
                     {edition.medals.map((medal) => (
                       <MedalPill
-                        key={`${medal.event}-${medal.medal}`}
+                        key={`${medal.eventId}-${medal.medal}`}
                         medal={medal.medal}
                         emoji={medal.emoji}
                         event={medal.event}

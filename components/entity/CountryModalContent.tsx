@@ -2,6 +2,8 @@ import { PersonProfileButton } from "@/components/entity/PersonProfileButton"
 import { BAPE_PROFILES } from "@/lib/data/BapeProfiles"
 import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
 import { OLYMPICS_2023_DATA } from "@/lib/data/olympics/olympics-2023"
+import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
+import { expandDivisionResults } from "@/lib/data/olympics/division-results"
 import {
   getOlympicCountry,
   OLYMPIC_COUNTRIES,
@@ -73,7 +75,7 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
     members.map((member) => `${member.firstName} ${member.lastName}`),
   )
 
-  const olympicMedalEditions = olympicsArchive
+  const olympicMedalEditions = [...olympicsArchive, OLYMPICS_2026_DATA]
     .map((olympics) => {
       const hasTeamEntry = olympics.medalTable.some(
         (entry) => entry.name === country.name,
@@ -82,6 +84,7 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
       if (!hasTeamEntry) return null
 
       const medals = olympics.events
+        .flatMap((event) => expandDivisionResults(event, { showDivision: false }))
         .flatMap((event) => {
           const results = [
             { medal: "Gold", names: event.gold ?? [] },
@@ -91,9 +94,10 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
 
           return results
             .filter((result) =>
-              result.names.some((name) => memberNames.has(name)),
+              result.names.some((name) => memberNames.has(name) || name === country.name),
             )
             .map((result) => ({
+              eventId: event.id,
               event: event.name,
               emoji: event.emoji,
               medal: result.medal,
@@ -217,7 +221,7 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
                   {edition.medals.map((medal) => (
                     <CountryMedalRow
                       year={edition.year}
-                      key={`${edition.year}-${medal.event}-${medal.medal}`}
+                      key={`${edition.year}-${medal.eventId}-${medal.medal}`}
                       medal={medal.medal}
                       emoji={medal.emoji}
                       event={medal.event}

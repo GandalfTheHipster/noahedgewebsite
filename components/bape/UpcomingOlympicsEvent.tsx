@@ -7,6 +7,7 @@ import { ArrowUpRight, ChevronDown, X } from "lucide-react"
 import { EntityTrigger } from "@/components/entity/EntityTrigger"
 import { BAPE_PROFILES, DEFAULT_BAPE_PROFILE_AVATAR, getBapeProfileAvatar } from "@/lib/data/BapeProfiles"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
+import { expandDivisionResults } from "@/lib/data/olympics/division-results"
 import { getDrinkingStandings, type DrinkingTeamRoster } from "@/lib/olympics-drinking"
 import type { OlympicEvent } from "@/lib/data/olympics/olympics-template"
 
@@ -30,6 +31,13 @@ export function UpcomingOlympicsEvent({
   const orderLabel = event.battingOrder ? "Batting order" : "Playing order"
   const scoreLabel = event.battingOrder ? "Runs" : "Points"
   const results = event.battingOrder ? event.runs : event.points
+  const divisionResults = completed && event.divisions?.length && !result ? expandDivisionResults(event) : []
+  const podium = divisionResults.length ? {
+    ...event,
+    gold: divisionResults.flatMap((division) => division.gold ?? []),
+    silver: divisionResults.flatMap((division) => division.silver ?? []),
+    bronze: divisionResults.flatMap((division) => division.bronze ?? []),
+  } : event
 
   return (
     <Dialog.Root>
@@ -41,7 +49,6 @@ export function UpcomingOlympicsEvent({
           >
             <span aria-hidden="true" className="grid size-6 shrink-0 place-items-center text-lg leading-none sm:size-7 sm:text-xl">{event.emoji}</span>
             <span className="min-w-0 underline-offset-4 group-hover:underline [overflow-wrap:anywhere]">{event.name}</span>
-            <ArrowUpRight aria-hidden="true" className="size-3 shrink-0 text-muted-foreground" />
           </button>
         ) : <button
           type="button"
@@ -188,7 +195,7 @@ export function UpcomingOlympicsEvent({
           )}
           {completed && (
             <div className="mt-6">
-              <EventPodium event={event} />
+              <EventPodium event={podium} />
             </div>
           )}
           </div>

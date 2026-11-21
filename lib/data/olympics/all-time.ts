@@ -1,5 +1,6 @@
 import { BAPE_PROFILES, type BapeProfile } from "@/lib/data/BapeProfiles"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
+import { expandDivisionResults } from "@/lib/data/olympics/division-results"
 import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
 import { OLYMPICS_2023_DATA } from "@/lib/data/olympics/olympics-2023"
 import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
@@ -63,12 +64,13 @@ export function getOlympicAthleteMedals(profile: BapeProfile, edition: OlympicPa
 
   return edition.events
     .filter((event) => event.status === "completed")
+    .flatMap((event) => expandDivisionResults(event, { showDivision: false }))
     .flatMap((event) =>
       (["gold", "silver", "bronze"] as const)
         .filter((medal) => event[medal]?.some(
           (recipient) => recipient === name || recipient === country?.name,
         ))
-        .map((medal) => ({ event: event.name, emoji: event.emoji, medal })),
+        .map((medal) => ({ eventId: event.id, event: event.name, emoji: event.emoji, medal })),
     )
 }
 

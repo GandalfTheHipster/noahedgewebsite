@@ -24,6 +24,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { expandDivisionResults } from "@/lib/data/olympics/division-results"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
 import type {
   OlympicEvent,
@@ -162,37 +163,12 @@ function getOlympicsResultsLog(data: OlympicPageData) {
     .sort((a, b) =>
       (calendarOrder.get(b.id) ?? Infinity) - (calendarOrder.get(a.id) ?? Infinity),
     )
-    .flatMap(expandDivisionResults)
+    .flatMap((event) => expandDivisionResults(event))
     .filter((event) => event.winner || event.gold?.length || event.silver?.length || event.bronze?.length)
     .map((event) => event.gold?.length || !event.winner
       ? event
       : { ...event, gold: [event.winner] },
     )
-}
-
-function expandDivisionResults(event: OlympicEvent): OlympicEvent[] {
-  if (!event.divisions?.length) return [event]
-
-  return event.divisions.map((division, index) => {
-    const gold = division.goldMatch?.winner
-    const silver = division.goldMatch?.teams.find((team) => team !== gold)
-    const bronzeMatch = division.bronzeMatch
-    const bronze = bronzeMatch?.teams.find((team) =>
-      team === bronzeMatch.winner || bronzeMatch.players?.[team]?.includes(bronzeMatch.winner),
-    )
-    const recipients = (team: string | undefined, players = division.players) =>
-      team ? players[team]?.filter((name): name is string => Boolean(name)) ?? [team] : undefined
-
-    return {
-      ...event,
-      id: `${event.id}-division-${index + 1}`,
-      name: `${event.name} · ${division.name}`,
-      divisions: [division],
-      gold: recipients(gold),
-      silver: recipients(silver),
-      bronze: recipients(bronze, bronzeMatch?.players),
-    }
-  })
 }
 
 export function OlympicsStandingsPage({ data }: OlympicsEditionPageProps) {
@@ -203,7 +179,7 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
   const hasResults = hasOlympicsResults(data)
   const completedEvents = data.events.filter(
     (event) => event.status === "completed",
-  ).flatMap(expandDivisionResults)
+  ).flatMap((event) => expandDivisionResults(event))
 
   const upcomingEvents = data.events.filter((event) => event.status === "upcoming")
 
