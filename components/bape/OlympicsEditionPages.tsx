@@ -687,25 +687,26 @@ function OlympicsMedalTable({
   entries: OlympicMedalTableEntry[]
   isUpcoming: boolean
 }) {
-  const headingClass = "h-14 px-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:px-3 sm:text-sm"
-  const numberClass = "px-2 py-4 text-right tabular-nums sm:px-3"
+  const headingClass = "h-12 px-2 text-xs font-semibold uppercase tracking-[0.12em] text-muted-foreground sm:h-14 sm:px-3 sm:text-sm"
+  const scoreHeadingClass = cn(headingClass, "w-9 px-1 text-center sm:w-24 sm:px-2")
+  const numberClass = "px-1 py-3 text-center tabular-nums sm:px-2 sm:py-4"
 
   return (
     <div className="overflow-hidden rounded-[1.5rem] border bg-card shadow-sm">
-      <Table aria-label="Medal standings">
+      <Table aria-label="Medal standings" className="table-fixed">
         <TableHeader className="bg-muted/30">
           <TableRow className="hover:bg-transparent">
-            <TableHead scope="col" aria-label="Rank" className={headingClass}>#</TableHead>
-            <TableHead scope="col" className={cn(headingClass, "w-full")}>Team</TableHead>
+            <TableHead scope="col" aria-label="Rank" className={cn(headingClass, "w-8 text-center sm:w-12")}>#</TableHead>
+            <TableHead scope="col" className={headingClass}>Team</TableHead>
             {medalColumns.map(({ key, label, color }) => (
-              <TableHead key={key} scope="col" className={cn(headingClass, "text-right")}>
-                <span className="inline-flex items-center justify-end gap-2">
+              <TableHead key={key} scope="col" className={scoreHeadingClass}>
+                <span className="inline-flex items-center gap-2 align-middle">
                   <span aria-hidden="true" className={cn("size-2.5 rounded-full", color)} />
                   <span className="sr-only sm:not-sr-only">{label}</span>
                 </span>
               </TableHead>
             ))}
-            <TableHead scope="col" aria-label="Points" className={cn(headingClass, "text-right")}>PTS</TableHead>
+            <TableHead scope="col" aria-label="Points" className={scoreHeadingClass}>PTS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -714,10 +715,10 @@ function OlympicsMedalTable({
               key={entry.name}
               className={cn("hover:bg-muted/25", index === 0 && entry.pts > 0 && "bg-[#f8c75c]/[0.08]")}
             >
-              <TableCell className="px-2 py-4 font-semibold tabular-nums text-muted-foreground sm:px-3">
+              <TableCell className={cn(numberClass, "font-semibold text-muted-foreground")}>
                 {isUpcoming ? "—" : index + 1}
               </TableCell>
-              <TableCell className="px-2 py-4 sm:px-3">
+              <TableCell className="px-2 py-3 sm:px-3 sm:py-4">
                 <CountryProfileButton
                   country={entry.name}
                   className="rounded-none border-0 bg-transparent p-0 shadow-none hover:translate-y-0 hover:bg-transparent hover:shadow-none"
