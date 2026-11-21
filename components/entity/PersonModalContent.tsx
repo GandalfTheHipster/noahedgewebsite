@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { ChevronDown } from "lucide-react"
+import { OlympicMedalDisclosure } from "@/components/entity/OlympicMedalDisclosure"
 import type { ReactNode } from "react"
 
 import { CountryProfileButton } from "@/components/entity/CountryProfileButton"
@@ -122,32 +122,6 @@ function OlympicsEditionLogo({ year }: { year: string }) {
         className="hidden h-6 w-6 object-contain dark:block"
       />
     </span>
-  )
-}
-
-function StatTile({
-  label,
-  value,
-  tone,
-}: {
-  label: string
-  value: string | number
-  tone?: "gold" | "silver" | "bronze"
-}) {
-  return (
-    <div className="flex items-baseline justify-center gap-1.5 px-1.5 py-1.5">
-      <p
-        className={[
-          "text-[10px] font-semibold uppercase tracking-wide text-muted-foreground",
-          tone === "gold" ? "text-[#9a6500] dark:text-[#f8c75c]" : "",
-          tone === "silver" ? "text-slate-600 dark:text-[#d8dde3]" : "",
-          tone === "bronze" ? "text-[#8a4f18] dark:text-[#dfb582]" : "",
-        ].join(" ")}
-      >
-        {label}
-      </p>
-      <p className="text-base font-bold tabular-nums">{value}</p>
-    </div>
   )
 }
 
@@ -317,23 +291,12 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
                   ) : null}
                 </div>
 
-                <details className="group/medals mt-3">
-                  <summary
-                    aria-label={`${edition.year} Olympic medals. Gold ${edition.gold.length}, silver ${edition.silver.length}, bronze ${edition.bronze.length}`}
-                    className="grid min-h-10 cursor-pointer list-none grid-cols-[repeat(3,minmax(0,1fr))_auto] items-center rounded-lg bg-muted/30 text-center transition hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring [&::-webkit-details-marker]:hidden"
-                  >
-                    <StatTile label="Gold" value={edition.gold.length} tone="gold" />
-                    <div className="border-l">
-                      <StatTile label="Silver" value={edition.silver.length} tone="silver" />
-                    </div>
-                    <div className="border-l">
-                      <StatTile label="Bronze" value={edition.bronze.length} tone="bronze" />
-                    </div>
-                    <ChevronDown
-                      aria-hidden="true"
-                      className="mx-2 size-4 text-muted-foreground transition-transform group-open/medals:rotate-180"
-                    />
-                  </summary>
+                <OlympicMedalDisclosure
+                  year={edition.year}
+                  gold={edition.gold.length}
+                  silver={edition.silver.length}
+                  bronze={edition.bronze.length}
+                >
                   <div className="mt-3 flex flex-wrap gap-2 text-xs text-muted-foreground">
                     {edition.medals.map((medal) => (
                       <MedalPill
@@ -344,7 +307,7 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
                       />
                     ))}
                   </div>
-                </details>
+                </OlympicMedalDisclosure>
               </div>
             ))
           ) : !currentCountry ? (

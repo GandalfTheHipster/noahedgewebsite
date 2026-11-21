@@ -1,3 +1,4 @@
+import { OlympicMedalDisclosure } from "@/components/entity/OlympicMedalDisclosure"
 import { PersonProfileButton } from "@/components/entity/PersonProfileButton"
 import { BAPE_PROFILES } from "@/lib/data/BapeProfiles"
 import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
@@ -9,30 +10,9 @@ import {
   OLYMPIC_COUNTRIES,
 } from "@/lib/data/olympics/countries"
 
-type CountryModalContentProps = {
-  countryId: string
-}
+const olympicEditions = [OLYMPICS_2026_DATA, OLYMPICS_2023_DATA, OLYMPICS_2021_DATA]
 
-const olympicsArchive = [OLYMPICS_2021_DATA, OLYMPICS_2023_DATA]
-
-function StatTile({
-  label,
-  value,
-}: {
-  label: string
-  value: string | number
-}) {
-  return (
-    <div className="rounded-xl border bg-muted/35 p-3">
-      <p className="text-[11px] font-medium uppercase tracking-wide text-muted-foreground">
-        {label}
-      </p>
-      <p className="mt-1 text-xl font-bold tabular-nums">{value}</p>
-    </div>
-  )
-}
-
-export function CountryModalContent({ countryId }: CountryModalContentProps) {
+export function CountryModalContent({ countryId }: { countryId: string }) {
   const country =
     getOlympicCountry(countryId) ??
     OLYMPIC_COUNTRIES.find((country) => country.name === countryId)
@@ -48,196 +28,103 @@ export function CountryModalContent({ countryId }: CountryModalContentProps) {
     )
   }
 
-  const members = BAPE_PROFILES.filter((profile) =>
-    profile.country.includes(country.rosterFlag ?? country.flag),
+  const edition = olympicEditions.find((olympics) =>
+    olympics.medalTable.some((entry) => entry.name === country.name),
   )
-
-  const medalTableEntries = olympicsArchive
-    .map((olympics) => {
-      const medalTableEntry = olympics.medalTable.find(
-        (entry) => entry.name === country.name,
-      )
-
-      if (!medalTableEntry) return null
-
-      return {
-        title: olympics.title,
-        year: olympics.date,
-        rank:
-          olympics.medalTable.findIndex((entry) => entry.name === country.name) +
-          1,
-        medalTableEntry,
-      }
-    })
-    .filter((entry): entry is NonNullable<typeof entry> => entry !== null)
-
-  const memberNames = new Set(
-    members.map((member) => `${member.firstName} ${member.lastName}`),
-  )
-
-  const olympicMedalEditions = [...olympicsArchive, OLYMPICS_2026_DATA]
-    .map((olympics) => {
-      const hasTeamEntry = olympics.medalTable.some(
-        (entry) => entry.name === country.name,
-      )
-
-      if (!hasTeamEntry) return null
-
-      const medals = olympics.events
-        .flatMap((event) => expandDivisionResults(event, { showDivision: false }))
-        .flatMap((event) => {
-          const results = [
-            { medal: "Gold", names: event.gold ?? [] },
-            { medal: "Silver", names: event.silver ?? [] },
-            { medal: "Bronze", names: event.bronze ?? [] },
-          ]
-
-          return results
-            .filter((result) =>
-              result.names.some((name) => memberNames.has(name) || name === country.name),
-            )
-            .map((result) => ({
-              eventId: event.id,
-              event: event.name,
-              emoji: event.emoji,
-              medal: result.medal,
-              winners: result.names.filter((name) => memberNames.has(name)),
-            }))
-        })
-        .toSorted(
-          (a, b) =>
-            getMedalSortValue(a.medal) - getMedalSortValue(b.medal) ||
-            a.event.localeCompare(b.event),
-        )
-
-      if (medals.length === 0) return null
-
-      const gold = medals.filter((medal) => medal.medal === "Gold")
-      const silver = medals.filter((medal) => medal.medal === "Silver")
-      const bronze = medals.filter((medal) => medal.medal === "Bronze")
-
-      return {
-        year: olympics.date,
-        medals,
-        gold,
-        silver,
-        bronze,
-      }
-    })
-    .filter((edition): edition is NonNullable<typeof edition> =>
-      Boolean(edition),
+  const captain = edition?.captains?.[country.name]
+  const members = BAPE_PROFILES
+    .filter((profile) => profile.country.includes(country.rosterFlag ?? country.flag))
+    .map((profile) => ({ id: String(profile.bapeID), name: `${profile.firstName} ${profile.lastName}` }))
+    .sort((a, b) => Number(b.name === captain) - Number(a.name === captain) || a.name.localeCompare(b.name))
+  const memberNames = new Set(members.map((member) => member.name))
+  const standings = edition?.medalTable.toSorted(
+    (a, b) => b.pts - a.pts || (b.gold + b.silver + b.bronze) - (a.gold + a.silver + a.bronze),
+  ) ?? []
+  const rankIndex = standings.findIndex((entry) => entry.name === country.name)
+  const standing = standings[rankIndex]
+  const hasResults = standings.some((entry) => entry.pts > 0)
+  const isOngoing = edition?.events.some((event) => event.status === "upcoming")
+  const medals = (edition?.events ?? [])
+    .flatMap((event) => expandDivisionResults(event, { showDivision: false }))
+    .flatMap((event) =>
+      [
+        { medal: "Gold", names: event.gold ?? [] },
+        { medal: "Silver", names: event.silver ?? [] },
+        { medal: "Bronze", names: event.bronze ?? [] },
+      ]
+        .filter(({ names }) => names.includes(country.name) || names.some((name) => memberNames.has(name)))
+        .map(({ medal, names }) => ({
+          eventId: event.id,
+          event: event.name,
+          emoji: event.emoji,
+          medal,
+          winners: names.filter((name) => memberNames.has(name)),
+        })),
     )
-
-  const eventWinCount = olympicMedalEditions.reduce(
-    (total, edition) => total + edition.gold.length,
-    0,
-  )
-
-  const olympicsTitle = medalTableEntries[0]?.title ?? "Olympics"
-  const finalRank = medalTableEntries[0]?.rank
-
-  const totals = medalTableEntries.reduce(
-    (total, entry) => ({
-      gold: total.gold + entry.medalTableEntry.gold,
-      silver: total.silver + entry.medalTableEntry.silver,
-      bronze: total.bronze + entry.medalTableEntry.bronze,
-      pts: total.pts + entry.medalTableEntry.pts,
-    }),
-    { gold: 0, silver: 0, bronze: 0, pts: 0 },
-  )
+    .toSorted((a, b) => getMedalSortValue(a.medal) - getMedalSortValue(b.medal) ||
+      a.event.localeCompare(b.event))
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-start gap-4 pr-10">
-        <div className="grid h-20 w-20 shrink-0 place-items-center rounded-2xl border bg-muted/35 text-5xl">
+    <div className="space-y-5">
+      <div className="flex items-center gap-3 pr-10">
+        <div aria-hidden="true" className="grid size-20 shrink-0 place-items-center rounded-xl border bg-muted/35 text-4xl">
           {country.flag}
         </div>
-
-        <div className="min-w-0 pt-1">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">
-            Olympic Team
-          </p>
-          <h2 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
-            {country.name}
-          </h2>
-          <p className="mt-1 text-sm text-muted-foreground">
-            {olympicsTitle} · {eventWinCount} event wins
-          </p>
+        <div className="min-w-0">
+          <h2 className="text-xl font-bold tracking-tight sm:text-2xl">{country.name}</h2>
+          {edition && (
+            <p className="mt-1 text-sm text-muted-foreground">{edition.date} {edition.location}</p>
+          )}
         </div>
       </div>
 
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        <StatTile
-          label="Final Rank"
-          value={finalRank ? formatRank(finalRank) : "TBA"}
-        />
-        <StatTile label="Gold" value={totals.gold} />
-        <StatTile label="Silver" value={totals.silver} />
-        <StatTile label="Bronze" value={totals.bronze} />
-      </div>
-
-      <section className="rounded-2xl border bg-muted/30 p-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Members
-        </h3>
-        <div className="mt-3 flex flex-wrap gap-2">
-          {members.map((member) => (
-            <PersonProfileButton
-              key={member.bapeID}
-              bapeID={String(member.bapeID)}
-            />
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-2xl border bg-muted/30 p-4">
-        <h3 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
-          Medal Haul
-        </h3>
-
-        {olympicMedalEditions.length > 0 ? (
-          <div className="mt-3 grid gap-4">
-            {olympicMedalEditions.map((edition) => (
-              <div
-                key={edition.year}
-                className="rounded-xl border bg-background p-3"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold">{edition.year} Olympics</p>
-                  <div className="flex gap-1.5 text-xs font-semibold">
-                    <MedalCountBadge medal="Gold" value={edition.gold.length} />
-                    <MedalCountBadge
-                      medal="Silver"
-                      value={edition.silver.length}
-                    />
-                    <MedalCountBadge
-                      medal="Bronze"
-                      value={edition.bronze.length}
-                    />
-                  </div>
-                </div>
-
-                <div className="mt-3 grid gap-2">
-                  {edition.medals.map((medal) => (
-                    <CountryMedalRow
-                      year={edition.year}
-                      key={`${edition.year}-${medal.eventId}-${medal.medal}`}
-                      medal={medal.medal}
-                      emoji={medal.emoji}
-                      event={medal.event}
-                      winners={medal.winners}
-                      teamMemberCount={members.length}
-                    />
-                  ))}
-                </div>
+      {edition && standing && (
+        <section aria-label="Olympic results" className="rounded-xl border p-3">
+          {hasResults && (
+            <div className="flex items-center justify-between gap-3 text-sm">
+              <span className="font-semibold">
+                {formatRank(rankIndex + 1)} {isOngoing ? "in the standings" : "overall"}
+              </span>
+              <span className="tabular-nums text-muted-foreground">{standing.pts} pts</span>
+            </div>
+          )}
+          <OlympicMedalDisclosure year={edition.date} gold={standing.gold} silver={standing.silver} bronze={standing.bronze}>
+            {medals.length ? (
+              <div className="mt-2 divide-y divide-border/60">
+                {medals.map((medal) => (
+                  <CountryMedalRow
+                    key={`${medal.eventId}-${medal.medal}`}
+                    year={edition.date}
+                    medal={medal.medal}
+                    emoji={medal.emoji}
+                    event={medal.event}
+                    winners={medal.winners}
+                    teamMemberCount={members.length}
+                  />
+                ))}
               </div>
-            ))}
-          </div>
-        ) : (
-          <p className="mt-3 text-sm text-muted-foreground">
-            No Olympic medals recorded yet.
-          </p>
-        )}
+            ) : null}
+          </OlympicMedalDisclosure>
+        </section>
+      )}
+
+      <section>
+        <h3 className="border-b pb-2 text-base font-semibold">Members</h3>
+        <ul className="mt-2 grid gap-x-4 gap-y-1 sm:grid-cols-2">
+          {members.map((member) => (
+            <li key={member.id} className="min-w-0">
+              <PersonProfileButton
+                bapeID={member.id}
+                olympicsYear={edition?.date}
+                meta={member.name === captain ? "Captain" : undefined}
+                labelMode="full"
+                nameClassName="whitespace-normal break-words"
+                className="min-h-11 w-full rounded-md border-transparent bg-transparent shadow-none hover:translate-y-0 hover:border-transparent hover:shadow-none"
+                compact
+              />
+            </li>
+          ))}
+        </ul>
       </section>
     </div>
   )
@@ -261,7 +148,7 @@ function CountryMedalRow({
   const showWinners = winners.length > 0 && winners.length < teamMemberCount
 
   return (
-    <div className="grid h-16 grid-cols-[minmax(0,1fr)_auto] items-center gap-3 overflow-hidden rounded-xl border bg-muted/25 px-3 py-2">
+    <div className="flex flex-wrap items-center justify-between gap-2 py-2">
       <div className="flex min-w-0 items-center gap-2">
         <MedalPill medal={medal} />
         <p className="min-w-0 truncate font-medium">
@@ -270,7 +157,7 @@ function CountryMedalRow({
         </p>
       </div>
       {showWinners ? (
-        <div className="flex max-w-[42vw] flex-nowrap gap-1.5 overflow-x-auto sm:max-w-72 sm:justify-end">
+        <div className="flex min-w-0 flex-wrap gap-1.5">
           {winners.map((winner) => (
             <PersonProfileButton
               key={`${event}-${medal}-${winner}`}
@@ -281,29 +168,8 @@ function CountryMedalRow({
             />
           ))}
         </div>
-      ) : (
-        <div className="w-0 sm:w-72" />
-      )}
+      ) : null}
     </div>
-  )
-}
-
-function MedalCountBadge({
-  medal,
-  value,
-}: {
-  medal: string
-  value: number
-}) {
-  return (
-    <span
-      className={[
-        "rounded-full border px-2 py-0.5 tabular-nums",
-        getMedalToneClasses(medal),
-      ].join(" ")}
-    >
-      {medal[0]} {value}
-    </span>
   )
 }
 

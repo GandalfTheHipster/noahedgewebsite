@@ -138,7 +138,7 @@ function OlympicsMedalTableSection({ data }: OlympicsEditionPageProps) {
 
   return (
     <section className="flex flex-col gap-5">
-      <BapeSectionHeader title="Medal Table" />
+      <BapeSectionHeader title={data.date === "2026" ? "Results" : "Medal Table"} />
 
       <OlympicsMedalTable entries={entries} isUpcoming={!hasResults} />
       {results.length > 0 && (
@@ -195,7 +195,7 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
         {data.events.length > 0 && !hasResults ? (
           <UpcomingEventCategoryList data={data} />
         ) : data.events.length > 0 ? (
-          <EventCategoryList events={completedEvents} data={data} />
+          <OlympicsEventResultsList events={completedEvents} year={data.date} category="Event" teamRosters={getTeamRosters(data)} />
         ) : (
           <BapePanel className="p-6">
             <p className="text-sm font-medium text-muted-foreground">
@@ -344,32 +344,6 @@ export function getOlympicsEditionLogo(year: string) {
   }
 }
 
-function EventCategoryList({
-  events,
-  data,
-}: {
-  events: OlympicEvent[]
-  data: OlympicPageData
-}) {
-  const teamRosters = getTeamRosters(data)
-  const categories = groupEventsByCategory(events)
-
-  return (
-    <div className="grid gap-6 sm:gap-7">
-      {categories.map((category) => (
-        <section key={category.name} className="grid gap-3">
-          <div className="px-1">
-            <h2 className="text-sm font-semibold tracking-tight text-foreground/90 sm:text-base">
-              {category.name}
-            </h2>
-          </div>
-          <OlympicsEventResultsList events={category.events} year={data.date} category={category.name} teamRosters={teamRosters} />
-        </section>
-      ))}
-    </div>
-  )
-}
-
 function UpcomingEventCategoryList({ data, events = data.events }: OlympicsEditionPageProps & { events?: OlympicEvent[] }) {
   const teamRosters = getTeamRosters(data)
   const categories = groupEventsByCategory(events)
@@ -424,6 +398,8 @@ function TeamRosterPanel({
 }) {
   const pointsLeader = Math.max(...rosters.map((roster) => roster.entry.pts))
   const shouldTintLeader = hasResults && pointsLeader > 0
+  const centerLeader = shouldTintLeader && rosters.length === 4 &&
+    rosters.filter((roster) => roster.entry.pts === pointsLeader).length === 1
   const rosterList = (
     <div
       className={cn(
@@ -444,6 +420,7 @@ function TeamRosterPanel({
                 "border-border/80",
               isPointsLeader &&
                 "border-[#b47a00]/40 bg-gradient-to-b from-[#f8c75c]/[0.07] to-card/50",
+              centerLeader && (isPointsLeader ? "lg:col-start-2 lg:row-start-1" : "lg:row-start-2"),
             )}
           >
             <div className="flex items-start justify-between gap-3 border-b border-border/60 pb-4">
