@@ -32,7 +32,7 @@ export type OlympicEvent = {
   divisions?: {
     name: string
     /** Player pairings, keyed by country. */
-    players: Record<string, [string, string]>
+    players: Record<string, [string, string?]>
   }[]
   battingOrder?: string[]
   runs?: Record<string, number | null>

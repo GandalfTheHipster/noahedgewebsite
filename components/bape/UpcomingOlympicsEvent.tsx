@@ -166,6 +166,8 @@ export function UpcomingOlympicsEvent({
               </ol>
               <ScoreMedals order={order} results={results} scoreLabel={scoreLabel} />
             </section>
+          ) : event.divisions?.length ? (
+            <PickleballDetails event={event} />
           ) : (hasMedalGames && !completed) || event.openingMatchWinners?.length ? (
             <div className="mt-6 grid gap-5">
               <MedalGames
@@ -175,9 +177,7 @@ export function UpcomingOlympicsEvent({
                 bronzeWinner={event.bronze?.[0]}
               />
             </div>
-          ) : completed ? null : event.id === "pickleball" ? (
-            <PickleballDetails event={event} />
-          ) : (
+          ) : completed ? null : (
             <div className="mt-6 grid gap-3" role="list" aria-label="Games to be scheduled">
               {[1, 2].map((game) => (
                 <div key={game} role="listitem" className="h-20 rounded-xl border border-dashed bg-muted/20">
@@ -201,9 +201,6 @@ export function UpcomingOlympicsEvent({
 function PickleballDetails({ event }: { event: OlympicEvent }) {
   return (
     <div className="mt-6 grid gap-5">
-      <p className="text-xs text-muted-foreground">
-        Two players per team in each division.
-      </p>
       {event.divisions?.map((division) => (
         <section key={division.name} className="grid gap-4 rounded-xl border p-3 sm:p-4" aria-label={division.name}>
           <h3 className="border-b pb-3 text-base font-semibold">{division.name}</h3>
@@ -219,7 +216,7 @@ function MedalGames({ openingMatches, openingMatchWinners, goldWinner, bronzeWin
   openingMatchWinners?: OlympicEvent["openingMatchWinners"]
   goldWinner?: string
   bronzeWinner?: string
-  players?: Record<string, [string, string]>
+  players?: Record<string, [string, string?]>
 }) {
   const [firstMatch, secondMatch] = openingMatches ?? []
   const [firstWinner, secondWinner] = openingMatchWinners ?? []
@@ -578,7 +575,7 @@ function ScoreMedals({ order, results, scoreLabel }: {
 function GameSlot({ label, teams, players, winner }: {
   label: string
   teams?: [string, string]
-  players?: Record<string, [string, string]>
+  players?: Record<string, [string, string?]>
   winner?: string | null
 }) {
   return (
@@ -594,7 +591,7 @@ function GameSlot({ label, teams, players, winner }: {
 
 function MatchLineup({ country, players }: {
   country?: string
-  players?: Record<string, [string, string]>
+  players?: Record<string, [string, string?]>
 }) {
   const members = country ? players?.[country] : undefined
   if (!members) return <MatchTeam country={country} />
@@ -603,7 +600,7 @@ function MatchLineup({ country, players }: {
     <div className="min-w-0">
       <MatchTeam country={country} />
       <ul className="mt-1 grid gap-1 text-center text-xs leading-5 text-muted-foreground">
-        {members.map((name) => (
+        {members.filter(Boolean).map((name) => (
           <li key={name} className="break-words">{name}</li>
         ))}
       </ul>

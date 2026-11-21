@@ -195,7 +195,6 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledDate: "21 November 2026",
       scheduledTime: "11 am–12:30 pm",
       location: "Mundaring Tennis Club",
-      // Division 1 pairs confirmed; remaining players assigned to Division 2.
       divisions: [
         {
           name: "Division 1",
@@ -203,7 +202,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
             Scotland: ["Elvin Lamprecht", "Jack Coleman"],
             "South Africa": ["Eric Yao", "Noah Edge"],
             Mongolia: ["Joseph Hart", "Thomas Dempsey"],
-            Estonia: ["Jayden Nolan", "James Crossley"],
+            Estonia: ["Jayden Chang", "Jayden Nolan"],
           },
         },
         {
@@ -211,8 +210,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
           players: {
             Scotland: ["Kyle Taplin", "Steven Aldrin"],
             "South Africa": ["Cruz Deabreu", "Luke Price"],
-            Mongolia: ["Aleksa Kvrgic", "Lucas Cinquina"],
-            Estonia: ["Raven Frederickson", "Jayden Chang"],
+            Mongolia: ["Lucas Cinquina"],
+            Estonia: ["James Crossley"],
           },
         },
       ],
