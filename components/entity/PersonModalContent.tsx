@@ -16,6 +16,7 @@ import { BEERPONG_2025_26_ARCHIVE, getBeerPongPlayoffFinish } from "@/lib/data/b
 import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
 import { OLYMPICS_2023_DATA } from "@/lib/data/olympics/olympics-2023"
 import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
+import { get2026OlympicCountry, getOlympicAthleteMedals } from "@/lib/data/olympics/all-time"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
 
 type PersonModalContentProps = {
@@ -189,31 +190,11 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
   const fullName = `${profile.firstName} ${profile.lastName}`
   const badges = getBadgesForPerson(profile.bapeID)
   const strengths = getPersonStrengths(fullName)
-  const upcomingTeam = OLYMPICS_2026_DATA.medalTable.find((team) => {
-    const country = getOlympicCountry(team.name)
-    return country ? profile.country.includes(country.rosterFlag ?? country.flag) : false
-  })
-  const upcomingCountry = upcomingTeam
-    ? getOlympicCountry(upcomingTeam.name)
-    : undefined
+  const currentCountry = get2026OlympicCountry(profile)
 
-  const olympicEditions = olympicsArchive
+  const olympicEditions = [...olympicsArchive, OLYMPICS_2026_DATA]
     .map((olympics) => {
-      const medals = olympics.events.flatMap((event) => {
-        const results = [
-          { medal: "Gold", names: event.gold ?? [] },
-          { medal: "Silver", names: event.silver ?? [] },
-          { medal: "Bronze", names: event.bronze ?? [] },
-        ]
-
-        return results
-          .filter((result) => result.names.includes(fullName))
-          .map((result) => ({
-            event: event.name,
-            medal: result.medal,
-            emoji: event.emoji,
-          }))
-      })
+      const medals = getOlympicAthleteMedals(profile, olympics)
 
       if (medals.length === 0) return null
 
@@ -229,12 +210,12 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
 
   let countryIndex = 0
   const olympicTeams = olympicEditions.map((edition) => {
-    const flag = profile.country[countryIndex] ?? profile.country[0]
-    countryIndex += 1
-    const country = flag ? getOlympicCountry(flag) : undefined
-    const gold = edition.medals.filter((medal) => medal.medal === "Gold")
-    const silver = edition.medals.filter((medal) => medal.medal === "Silver")
-    const bronze = edition.medals.filter((medal) => medal.medal === "Bronze")
+    const isCurrentEdition = edition.year === OLYMPICS_2026_DATA.date
+    const flag = isCurrentEdition ? undefined : profile.country[countryIndex++] ?? profile.country[0]
+    const country = isCurrentEdition ? currentCountry : flag ? getOlympicCountry(flag) : undefined
+    const gold = edition.medals.filter((medal) => medal.medal === "gold")
+    const silver = edition.medals.filter((medal) => medal.medal === "silver")
+    const bronze = edition.medals.filter((medal) => medal.medal === "bronze")
 
     return {
       ...edition,
@@ -242,12 +223,12 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
       gold,
       silver,
       bronze,
-      points: gold.length * 3 + silver.length * 2 + bronze.length,
       medals: edition.medals.toSorted(
         (a, b) => getMedalSortValue(a.medal) - getMedalSortValue(b.medal),
       ),
     }
   }).sort((a, b) => Number(b.year) - Number(a.year))
+  const showCurrentTeam = currentCountry && !olympicTeams.some((edition) => edition.year === OLYMPICS_2026_DATA.date)
   const hasBeerPongClub = beerPongTeams.length > 0
   return (
     <div className="space-y-5">
@@ -263,7 +244,7 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
 
       <StatSection title="Olympics">
         <div className="divide-y rounded-xl border bg-muted/10 px-3">
-          {upcomingCountry ? (
+          {showCurrentTeam ? (
             <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-3 gap-y-1 py-3">
               <Link
                 href={`/bape/olympics/${OLYMPICS_2026_DATA.date}`}
@@ -280,20 +261,20 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
                   aria-hidden="true"
                   className="size-1.5 rounded-full bg-emerald-500"
                 />
-                Upcoming
+                Underway
               </span>
               <div className="col-start-2 row-start-1 flex items-center gap-1">
                 <CountryProfileButton
-                  country={upcomingCountry.name}
+                  country={currentCountry.name}
                   compact
                   iconOnly
                 />
                 <EntityTrigger
                   type="country"
-                  id={upcomingCountry.name}
+                  id={currentCountry.name}
                   className="whitespace-nowrap text-sm font-medium text-muted-foreground hover:text-foreground"
                 >
-                  {upcomingCountry.name}
+                  {currentCountry.name}
                 </EntityTrigger>
               </div>
             </div>
@@ -374,7 +355,7 @@ export function PersonModalContent({ personId }: PersonModalContentProps) {
                 </details>
               </div>
             ))
-          ) : !upcomingCountry ? (
+          ) : !currentCountry ? (
             <p className="py-3 text-sm text-muted-foreground">
               No Olympics results recorded yet.
             </p>
@@ -456,13 +437,13 @@ function MedalPill({
     <span
       className={[
         "rounded-full border px-2 py-0.5 font-medium",
-        medal === "Gold"
+        medal === "gold"
           ? "border-[#b47a00]/25 bg-[#f8c75c]/25 text-[#7a5100] dark:text-[#f8c75c]"
           : "",
-        medal === "Silver"
+        medal === "silver"
           ? "border-black/10 bg-[#e5e7e9]/55 text-slate-700 dark:bg-[#d8dde3]/20 dark:text-[#d8dde3]"
           : "",
-        medal === "Bronze"
+        medal === "bronze"
           ? "border-[#7a3f16]/35 bg-[#8a4f18]/25 text-[#8a3f0f] dark:border-[#ff9b54]/30 dark:bg-[#7a3f16]/35 dark:text-[#ff9b54]"
           : "",
       ].join(" ")}
@@ -493,9 +474,9 @@ function BeerPongClubSection({
 }
 
 function getMedalSortValue(medal: string) {
-  if (medal === "Gold") return 0
-  if (medal === "Silver") return 1
-  if (medal === "Bronze") return 2
+  if (medal === "gold") return 0
+  if (medal === "silver") return 1
+  if (medal === "bronze") return 2
   return 3
 }
 

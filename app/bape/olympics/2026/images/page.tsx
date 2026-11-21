@@ -1,6 +1,5 @@
-import { OlympicsImagesPage } from "@/components/bape/OlympicsEditionPages"
-import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
+import { redirect } from "next/navigation"
 
 export default function Olympics2026ImagesPage() {
-  return <OlympicsImagesPage data={OLYMPICS_2026_DATA} />
+  redirect("/bape/olympics/2026")
 }

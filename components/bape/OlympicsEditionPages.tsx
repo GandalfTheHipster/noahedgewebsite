@@ -137,14 +137,7 @@ function OlympicsMedalTableSection({ data }: OlympicsEditionPageProps) {
 
   return (
     <section className="flex flex-col gap-5">
-      <BapeSectionHeader
-        title="Medal Table"
-        description={
-          hasResults
-            ? "Ranked by points, then medal count. Gold, silver, and bronze decide bragging rights."
-            : undefined
-        }
-      />
+      <BapeSectionHeader title="Medal Table" />
 
       <OlympicsMedalTable entries={entries} isUpcoming={!hasResults} />
       {recentResults.length > 0 && (

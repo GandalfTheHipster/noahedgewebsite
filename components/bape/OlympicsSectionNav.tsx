@@ -24,7 +24,9 @@ export function OlympicsSectionNav({
       : []),
     ...(year === "2026" ? [{ href: `${baseHref}/calendar`, label: "Calendar" }] : []),
     { href: `${baseHref}/events`, label: "Events" },
-    ...(!isUpcoming ? [{ href: `${baseHref}/images`, label: "Images" }] : []),
+    ...(!isUpcoming && year !== "2026"
+      ? [{ href: `${baseHref}/images`, label: "Images" }]
+      : []),
   ]
 
   return (

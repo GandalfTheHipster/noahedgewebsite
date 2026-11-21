@@ -49,8 +49,27 @@ function getProfileName(profile: BapeProfile) {
   return `${profile.firstName} ${profile.lastName}`
 }
 
-function getProfileByName(name: string) {
-  return BAPE_PROFILES.find((profile) => getProfileName(profile) === name)
+export function get2026OlympicCountry(profile: BapeProfile) {
+  return OLYMPICS_2026_DATA.medalTable
+    .map((entry) => getOlympicCountry(entry.name))
+    .find((country) => country && profile.country.includes(country.rosterFlag ?? country.flag))
+}
+
+export function getOlympicAthleteMedals(profile: BapeProfile, edition: OlympicPageData) {
+  const name = getProfileName(profile)
+  const country = edition.date === OLYMPICS_2026_DATA.date
+    ? get2026OlympicCountry(profile)
+    : undefined
+
+  return edition.events
+    .filter((event) => event.status === "completed")
+    .flatMap((event) =>
+      (["gold", "silver", "bronze"] as const)
+        .filter((medal) => event[medal]?.some(
+          (recipient) => recipient === name || recipient === country?.name,
+        ))
+        .map((medal) => ({ event: event.name, emoji: event.emoji, medal })),
+    )
 }
 
 function getMedalPoints(medal: MedalTone) {
@@ -66,7 +85,7 @@ function getCompletedTeams(profile: BapeProfile, editions: OlympicPageData[]) {
     for (const entry of edition.medalTable) {
       const country = getOlympicCountry(entry.name)
 
-      if (country && profile.country.includes(country.flag)) {
+      if (country && profile.country.includes(country.rosterFlag ?? country.flag)) {
         teams.add(country.flag)
       }
     }
@@ -77,10 +96,9 @@ function getCompletedTeams(profile: BapeProfile, editions: OlympicPageData[]) {
 
 export function getAllTimeOlympicAthletes(): AllTimeOlympicAthlete[] {
   const completedEditions = getCompletedEditions()
-  const athletes = new Map<number, AllTimeOlympicAthlete>(
-    BAPE_PROFILES.map((profile) => [
-      profile.bapeID,
-      {
+  return BAPE_PROFILES
+    .map((profile) => {
+      const athlete: AllTimeOlympicAthlete = {
         id: profile.bapeID,
         name: getProfileName(profile),
         firstName: profile.firstName,
@@ -90,30 +108,16 @@ export function getAllTimeOlympicAthletes(): AllTimeOlympicAthlete[] {
         silver: 0,
         bronze: 0,
         medals: 0,
-      },
-    ]),
-  )
-
-  for (const edition of completedEditions) {
-    for (const event of edition.events) {
-      if (event.status !== "completed") continue
-
-      for (const medal of ["gold", "silver", "bronze"] as const) {
-        for (const name of event[medal] ?? []) {
-          const profile = getProfileByName(name)
-          const athlete = profile ? athletes.get(profile.bapeID) : undefined
-
-          if (!athlete) continue
-
+      }
+      for (const edition of completedEditions) {
+        for (const { medal } of getOlympicAthleteMedals(profile, edition)) {
           athlete[medal] += 1
           athlete.medals += 1
           athlete.points += getMedalPoints(medal)
         }
       }
-    }
-  }
-
-  return [...athletes.values()]
+      return athlete
+    })
     .filter((athlete) => athlete.medals > 0)
     .sort((a, b) => {
       if (b.points !== a.points) return b.points - a.points
