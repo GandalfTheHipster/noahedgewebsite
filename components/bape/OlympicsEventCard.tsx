@@ -38,7 +38,7 @@ export function OlympicsEventResultsList({
               <span className="sr-only">{medal.label}</span>
               <div className="flex flex-1 flex-col justify-center">
               {event[medal.key]?.length ? getMedalRecipients(event[medal.key]!, year).map((name) => (
-                <Medalist key={name} name={name} year={year} />
+                <Medalist key={name} name={name} year={year} teamRosters={teamRosters} />
               )) : (
                 <span className="flex min-h-10 items-center justify-center text-xs text-muted-foreground" aria-label="No result recorded">—</span>
               )}
@@ -75,15 +75,19 @@ function getMedalRecipients(names: string[], year: string) {
   return isWholeTeam ? [country.name] : names
 }
 
-function Medalist({ name, year }: { name: string; year: string }) {
+function Medalist({ name, year, teamRosters }: { name: string; year: string; teamRosters: DrinkingTeamRoster[] }) {
   const country = getOlympicCountry(name)
   const profile = BAPE_PROFILES.find(
     (profile) => `${profile.firstName} ${profile.lastName}` === name,
   )
-  const teamFlag = profile
+  const rosterTeam = year === "2026"
+    ? teamRosters.find((roster) => roster.members.includes(name))?.team
+    : undefined
+  const profileFlag = profile
     ? year === "2023" ? profile.country[1] ?? profile.country[0] : profile.country[0]
     : undefined
-  const team = teamFlag ? getOlympicCountry(teamFlag) : undefined
+  const team = getOlympicCountry(rosterTeam ?? profileFlag ?? "")
+  const teamFlag = rosterTeam ? team?.flag ?? profileFlag : profileFlag
   const className = "flex min-h-11 w-full min-w-0 items-center justify-center rounded-lg bg-transparent p-1 text-center text-[10px] font-medium leading-tight [overflow-wrap:anywhere] hover:bg-transparent hover:no-underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
 
   if (country) {
