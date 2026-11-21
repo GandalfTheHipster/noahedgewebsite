@@ -213,13 +213,13 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
           bronzeMatch: {
             teams: ["South Africa", "Mongolia"],
             winner: "Luke Price",
-            players: { "South Africa": ["Luke Price"], Mongolia: ["Lucas Cinquina"] },
+            players: { "South Africa": ["Luke Price", "Cruz Deabreu"], Mongolia: ["Lucas Cinquina"] },
           },
           players: {
             Scotland: ["Kyle Taplin", "Steven Aldrin"],
-            "South Africa": ["Cruz Deabreu", "Luke Price"],
+            "South Africa": ["Luke Price", "Cruz Deabreu"],
             Mongolia: ["Lucas Cinquina"],
-            Estonia: ["James Crossley"],
+            Estonia: ["Raven Frederickson", "James Crossley"],
           },
         },
       ],

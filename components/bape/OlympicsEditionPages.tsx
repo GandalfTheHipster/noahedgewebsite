@@ -133,21 +133,21 @@ function OlympicsMedalTableSection({ data }: OlympicsEditionPageProps) {
   const entries = [...data.medalTable].sort(
     (a, b) => b.pts - a.pts || getMedalTotal(b) - getMedalTotal(a),
   )
-  const recentResults = data.date === "2026" ? getRecentOlympicsResults(data) : []
+  const results = data.date === "2026" ? getOlympicsResultsLog(data) : []
 
   return (
     <section className="flex flex-col gap-5">
       <BapeSectionHeader title="Medal Table" />
 
       <OlympicsMedalTable entries={entries} isUpcoming={!hasResults} />
-      {recentResults.length > 0 && (
-        <OlympicsEventResultsList events={recentResults} year={data.date} category="Recent" teamRosters={getTeamRosters(data)} />
+      {results.length > 0 && (
+        <OlympicsEventResultsList events={results} year={data.date} category="All event" teamRosters={getTeamRosters(data)} />
       )}
     </section>
   )
 }
 
-function getRecentOlympicsResults(data: OlympicPageData) {
+function getOlympicsResultsLog(data: OlympicPageData) {
   const calendarOrder = new Map<string, number>()
   let position = 0
   for (const day of data.calendar ?? []) {
@@ -164,7 +164,6 @@ function getRecentOlympicsResults(data: OlympicPageData) {
     )
     .flatMap(expandDivisionResults)
     .filter((event) => event.winner || event.gold?.length || event.silver?.length || event.bronze?.length)
-    .slice(0, 5)
     .map((event) => event.gold?.length || !event.winner
       ? event
       : { ...event, gold: [event.winner] },
@@ -181,15 +180,17 @@ function expandDivisionResults(event: OlympicEvent): OlympicEvent[] {
     const bronze = bronzeMatch?.teams.find((team) =>
       team === bronzeMatch.winner || bronzeMatch.players?.[team]?.includes(bronzeMatch.winner),
     )
+    const recipients = (team: string | undefined, players = division.players) =>
+      team ? players[team]?.filter((name): name is string => Boolean(name)) ?? [team] : undefined
 
     return {
       ...event,
       id: `${event.id}-division-${index + 1}`,
       name: `${event.name} · ${division.name}`,
       divisions: [division],
-      gold: gold ? [gold] : undefined,
-      silver: silver ? [silver] : undefined,
-      bronze: bronze ? [bronze] : undefined,
+      gold: recipients(gold),
+      silver: recipients(silver),
+      bronze: recipients(bronze, bronzeMatch?.players),
     }
   })
 }

@@ -33,18 +33,22 @@ export function OlympicsEventResultsList({
             <UpcomingOlympicsEvent event={event} teamRosters={teamRosters} result />
           </h3>
           <div className="grid w-full min-w-0 max-w-64 grid-cols-3 items-stretch justify-self-end gap-1.5 sm:gap-2">
-          {medals.map((medal) => (
+          {medals.map((medal) => {
+            const names = getMedalRecipients(event[medal.key] ?? [], year, Boolean(event.divisions?.length))
+            const isPair = Boolean(event.divisions?.length) && names.length === 2
+            return (
             <div key={medal.key} className={cn("flex min-w-0 flex-col rounded-lg border border-border/60 bg-background", medal.color)}>
               <span className="sr-only">{medal.label}</span>
-              <div className="flex flex-1 flex-col justify-center">
-              {event[medal.key]?.length ? getMedalRecipients(event[medal.key]!, year).map((name) => (
-                <Medalist key={name} name={name} year={year} teamRosters={teamRosters} />
+              <div className={cn("flex flex-1 justify-center", isPair ? "items-center" : "flex-col")}>
+              {names.length ? names.map((name) => (
+                <Medalist key={name} name={name} year={year} teamRosters={teamRosters} compact={isPair} />
               )) : (
                 <span className="flex min-h-10 items-center justify-center text-xs text-muted-foreground" aria-label="No result recorded">—</span>
               )}
               </div>
             </div>
-          ))}
+            )
+          })}
           </div>
         </div>
       ))}
@@ -52,8 +56,8 @@ export function OlympicsEventResultsList({
   )
 }
 
-function getMedalRecipients(names: string[], year: string) {
-  if (names.length < 2) return names
+function getMedalRecipients(names: string[], year: string, showIndividuals: boolean) {
+  if (showIndividuals || names.length < 2) return names
 
   const firstProfile = BAPE_PROFILES.find(
     (profile) => `${profile.firstName} ${profile.lastName}` === names[0],
@@ -75,7 +79,7 @@ function getMedalRecipients(names: string[], year: string) {
   return isWholeTeam ? [country.name] : names
 }
 
-function Medalist({ name, year, teamRosters }: { name: string; year: string; teamRosters: DrinkingTeamRoster[] }) {
+function Medalist({ name, year, teamRosters, compact }: { name: string; year: string; teamRosters: DrinkingTeamRoster[]; compact: boolean }) {
   const country = getOlympicCountry(name)
   const profile = BAPE_PROFILES.find(
     (profile) => `${profile.firstName} ${profile.lastName}` === name,
@@ -100,17 +104,17 @@ function Medalist({ name, year, teamRosters }: { name: string; year: string; tea
   }
 
   return profile ? (
-    <EntityTrigger type="person" id={String(profile.bapeID)} className={className}>
-      <span className="relative shrink-0">
+    <EntityTrigger type="person" id={String(profile.bapeID)} className={cn(className, compact && "w-1/2 px-0.5")}>
+      <span className={cn("relative", compact ? "w-full max-w-9" : "shrink-0")}>
         <Image
           src={getBapeProfileAvatar(profile, year)}
           alt={team ? `${name}, ${team.name}` : name}
           width={36}
           height={36}
-          className="size-8 rounded-md object-cover sm:size-9"
+          className={cn("rounded-md object-cover", compact ? "aspect-square h-auto w-full" : "size-8 sm:size-9")}
         />
         {teamFlag ? (
-          <span aria-hidden="true" className="absolute -bottom-0.5 -right-1 text-[10px] leading-none">
+          <span aria-hidden="true" className={cn("absolute -bottom-0.5 text-[10px] leading-none", compact ? "right-0" : "-right-1")}>
             {teamFlag}
           </span>
         ) : null}
