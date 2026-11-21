@@ -117,6 +117,8 @@ export function UpcomingOlympicsEvent({
           </dl> : null}
           {event.nights?.length ? (
             <CookingDetails nights={event.nights} />
+          ) : event.bowlingScores ? (
+            <BowlingScores scores={event.bowlingScores} />
           ) : event.id === "mario-kart" && event.points ? (
             <div className="mt-6 grid gap-6">
               <section className="grid gap-3" aria-label="Mario Kart points">
@@ -387,6 +389,48 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
         </div>
       </section>
     </div>
+  )
+}
+
+function BowlingScores({ scores }: { scores: NonNullable<OlympicEvent["bowlingScores"]> }) {
+  const teams = Object.entries(scores)
+    .map(([country, members]) => ({
+      country,
+      members,
+      total: Object.values(members).reduce((sum, score) => sum + score, 0),
+    }))
+    .sort((a, b) => b.total - a.total)
+
+  return (
+    <section className="mt-6 grid gap-3" aria-label="Bowling standings">
+      <h3 className="text-sm font-semibold">Bowling scores</h3>
+      {teams.map(({ country, members, total }, index) => (
+        <section key={country} className="overflow-hidden rounded-xl border" aria-label={country}>
+          <div className="flex items-center gap-3 bg-muted/40 px-4 py-3">
+            <span className="text-sm font-semibold tabular-nums text-muted-foreground" aria-label={`Place ${index + 1}`}>{index + 1}</span>
+            <MatchTeam country={country} align="left" />
+            <span className="font-semibold tabular-nums"><span className="sr-only">Team total </span>{total}</span>
+          </div>
+          <table className="w-full text-sm">
+            <caption className="sr-only">{country} bowling scores by player</caption>
+            <thead className="sr-only">
+              <tr>
+                <th scope="col">Player</th>
+                <th scope="col">Score</th>
+              </tr>
+            </thead>
+            <tbody>
+              {Object.entries(members).map(([name, score]) => (
+                <tr key={name} className="border-t">
+                  <th scope="row" className="px-4 py-2 text-left font-medium">{name}</th>
+                  <td className="px-4 py-2 text-right font-semibold tabular-nums">{score}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </section>
+      ))}
+    </section>
   )
 }
 

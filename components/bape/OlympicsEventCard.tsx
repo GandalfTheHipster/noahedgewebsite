@@ -35,7 +35,7 @@ export function OlympicsEventResultsList({
           <div className="grid w-full min-w-0 max-w-64 grid-cols-3 items-stretch justify-self-end gap-1.5 sm:gap-2">
           {medals.map((medal) => {
             const names = getMedalRecipients(event[medal.key] ?? [], year, Boolean(event.divisions?.length))
-            const isPair = Boolean(event.divisions?.length) && names.length === 2
+            const isPair = names.length === 2
             return (
             <div key={medal.key} className={cn("flex min-w-0 flex-col rounded-lg border border-border/60 bg-background", medal.color)}>
               <span className="sr-only">{medal.label}</span>

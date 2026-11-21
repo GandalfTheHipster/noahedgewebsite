@@ -44,6 +44,8 @@ export type OlympicEvent = {
   runs?: Record<string, number | null>
   playingOrder?: string[]
   points?: Record<string, number | null>
+  /** Bowling scores keyed by country and full member name. */
+  bowlingScores?: Record<string, Record<string, number>>
   runners?: string[]
   masterminds?: Record<string, string | null>
   chosenDishes?: Record<string, string | null>
