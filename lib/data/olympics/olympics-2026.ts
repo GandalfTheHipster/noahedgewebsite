@@ -118,8 +118,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
           date: "2026-11-20",
           scheduledTime: "Served 6:30 pm",
           location: "The Lavender Patch",
-          chosenDishes: { Estonia: null, "South Africa": "Chicken/Fish Thai Curry" },
-          points: { Estonia: null, "South Africa": null },
+          chosenDishes: { Estonia: "Loaded Sweet Potato", "South Africa": "Chicken/Fish Thai Curry" },
+          points: { Estonia: 57.5, "South Africa": 62.5 },
         },
         {
           id: "night-two",
@@ -271,6 +271,10 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       emoji: "🍺",
       status: "upcoming",
       drinkingContributions: {
+        "Jack Coleman": 7,
+        "Elvin Lamprecht": 0,
+        "Kyle Taplin": 0,
+        "Steven Aldrin": 0,
         "Thomas Dempsey": 11.6,
         "Joseph Hart": 6,
         "Aleksa Kvrgic": 20.4,
@@ -284,8 +288,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         "Raven Frederickson": 13.6,
         "Jayden Chang": 12.6,
       },
-      drinkingTeamScores: { Scotland: 4.2, Mongolia: 41.6, "South Africa": 43.1, Estonia: 62.4 },
-      drinkingScoresUpdatedAt: "8:57 am AWST, 21 November 2026",
+      drinkingTeamScores: { Mongolia: 41.6, "South Africa": 43.1, Estonia: 62.4 },
+      drinkingScoresUpdatedAt: "9:15 am AWST, 21 November 2026",
     },
     {
       id: "wii-bowling",

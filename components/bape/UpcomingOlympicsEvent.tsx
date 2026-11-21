@@ -261,7 +261,7 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
       .filter((score): score is number => score != null)
     return {
       country,
-      total: scores.length === nights.length
+      total: scores.length > 0
         ? scores.reduce((sum, score) => sum + score, 0)
         : null,
     }
@@ -312,7 +312,7 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
                     <tr key={country} className="border-t">
                       <th scope="row" className="px-3 py-1.5"><MatchTeam country={country} align="left" compact /></th>
                       <td className="px-3 py-1.5 text-muted-foreground">{night.chosenDishes?.[country] ?? "Undecided"}</td>
-                      <td className="px-3 py-1.5 text-right font-semibold tabular-nums">{score ?? <span aria-label="Not recorded">—</span>}</td>
+                      <td className="px-3 py-1.5 text-right font-semibold tabular-nums">{score == null ? <span aria-label="Not recorded">—</span> : `${score}%`}</td>
                     </tr>
                   )
                 })}
@@ -355,7 +355,7 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
         <h3 className="text-sm font-semibold">Overall standings</h3>
         <div className="overflow-hidden rounded-xl border">
           <table className="w-full text-sm">
-            <caption className="sr-only">Combined cooking scores across both nights</caption>
+            <caption className="sr-only">Cooking standings based on scores recorded so far</caption>
             <thead className="text-[11px] text-muted-foreground">
               <tr>
                 <th scope="col" className="w-16 px-3 py-2 text-center font-medium">Rank</th>
@@ -368,7 +368,7 @@ function CookingDetails({ nights }: { nights: NonNullable<OlympicEvent["nights"]
                 <tr key={country} className="border-t">
                   <td className="px-3 py-1.5 text-center font-semibold tabular-nums">{rank ?? <span aria-label="Unranked">—</span>}</td>
                   <th scope="row" className="px-3 py-1.5"><MatchTeam country={country} align="left" compact /></th>
-                  <td className="px-3 py-1.5 text-right font-semibold tabular-nums">{total ?? <span aria-label="Not recorded">—</span>}</td>
+                  <td className="px-3 py-1.5 text-right font-semibold tabular-nums">{total == null ? <span aria-label="Not recorded">—</span> : `${total}%`}</td>
                 </tr>
               ))}
             </tbody>
