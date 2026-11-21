@@ -198,6 +198,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       divisions: [
         {
           name: "Division 1",
+          goldMatch: { teams: ["Scotland", "Mongolia"], winner: "Scotland" },
+          bronzeMatch: { teams: ["South Africa", "Estonia"], winner: "Estonia" },
           players: {
             Scotland: ["Elvin Lamprecht", "Jack Coleman"],
             "South Africa": ["Eric Yao", "Noah Edge"],
@@ -207,6 +209,11 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         },
         {
           name: "Division 2",
+          bronzeMatch: {
+            teams: ["South Africa", "Mongolia"],
+            winner: "Luke Price",
+            players: { "South Africa": ["Luke Price"], Mongolia: ["Lucas Cinquina"] },
+          },
           players: {
             Scotland: ["Kyle Taplin", "Steven Aldrin"],
             "South Africa": ["Cruz Deabreu", "Luke Price"],
@@ -278,7 +285,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         "Joseph Hart": 6,
         "Aleksa Kvrgic": 20.4,
         "Lucas Cinquina": 3.6,
-        "Noah Edge": 12.3,
+        "Noah Edge": 16.2,
         "Cruz Deabreu": 11.8,
         "Eric Yao": 2.6,
         "Luke Price": 16.4,
@@ -287,8 +294,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         "Raven Frederickson": 13.6,
         "Jayden Chang": 12.6,
       },
-      drinkingTeamScores: { Mongolia: 41.6, "South Africa": 43.1, Estonia: 62.4 },
-      drinkingScoresUpdatedAt: "9:15 am AWST, 21 November 2026",
+      drinkingTeamScores: { Mongolia: 41.6, Estonia: 62.4 },
+      drinkingScoresUpdatedAt: "9:42 am AWST, 21 November 2026",
     },
     {
       id: "wii-bowling",

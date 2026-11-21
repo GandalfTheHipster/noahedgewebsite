@@ -31,6 +31,12 @@ export type OlympicEvent = {
   openingMatchWinners?: (string | null)[]
   divisions?: {
     name: string
+    goldMatch?: { teams: [string, string]; winner: string }
+    bronzeMatch?: {
+      teams: [string, string]
+      winner: string
+      players?: Record<string, [string, string?]>
+    }
     /** Player pairings, keyed by country. */
     players: Record<string, [string, string?]>
   }[]

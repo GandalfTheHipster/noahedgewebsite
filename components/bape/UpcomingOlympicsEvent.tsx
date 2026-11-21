@@ -204,18 +204,25 @@ function PickleballDetails({ event }: { event: OlympicEvent }) {
       {event.divisions?.map((division) => (
         <section key={division.name} className="grid gap-4 rounded-xl border p-3 sm:p-4" aria-label={division.name}>
           <h3 className="border-b pb-3 text-base font-semibold">{division.name}</h3>
-          <MedalGames openingMatches={event.openingMatches} players={division.players} />
+          <MedalGames
+            openingMatches={event.openingMatches}
+            goldMatch={division.goldMatch}
+            bronzeMatch={division.bronzeMatch}
+            players={division.players}
+          />
         </section>
       ))}
     </div>
   )
 }
 
-function MedalGames({ openingMatches, openingMatchWinners, goldWinner, bronzeWinner, players }: {
+function MedalGames({ openingMatches, openingMatchWinners, goldWinner, bronzeWinner, goldMatch, bronzeMatch, players }: {
   openingMatches?: OlympicEvent["openingMatches"]
   openingMatchWinners?: OlympicEvent["openingMatchWinners"]
   goldWinner?: string
   bronzeWinner?: string
+  goldMatch?: NonNullable<OlympicEvent["divisions"]>[number]["goldMatch"]
+  bronzeMatch?: NonNullable<OlympicEvent["divisions"]>[number]["bronzeMatch"]
   players?: Record<string, [string, string?]>
 }) {
   const [firstMatch, secondMatch] = openingMatches ?? []
@@ -240,11 +247,11 @@ function MedalGames({ openingMatches, openingMatchWinners, goldWinner, bronzeWin
       </section>
       <section className="grid gap-3" aria-label="Gold medal game">
         <h3 className="text-sm font-semibold"><span aria-hidden="true">🥇 </span>Gold medal game</h3>
-        <GameSlot label="Gold medal game" teams={firstWinner && secondWinner && firstLoser && secondLoser ? [firstWinner, secondWinner] : undefined} winner={goldWinner} />
+        <GameSlot label="Gold medal game" teams={goldMatch?.teams ?? (firstWinner && secondWinner && firstLoser && secondLoser ? [firstWinner, secondWinner] : undefined)} winner={goldMatch?.winner ?? goldWinner} players={players} />
       </section>
       <section className="grid gap-3" aria-label="Bronze medal game">
         <h3 className="text-sm font-semibold"><span aria-hidden="true">🥉 </span>Bronze medal game</h3>
-        <GameSlot label="Bronze medal game" teams={firstLoser && secondLoser ? [firstLoser, secondLoser] : undefined} winner={bronzeWinner} />
+        <GameSlot label="Bronze medal game" teams={bronzeMatch?.teams ?? (firstLoser && secondLoser ? [firstLoser, secondLoser] : undefined)} winner={bronzeMatch?.winner ?? bronzeWinner} players={bronzeMatch?.players ?? players} />
       </section>
     </>
   )
@@ -384,13 +391,6 @@ function DrinkingDetails({ rosters, event }: {
 
   return (
     <section className="mt-6 grid gap-4" aria-label="Drinking team standings">
-      <section className="rounded-xl border bg-muted/20 p-4" aria-label="Drinking medals">
-        <h3 className="text-sm font-semibold">Medals</h3>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Medals are awarded by total team drinks: 🥇 gold for the highest total,
-          🥈 silver for second, and 🥉 bronze for third.
-        </p>
-      </section>
       <div>
         <h3 className="text-sm font-semibold">Team scores</h3>
         {event.drinkingScoresUpdatedAt && (
@@ -403,7 +403,7 @@ function DrinkingDetails({ rosters, event }: {
             <MatchTeam country={team} align="left" />
             <div className="shrink-0 text-right">
               <p className="text-xs text-muted-foreground">Total team score</p>
-              <p className="text-base font-semibold tabular-nums">{score ?? 0}</p>
+              <p className="text-base font-semibold tabular-nums">{(score ?? 0).toFixed(1)}</p>
             </div>
           </div>
           <table className="w-full text-sm">
