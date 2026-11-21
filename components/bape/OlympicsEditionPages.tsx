@@ -157,18 +157,41 @@ function getRecentOlympicsResults(data: OlympicPageData) {
   }
 
   return data.events
-    .filter((event) => event.status === "completed" && (
-      event.winner || event.gold?.length || event.silver?.length || event.bronze?.length
-    ))
+    .filter((event) => event.status === "completed")
     .reverse()
     .sort((a, b) =>
       (calendarOrder.get(b.id) ?? Infinity) - (calendarOrder.get(a.id) ?? Infinity),
     )
+    .flatMap(expandDivisionResults)
+    .filter((event) => event.winner || event.gold?.length || event.silver?.length || event.bronze?.length)
     .slice(0, 5)
     .map((event) => event.gold?.length || !event.winner
       ? event
       : { ...event, gold: [event.winner] },
     )
+}
+
+function expandDivisionResults(event: OlympicEvent): OlympicEvent[] {
+  if (!event.divisions?.length) return [event]
+
+  return event.divisions.map((division, index) => {
+    const gold = division.goldMatch?.winner
+    const silver = division.goldMatch?.teams.find((team) => team !== gold)
+    const bronzeMatch = division.bronzeMatch
+    const bronze = bronzeMatch?.teams.find((team) =>
+      team === bronzeMatch.winner || bronzeMatch.players?.[team]?.includes(bronzeMatch.winner),
+    )
+
+    return {
+      ...event,
+      id: `${event.id}-division-${index + 1}`,
+      name: `${event.name} · ${division.name}`,
+      divisions: [division],
+      gold: gold ? [gold] : undefined,
+      silver: silver ? [silver] : undefined,
+      bronze: bronze ? [bronze] : undefined,
+    }
+  })
 }
 
 export function OlympicsStandingsPage({ data }: OlympicsEditionPageProps) {
@@ -179,7 +202,7 @@ export function OlympicsEventsPage({ data }: OlympicsEditionPageProps) {
   const hasResults = hasOlympicsResults(data)
   const completedEvents = data.events.filter(
     (event) => event.status === "completed",
-  )
+  ).flatMap(expandDivisionResults)
 
   const upcomingEvents = data.events.filter((event) => event.status === "upcoming")
 

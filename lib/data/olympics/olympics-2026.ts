@@ -76,31 +76,31 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   medalTable: [
     {
       name: "Scotland",
-      gold: 1,
+      gold: 3,
       silver: 2,
       bronze: 0,
-      pts: 7,
+      pts: 13,
     },
     {
       name: "Mongolia",
+      gold: 1,
+      silver: 2,
+      bronze: 1,
+      pts: 8,
+    },
+    {
+      name: "Estonia",
       gold: 1,
       silver: 1,
       bronze: 1,
       pts: 6,
     },
     {
-      name: "Estonia",
-      gold: 1,
-      silver: 0,
-      bronze: 0,
-      pts: 3,
-    },
-    {
       name: "South Africa",
       gold: 0,
       silver: 0,
-      bronze: 2,
-      pts: 2,
+      bronze: 3,
+      pts: 3,
     },
   ],
 
@@ -191,7 +191,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       id: "pickleball",
       name: "Pickleball",
       emoji: "🥒",
-      status: "upcoming",
+      status: "completed",
       scheduledDate: "21 November 2026",
       scheduledTime: "11 am–12:30 pm",
       location: "Mundaring Tennis Club",
@@ -209,6 +209,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
         },
         {
           name: "Division 2",
+          goldMatch: { teams: ["Scotland", "Estonia"], winner: "Scotland" },
           bronzeMatch: {
             teams: ["South Africa", "Mongolia"],
             winner: "Luke Price",
