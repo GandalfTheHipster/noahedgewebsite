@@ -326,7 +326,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       scheduledDate: "20 November 2026",
       scheduledTime: "9:30–11 pm",
       location: "The Lavender Patch",
-      points: { Mongolia: null, Scotland: null, "South Africa": null, Estonia: null },
+      points: { Estonia: 45, Scotland: 44, Mongolia: 43, "South Africa": 29 },
     },
   ],
 }

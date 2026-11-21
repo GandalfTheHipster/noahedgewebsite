@@ -705,10 +705,6 @@ function OlympicsMedalTable({
                 </span>
               </TableHead>
             ))}
-            <TableHead scope="col" aria-label="Total medals" className={cn(headingClass, "text-right")}>
-              <span className="sm:hidden">Tot</span>
-              <span className="hidden sm:inline">Total</span>
-            </TableHead>
             <TableHead scope="col" aria-label="Points" className={cn(headingClass, "text-right")}>PTS</TableHead>
           </TableRow>
         </TableHeader>
@@ -739,9 +735,6 @@ function OlympicsMedalTable({
                   </span>
                 </TableCell>
               ))}
-              <TableCell className={numberClass}>
-                {isUpcoming ? "—" : getMedalTotal(entry)}
-              </TableCell>
               <TableCell className={cn(numberClass, "font-bold")}>
                 {isUpcoming ? "—" : entry.pts}
               </TableCell>
