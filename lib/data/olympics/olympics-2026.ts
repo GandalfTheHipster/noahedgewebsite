@@ -76,17 +76,17 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
   medalTable: [
     {
       name: "Scotland",
-      gold: 4,
+      gold: 5,
       silver: 4,
       bronze: 0,
-      pts: 20,
+      pts: 23,
     },
     {
       name: "Mongolia",
       gold: 2,
-      silver: 3,
+      silver: 4,
       bronze: 1,
-      pts: 13,
+      pts: 15,
     },
     {
       name: "Estonia",
@@ -99,8 +99,8 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       name: "South Africa",
       gold: 1,
       silver: 1,
-      bronze: 5,
-      pts: 10,
+      bronze: 6,
+      pts: 11,
     },
   ],
 
@@ -109,7 +109,10 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       id: "cooking",
       name: "Cooking",
       emoji: "🧑‍🍳",
-      status: "upcoming",
+      status: "completed",
+      gold: ["Scotland"],
+      silver: ["Mongolia"],
+      bronze: ["South Africa"],
       nights: [
         {
           id: "night-one",
@@ -129,7 +132,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
           scheduledTime: "Served 6:30 pm",
           location: "The Lavender Patch",
           chosenDishes: { Mongolia: "Tacos", Scotland: "Bahn Chung" },
-          points: { Mongolia: null, Scotland: null },
+          points: { Mongolia: 65, Scotland: 85 },
         },
       ],
     },
