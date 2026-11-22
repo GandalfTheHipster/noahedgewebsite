@@ -193,7 +193,7 @@ export const OLYMPICS_2026_DATA: OlympicPageData = {
       status: "completed",
       gold: ["Noah Edge", "Cruz Deabreu"],
       silver: ["Noah Edge", "Eric Yao"],
-      bronze: ["Jayden Nolan", "Raven Frederickson"],
+      bronze: ["Jayden Chang", "Raven Frederickson"],
       scheduledDate: "21 November 2026",
       scheduledTime: "7:30–9 pm",
       location: "The Lavender Patch",
