@@ -5,6 +5,7 @@ import { OLYMPICS_2021_DATA } from "@/lib/data/olympics/olympics-2021"
 import { OLYMPICS_2023_DATA } from "@/lib/data/olympics/olympics-2023"
 import { OLYMPICS_2026_DATA } from "@/lib/data/olympics/olympics-2026"
 import { expandDivisionResults } from "@/lib/data/olympics/division-results"
+import { compareMedalStandings } from "@/lib/data/olympics/medal-standings"
 import {
   getOlympicCountry,
   OLYMPIC_COUNTRIES,
@@ -37,9 +38,7 @@ export function CountryModalContent({ countryId }: { countryId: string }) {
     .map((profile) => ({ id: String(profile.bapeID), name: `${profile.firstName} ${profile.lastName}` }))
     .sort((a, b) => Number(b.name === captain) - Number(a.name === captain) || a.name.localeCompare(b.name))
   const memberNames = new Set(members.map((member) => member.name))
-  const standings = edition?.medalTable.toSorted(
-    (a, b) => b.pts - a.pts || (b.gold + b.silver + b.bronze) - (a.gold + a.silver + a.bronze),
-  ) ?? []
+  const standings = edition?.medalTable.toSorted(compareMedalStandings) ?? []
   const rankIndex = standings.findIndex((entry) => entry.name === country.name)
   const standing = standings[rankIndex]
   const hasResults = standings.some((entry) => entry.pts > 0)

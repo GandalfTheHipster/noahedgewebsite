@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/table"
 import { expandDivisionResults } from "@/lib/data/olympics/division-results"
 import { getOlympicCountry } from "@/lib/data/olympics/countries"
+import { compareMedalStandings } from "@/lib/data/olympics/medal-standings"
 import type {
   OlympicEvent,
   OlympicImage,
@@ -131,9 +132,7 @@ export function OlympicsMedalTablePage({ data }: OlympicsEditionPageProps) {
 
 function OlympicsMedalTableSection({ data }: OlympicsEditionPageProps) {
   const hasResults = hasOlympicsResults(data)
-  const entries = [...data.medalTable].sort(
-    (a, b) => b.pts - a.pts || getMedalTotal(b) - getMedalTotal(a),
-  )
+  const entries = data.medalTable.toSorted(compareMedalStandings)
   const results = data.date === "2026" ? getOlympicsResultsLog(data) : []
 
   return (
@@ -722,10 +721,6 @@ function OlympicsMedalTable({
       </Table>
     </div>
   )
-}
-
-function getMedalTotal(entry: OlympicMedalTableEntry) {
-  return entry.gold + entry.silver + entry.bronze
 }
 
 function getOlympicImages(data: OlympicPageData): OlympicImage[] {
