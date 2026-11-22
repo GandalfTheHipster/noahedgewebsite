@@ -42,12 +42,22 @@ type OlympicsEditionPageProps = {
 export function OlympicsOverviewPage({ data }: OlympicsEditionPageProps) {
   const teamRosters = getTeamRosters(data)
   const hasResults = hasOlympicsResults(data)
+  const is2026 = data.date === "2026"
+  const teamRosterPanel = (
+    <TeamRosterPanel
+      year={data.date}
+      rosters={teamRosters}
+      mvp={data.mvp}
+      hasResults={hasResults}
+      horizontalWinner={is2026 ? data.winner : undefined}
+    />
+  )
 
   return (
-    <OlympicsPageFrame
-      data={data}
-    >
+    <OlympicsPageFrame data={data}>
       <section className="grid gap-10 sm:gap-12">
+        {is2026 && teamRosterPanel}
+
         {hasResults ? (
           <BapeSectionHeader
             title="Overview"
@@ -60,18 +70,8 @@ export function OlympicsOverviewPage({ data }: OlympicsEditionPageProps) {
           hasResults={hasResults}
         />
 
-
-        {data.date === "2026" ? <OlympicsMedalTableSection data={data} /> : null}
-
-        <TeamRosterPanel
-          year={data.date}
-          rosters={teamRosters}
-          mvp={data.mvp}
-          hasResults={hasResults}
-        />
-
-        {data.calendar?.length ? <OlympicsCalendar data={data} /> : null}
-
+        {!is2026 && teamRosterPanel}
+        {!is2026 && data.calendar?.length ? <OlympicsCalendar data={data} /> : null}
       </section>
     </OlympicsPageFrame>
   )
@@ -389,15 +389,21 @@ function TeamRosterPanel({
   rosters,
   mvp,
   hasResults,
+  horizontalWinner,
 }: {
   year: string
   rosters: TeamRoster[]
   mvp?: string
   hasResults: boolean
+  horizontalWinner?: string
 }) {
+  const winner = rosters.find((roster) => roster.team === horizontalWinner)
+  const displayedRosters = winner
+    ? [winner, ...rosters.filter((roster) => roster !== winner)]
+    : rosters
   const pointsLeader = Math.max(...rosters.map((roster) => roster.entry.pts))
   const shouldTintLeader = hasResults && pointsLeader > 0
-  const centerLeader = shouldTintLeader && rosters.length === 4 &&
+  const centerLeader = !winner && shouldTintLeader && rosters.length === 4 &&
     rosters.filter((roster) => roster.entry.pts === pointsLeader).length === 1
   const rosterList = (
     <div
@@ -406,7 +412,8 @@ function TeamRosterPanel({
         hasResults ? "lg:grid-cols-3" : "md:grid-cols-2",
       )}
     >
-      {rosters.map((roster) => {
+      {displayedRosters.map((roster) => {
+        const isWinner = roster === winner
         const isPointsLeader =
           shouldTintLeader && roster.entry.pts === pointsLeader
 
@@ -419,6 +426,7 @@ function TeamRosterPanel({
                 "border-border/80",
               isPointsLeader &&
                 "border-[#b47a00]/40 bg-gradient-to-b from-[#f8c75c]/[0.07] to-card/50",
+              isWinner && "col-span-full",
               centerLeader && (isPointsLeader ? "lg:col-start-2 lg:row-start-1" : "lg:row-start-2"),
             )}
           >
@@ -445,7 +453,11 @@ function TeamRosterPanel({
               ) : null}
             </div>
 
-            <div className={cn("mt-3 grid gap-x-4 gap-y-1", !hasResults && "sm:grid-cols-2")}>
+            <div className={cn(
+              "mt-3 grid gap-x-4 gap-y-1",
+              !hasResults && "sm:grid-cols-2",
+              isWinner && "grid-cols-2 lg:grid-cols-4",
+            )}>
               {roster.members.map((member) => (
                 <RosterMemberRow
                   year={year}
